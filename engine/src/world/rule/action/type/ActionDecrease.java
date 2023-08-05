@@ -1,0 +1,44 @@
+package world.rule.action.type;
+
+import engine.prd.PRDAction;
+import world.Entity;
+import world.property.Property;
+import world.rule.action.Action;
+
+public class ActionDecrease extends Action {
+
+    protected String propertyName;
+    protected String by;
+
+    public ActionDecrease(PRDAction prdObject) {
+        super(prdObject);
+        propertyName = prdObject.getProperty();
+        by = prdObject.getBy();
+    }
+
+    @Override
+    public void execute(Entity entity) {
+        Property property = entity.getPropertyMap().get(propertyName);
+        double increaseValue = Double.parseDouble(by);
+        double newValue = (double) property.getValue() - increaseValue;
+        if(property.getRange().isInRange(newValue)){
+            property.setValue(newValue);
+        }
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public String getBy() {
+        return by;
+    }
+
+    public void setBy(String by) {
+        this.by = by;
+    }
+}
