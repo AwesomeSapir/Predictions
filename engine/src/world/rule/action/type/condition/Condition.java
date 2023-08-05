@@ -1,6 +1,8 @@
 package world.rule.action.type.condition;
 
+import world.Entity;
+
 public interface Condition {
 
-    public boolean evaluate();
+    boolean evaluate(Entity entity);
 }

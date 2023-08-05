@@ -1,18 +1,24 @@
 package world.rule.action.type.condition;
 
+import engine.prd.PRDCondition;
 import world.Entity;
 import world.property.Property;
 import world.type.Value;
 
 public class SingleCondition implements Condition {
 
-    protected Entity entity;
     protected Operator operator;
     protected String propertyName;
     protected String value;
 
+    public SingleCondition(PRDCondition prdObject) {
+        operator = Operator.fromDRP(prdObject.getOperator());
+        propertyName = prdObject.getProperty();
+        value = prdObject.getValue();
+    }
+
     @Override
-    public boolean evaluate() {
+    public boolean evaluate(Entity entity) {
         boolean result = false;
         Property property = entity.getPropertyMap().get(propertyName);
         Value val1 = property.getPropertyValue();

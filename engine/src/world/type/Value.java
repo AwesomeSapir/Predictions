@@ -1,6 +1,5 @@
 package world.type;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import engine.prd.PRDValue;
 
 import java.util.Objects;
@@ -11,10 +10,10 @@ public class Value {
     protected ValueType type;
     protected Object value;
 
-    public Value(String valueString, ValueType type, Range range){
+    public Value(String valueString, ValueType type, Range range) {
         this.type = type;
         this.range = range;
-        switch (type){
+        switch (type) {
             case Decimal:
                 value = Integer.parseInt(valueString);
                 break;
@@ -34,10 +33,10 @@ public class Value {
         this.type = type;
         this.range = range;
         boolean randomInit = prdObject.isRandomInitialize();
-        if(randomInit){
+        if (randomInit) {
             value = 0; //TODO Random
         } else {
-            switch (type){
+            switch (type) {
                 case Decimal:
                     value = Integer.parseInt(prdObject.getInit());
                     break;

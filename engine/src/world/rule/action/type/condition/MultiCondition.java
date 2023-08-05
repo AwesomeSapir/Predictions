@@ -1,24 +1,40 @@
 package world.rule.action.type.condition;
 
 import engine.prd.PRDCondition;
+import world.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MultiCondition implements Condition {
 
-    protected List<Condition> subConditions;
+    protected List<Condition> subConditions = new ArrayList<>();
     protected Logical logical = Logical.and;
 
     public MultiCondition(PRDCondition prdObject) {
-        Singularity singularity = Singularity.valueOf(prdObject.getPRDCondition().getSingularity());
-
+        Singularity singularity = Singularity.valueOf(prdObject.getSingularity());
+        if (singularity == Singularity.multiple){
+            logical = Logical.valueOf(prdObject.getLogical());
+            for (PRDCondition prdCondition : prdObject.getPRDCondition()){
+                switch (Singularity.valueOf(prdCondition.getSingularity())) {
+                    case single:
+                        subConditions.add(new SingleCondition(prdObject));
+                        break;
+                    case multiple:
+                        subConditions.add(new MultiCondition(prdCondition));
+                        break;
+                }
+            }
+        } else {
+            subConditions.add(new SingleCondition(prdObject));
+        }
     }
 
     @Override
-    public boolean evaluate() {
+    public boolean evaluate(Entity entity) {
         Boolean overallResult = null;
         for (Condition condition : subConditions){
-            boolean result = condition.evaluate();
+            boolean result = condition.evaluate(entity);
             if (overallResult == null){
                 overallResult = result;
             }
