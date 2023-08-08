@@ -1,5 +1,7 @@
 package validator;
 
+import world.type.Range;
+
 public class Validator {
 
     private boolean isValid = true;
@@ -39,6 +41,18 @@ public class Validator {
         if (isDouble().isValid) {
             double value = Double.parseDouble(input);
             if(value > to || value < from){
+                isValid = false;
+            }
+        } else {
+            isValid = false;
+        }
+        return this;
+    }
+
+    public Validator isInRange(Range range){
+        if (isDouble().isValid) {
+            double value = Double.parseDouble(input);
+            if(value > range.to() || value < range.from()){
                 isValid = false;
             }
         } else {

@@ -1,7 +1,7 @@
 package world.rule.action.type;
 
 import engine.prd.PRDAction;
-import world.Entity;
+import world.instance.entity.EntityInstance;
 import world.rule.action.Action;
 
 public class ActionKill extends Action {
@@ -11,7 +11,7 @@ public class ActionKill extends Action {
     }
 
     @Override
-    public void execute(Entity entity) {
+    public void execute(EntityInstance entity) {
         //TODO decide how to implement
     }
 }

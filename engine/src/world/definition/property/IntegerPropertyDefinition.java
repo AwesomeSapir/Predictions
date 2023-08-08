@@ -1,9 +1,11 @@
 package world.definition.property;
 
+import world.type.Range;
 import world.value.generator.ValueGenerator;
 
-public class IntegerPropertyDefinition extends AbstractPropertyDefinition<Integer> {
-    public IntegerPropertyDefinition(String name, ValueGenerator<Integer> valueGenerator) {
-        super(name, PropertyType.DECIMAL, valueGenerator);
+public class IntegerPropertyDefinition extends AbstractNumericPropertyDefinition<Integer> {
+
+    public IntegerPropertyDefinition(String name, Range range, ValueGenerator<Integer> valueGenerator) {
+        super(name, range, valueGenerator);
     }
 }

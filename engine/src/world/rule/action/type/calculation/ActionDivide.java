@@ -1,8 +1,8 @@
 package world.rule.action.type.calculation;
 
 import engine.prd.PRDAction;
-import world.Entity;
-import world.property.Property;
+import world.instance.entity.EntityInstance;
+import world.instance.property.PropertyInstance;
 import world.rule.action.ActionCalc;
 
 public class ActionDivide extends ActionCalc {
@@ -14,13 +14,11 @@ public class ActionDivide extends ActionCalc {
     }
 
     @Override
-    public void execute(Entity entity) {
-        Property property = entity.getPropertyMap().get(resultPropertyName);
+    public void execute(EntityInstance entity) {
+        PropertyInstance property = entity.getPropertyByName(resultPropertyName);
         if(arg2 != 0){
             double newValue = arg1 / arg2;
-            if(property.getRange().isInRange(newValue)){
-                property.setValue(newValue);
-            }
+            property.setValue(newValue);
         }
     }
 

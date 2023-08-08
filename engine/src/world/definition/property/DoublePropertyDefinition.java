@@ -1,9 +1,11 @@
 package world.definition.property;
 
+import world.type.Range;
 import world.value.generator.ValueGenerator;
 
-public class DoublePropertyDefinition extends AbstractPropertyDefinition<Double> {
-    public DoublePropertyDefinition(String name, ValueGenerator<Double> valueGenerator) {
-        super(name, PropertyType.FLOAT, valueGenerator);
+public class DoublePropertyDefinition extends AbstractNumericPropertyDefinition<Double> {
+
+    public DoublePropertyDefinition(String name, Range range, ValueGenerator<Double> valueGenerator) {
+        super(name, range, valueGenerator);
     }
 }

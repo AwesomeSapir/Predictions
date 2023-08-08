@@ -1,5 +1,6 @@
 package world.value.generator;
 
+import world.type.Range;
 import world.value.generator.fixed.FixedValueGenerator;
 import world.value.generator.random.bool.RandomBooleanValueGenerator;
 import world.value.generator.random.numeric.RandomDoubleValueGenerator;
@@ -20,11 +21,19 @@ public interface ValueGeneratorFactory {
         return new RandomStringValueGenerator();
     }
 
-    static ValueGenerator<Integer> createRandomInteger(Integer from, Integer to){
-        return new RandomIntegerValueGenerator(from, to);
+    static ValueGenerator<Integer> createRandomInteger(Range range) {
+        if (range == null) {
+            return new RandomIntegerValueGenerator(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        } else {
+            return new RandomIntegerValueGenerator((int) range.from(), (int) range.to());
+        }
     }
 
-    static ValueGenerator<Double> createRandomDouble(Double from, Double to){
-        return new RandomDoubleValueGenerator(from, to);
+    static ValueGenerator<Double> createRandomDouble(Range range) {
+        if (range == null) {
+            return new RandomDoubleValueGenerator(Double.MIN_VALUE, Double.MAX_VALUE);
+        } else {
+            return new RandomDoubleValueGenerator(range.from(), range.to());
+        }
     }
 }

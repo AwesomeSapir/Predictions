@@ -1,8 +1,8 @@
 package world.rule.action.type;
 
 import engine.prd.PRDAction;
-import world.Entity;
-import world.property.Property;
+import world.instance.entity.EntityInstance;
+import world.instance.property.PropertyInstance;
 import world.rule.action.Action;
 
 public class ActionDecrease extends Action {
@@ -17,13 +17,11 @@ public class ActionDecrease extends Action {
     }
 
     @Override
-    public void execute(Entity entity) {
-        Property property = entity.getPropertyMap().get(propertyName);
+    public void execute(EntityInstance entity) {
+        PropertyInstance property = entity.getPropertyByName(propertyName);
         double increaseValue = Double.parseDouble(by);
         double newValue = (double) property.getValue() - increaseValue;
-        if(property.getRange().isInRange(newValue)){
-            property.setValue(newValue);
-        }
+        property.setValue(newValue);
     }
 
     public String getPropertyName() {

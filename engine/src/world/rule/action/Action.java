@@ -1,7 +1,7 @@
 package world.rule.action;
 
 import engine.prd.PRDAction;
-import world.Entity;
+import world.instance.entity.EntityInstance;
 import world.rule.action.type.ActionDecrease;
 import world.rule.action.type.ActionIncrease;
 import world.rule.action.type.ActionKill;
@@ -20,7 +20,7 @@ public abstract class Action {
         entityName =  prdObject.getEntity();
     }
 
-    public abstract void execute(Entity entity);
+    public abstract void execute(EntityInstance entity);
 
     public ActionType getType() {
         return type;

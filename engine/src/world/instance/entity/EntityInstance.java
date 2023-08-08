@@ -1,6 +1,7 @@
 package world.instance.entity;
 
 import world.definition.entity.EntityDefinition;
+import world.definition.property.PropertyDefinition;
 import world.instance.property.PropertyInstance;
 
 import java.util.HashMap;
@@ -16,6 +17,12 @@ public class EntityInstance {
         this.entityDefinition = entityDefinition;
         this.id = id;
         properties = new HashMap<>();
+    }
+
+    public void initProperties(){
+        for (PropertyDefinition propertyDefinition : entityDefinition.getProperties().values()){
+            addPropertyInstance(new PropertyInstance(propertyDefinition));
+        }
     }
 
     public int getId() {
