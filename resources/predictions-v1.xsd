@@ -5,7 +5,7 @@
 	<xs:element name="PRD-world">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="PRD-environment"/>
+				<xs:element ref="PRD-evironment"/>
 				<xs:element ref="PRD-entities"/>
 				<xs:element ref="PRD-rules"/>
 				<xs:element ref="PRD-termination"/>
@@ -89,7 +89,7 @@
 			<xs:attribute name="arg1" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="PRD-environment">
+	<xs:element name="PRD-evironment">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="PRD-env-property" maxOccurs="unbounded"/>

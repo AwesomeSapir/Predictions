@@ -1,9 +1,9 @@
 package world.property;
 
 import engine.prd.PRDEnvProperty;
-import world.type.ValueType;
 import world.type.Range;
 import world.type.Value;
+import world.type.ValueType;
 
 public class EnvProperty {
     protected String name;

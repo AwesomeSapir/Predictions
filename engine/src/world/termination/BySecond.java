@@ -1,7 +1,6 @@
 package world.termination;
 
 import engine.prd.PRDBySecond;
-import engine.prd.PRDByTicks;
 
 public class BySecond implements TerminationCondition{
 

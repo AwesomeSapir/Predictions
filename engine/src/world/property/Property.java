@@ -1,9 +1,9 @@
 package world.property;
 
 import engine.prd.PRDProperty;
-import world.type.ValueType;
 import world.type.Range;
 import world.type.Value;
+import world.type.ValueType;
 
 //Unique for every entity type
 public class Property {
@@ -55,6 +55,7 @@ public class Property {
     }
 
     public void setPropertyValue(Value value) {
-        this.value = value;
+        this.value = value
+        ;
     }
 }

@@ -19,7 +19,7 @@ public class World {
     protected Termination termination;
 
     public World(PRDWorld prdObject) {
-        for (PRDEnvProperty envProperty : prdObject.getPRDEnvironment().getPRDEnvProperty()) {
+        for (PRDEnvProperty envProperty : prdObject.getPRDEvironment().getPRDEnvProperty()) {
             envProperties.put(envProperty.getPRDName(), new EnvProperty(envProperty));
         }
         for (PRDEntity entity : prdObject.getPRDEntities().getPRDEntity()) {
