@@ -14,6 +14,7 @@ public class ActionIncrease extends Action {
         super(prdObject);
         propertyName = prdObject.getProperty();
         by = prdObject.getBy();
+
     }
 
     @Override
