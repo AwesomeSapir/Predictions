@@ -7,19 +7,21 @@ import world.definition.entity.EntityDefinition;
 import world.instance.entity.EntityInstance;
 import world.instance.environment.ActiveEnvironment;
 import world.instance.environment.EnvironmentManager;
+import world.instance.property.PropertyInstance;
 import world.rule.Rule;
 import world.termination.Termination;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class World {
+public class World implements Context {
 
     protected EnvironmentManager environmentManager;
     protected ActiveEnvironment activeEnvironment;
-    protected Map<String, EntityDefinition> entityDefinitions;
-    protected Map<String, List<EntityInstance>> entityInstances;
+    protected EntityDefinition primaryEntityDefinition;
+    protected List<EntityInstance> entityInstances;
     protected Map<String, Rule> rules;
     protected Termination termination;
 
@@ -29,19 +31,14 @@ public class World {
         activeEnvironment = environmentManager.createActiveEnvironment();
         activeEnvironment.initProperties(environmentManager.getVariables());
 
-        // Entity definition initialization
-        for (PRDEntity prdEntity : prdObject.getPRDEntities().getPRDEntity()){
-            entityDefinitions.put(prdEntity.getName(), new EntityDefinition(prdEntity));
-            entityInstances.put(prdEntity.getName(), new ArrayList<>());
-        }
+        primaryEntityDefinition = new EntityDefinition(prdObject.getPRDEntities().getPRDEntity().get(0));
+        entityInstances = new ArrayList<>();
 
         // Entity instances initialization
-        for (EntityDefinition entityDefinition : entityDefinitions.values()) {
-            for (int i=0; i<entityDefinition.getPopulation(); i++){
-                EntityInstance entityInstance = new EntityInstance(entityDefinition, i+1);
-                entityInstance.initProperties();
-                entityInstances.get(entityDefinition.getName()).add(entityInstance);
-            }
+        for (int i = 0; i < primaryEntityDefinition.getPopulation(); i++) {
+            EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition, i + 1);
+            entityInstance.initProperties();
+            entityInstances.add(entityInstance);
         }
 
         // Rule initialization
@@ -61,5 +58,20 @@ public class World {
 
     public void setTermination(Termination termination) {
         this.termination = termination;
+    }
+
+    @Override
+    public PropertyInstance getEnvironmentPropertyInstance(String name) {
+        return activeEnvironment.getProperty(name);
+    }
+
+    @Override
+    public void removeEntity(EntityInstance entityInstance) {
+        entityInstances.remove(entityInstance);
+    }
+
+    @Override
+    public Collection<EntityInstance> getPrimaryEntityInstances() {
+        return entityInstances;
     }
 }
