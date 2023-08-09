@@ -36,4 +36,8 @@ public class EnvironmentManager {
     public Collection<PropertyDefinition> getVariables() {
         return properties.values();
     }
+
+    public ActiveEnvironment createActiveEnvironment() {
+        return new ActiveEnvironment();
+    }
 }

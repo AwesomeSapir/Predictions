@@ -26,7 +26,7 @@ public class World {
     public World(PRDWorld prdObject) {
         // Environment initialization
         environmentManager = new EnvironmentManager(prdObject.getPRDEvironment());
-        activeEnvironment = new ActiveEnvironment();
+        activeEnvironment = environmentManager.createActiveEnvironment();
         activeEnvironment.initProperties(environmentManager.getVariables());
 
         // Entity definition initialization
