@@ -1,6 +1,5 @@
 package world;
 
-import engine.prd.PRDEntity;
 import engine.prd.PRDRule;
 import engine.prd.PRDWorld;
 import world.definition.entity.EntityDefinition;
@@ -68,6 +67,11 @@ public class World implements Context {
     @Override
     public void removeEntity(EntityInstance entityInstance) {
         entityInstances.remove(entityInstance);
+    }
+
+    @Override
+    public EntityDefinition getPrimaryEntityDefinition() {
+        return primaryEntityDefinition;
     }
 
     @Override

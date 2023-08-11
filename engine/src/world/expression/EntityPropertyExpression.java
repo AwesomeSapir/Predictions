@@ -1,21 +1,15 @@
 package world.expression;
 
-import world.Context;
-import world.instance.entity.EntityInstance;
-import world.instance.property.PropertyInstance;
-
-import java.util.Collection;
-
 public class EntityPropertyExpression extends AbstractExpression{
-    private final PropertyInstance propertyInstance;
+    private final String propertyName;
 
-    public EntityPropertyExpression(PropertyInstance propertyInstance){
+    public EntityPropertyExpression(String propertyName){
         super(ExpressionType.ENTITY_PROPERTY);
-        this.propertyInstance = propertyInstance;
+        this.propertyName = propertyName;
     }
 
     @Override
     public Object getValue() {
-        return propertyInstance.getValue();
+        return propertyName;
     }
 }
