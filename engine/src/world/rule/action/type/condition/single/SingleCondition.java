@@ -2,6 +2,7 @@ package world.rule.action.type.condition.single;
 
 import engine.prd.PRDCondition;
 import engine.prd.PRDProperty;
+import world.Context;
 import world.definition.property.PropertyType;
 import world.instance.entity.EntityInstance;
 import world.rule.action.type.condition.Condition;
@@ -18,7 +19,7 @@ public abstract class SingleCondition<T> implements Condition {
         propertyName = prdObject.getProperty();
     }
 
-    public abstract boolean evaluate(EntityInstance entity);
+    public abstract boolean evaluate(Context context);
 
     public static SingleCondition<?> createConditionByType(PRDCondition condition, PropertyType type){
         switch (type){

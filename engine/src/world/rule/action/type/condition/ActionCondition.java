@@ -1,6 +1,7 @@
 package world.rule.action.type.condition;
 
 import engine.prd.PRDAction;
+import world.Context;
 import world.instance.entity.EntityInstance;
 import world.rule.action.Action;
 
@@ -24,14 +25,14 @@ public class ActionCondition extends Action {
     }
 
     @Override
-    public void execute(EntityInstance entity) {
-        if(conditions.evaluate(entity)){
+    public void execute(Context context) {
+        if(conditions.evaluate(context)){
             for (Action action : actionsThen) {
-                action.execute(entity);
+                action.execute(context);
             }
         } else {
             for (Action action : actionsElse) {
-                action.execute(entity);
+                action.execute(context);
             }
         }
     }

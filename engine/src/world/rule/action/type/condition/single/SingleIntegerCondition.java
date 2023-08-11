@@ -1,6 +1,7 @@
 package world.rule.action.type.condition.single;
 
 import engine.prd.PRDCondition;
+import world.Context;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
 
@@ -12,7 +13,7 @@ public class SingleIntegerCondition extends SingleCondition<Integer>{
     }
 
     @Override
-    public boolean evaluate(EntityInstance entity) {
+    public boolean evaluate(Context context) {
         boolean result;
         PropertyInstance property = entity.getPropertyByName(propertyName);
         Integer propertyValue = (Integer) property.getValue();

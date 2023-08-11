@@ -1,6 +1,7 @@
 package world.rule.action.type.condition;
 
 import engine.prd.PRDCondition;
+import world.Context;
 import world.instance.entity.EntityInstance;
 import world.rule.action.type.condition.single.SingleCondition;
 
@@ -32,7 +33,7 @@ public class MultiCondition implements Condition {
     }
 
     @Override
-    public boolean evaluate(EntityInstance entity) {
+    public boolean evaluate(Context context) {
         Boolean overallResult = null;
         for (Condition condition : subConditions){
             boolean result = condition.evaluate(entity);

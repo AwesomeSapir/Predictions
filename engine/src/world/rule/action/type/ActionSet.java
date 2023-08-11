@@ -1,6 +1,7 @@
 package world.rule.action.type;
 
 import engine.prd.PRDAction;
+import world.Context;
 import world.Entity;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
@@ -17,10 +18,8 @@ public class ActionSet extends Action {
     }
 
     @Override
-    public void execute(EntityInstance entity) {
-        PropertyInstance propertyInstance = entity.getPropertyByName(propertyName);
+    public void execute(Context context) {
 
-        property.getValue().getClass();
     }
 
     public String getPropertyName() {
