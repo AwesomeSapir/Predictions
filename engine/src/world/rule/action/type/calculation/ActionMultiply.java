@@ -1,6 +1,7 @@
 package world.rule.action.type.calculation;
 
 import engine.prd.PRDAction;
+import world.Context;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
 import world.rule.action.ActionCalc;
@@ -14,9 +15,7 @@ public class ActionMultiply extends ActionCalc {
     }
 
     @Override
-    public void execute(EntityInstance entity) {
-        PropertyInstance property = entity.getPropertyByName(resultPropertyName);
-        double newValue = arg1 * arg2;
-        property.setValue(newValue);
+    public void execute(Context context) {
+
     }
 }
