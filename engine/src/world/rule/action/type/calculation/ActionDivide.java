@@ -1,22 +1,29 @@
 package world.rule.action.type.calculation;
 
 import engine.prd.PRDAction;
+import validator.Validator;
 import world.Context;
+import world.definition.property.AbstractNumericPropertyDefinition;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
-import world.rule.action.ActionCalc;
 
 public class ActionDivide extends ActionCalc {
 
-    public ActionDivide(PRDAction prdObject) {
-        super(prdObject);
-        arg1 = Double.parseDouble(prdObject.getPRDDivide().getArg1());
-        arg2 = Double.parseDouble(prdObject.getPRDDivide().getArg2());
+    public ActionDivide(PRDAction prdObject, Context context) {
+        super(prdObject, context);
     }
 
     @Override
-    public void execute(Context context) {
-
+    public void execute(EntityInstance entityInstance, Context context) {
+        double val1 = (double) arg1.getValue();
+        double val2 = (double) arg2.getValue();
+        if(val2 != 0){
+            double result = val1 / val2;
+            PropertyInstance propertyInstance = entityInstance.getPropertyByName(resultPropertyName);
+            AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
+            if (Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()) {
+                entityInstance.getPropertyByName(resultPropertyName).setValue(result);
+            }
+        }
     }
-
 }

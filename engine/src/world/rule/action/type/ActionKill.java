@@ -12,7 +12,7 @@ public class ActionKill extends Action {
     }
 
     @Override
-    public void execute(Context context) {
-        //TODO decide how to implement
+    public void execute(EntityInstance entityInstance, Context context) {
+        context.removeEntity(entityInstance);
     }
 }

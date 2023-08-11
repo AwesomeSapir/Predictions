@@ -2,7 +2,6 @@ package world.rule.action.type.condition;
 
 import engine.prd.PRDAction;
 import world.Context;
-import world.instance.entity.EntityInstance;
 import world.rule.action.Action;
 
 import java.util.List;
@@ -13,9 +12,9 @@ public class ActionCondition extends Action {
     protected List<Action> actionsThen;
     protected List<Action> actionsElse;
 
-    public ActionCondition(PRDAction prdObject) {
+    public ActionCondition(PRDAction prdObject, Context context) {
         super(prdObject);
-        conditions = new MultiCondition(prdObject.getPRDCondition());
+        conditions = new MultiCondition(prdObject.getPRDCondition(), context);
         for (PRDAction prdThenAction : prdObject.getPRDThen().getPRDAction()) {
             actionsThen.add(createActionFromPRD(prdThenAction));
         }

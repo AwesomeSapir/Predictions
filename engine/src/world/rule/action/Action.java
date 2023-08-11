@@ -3,10 +3,10 @@ package world.rule.action;
 import engine.prd.PRDAction;
 import world.Context;
 import world.instance.entity.EntityInstance;
-import world.rule.action.type.ActionDecrease;
-import world.rule.action.type.ActionIncrease;
+import world.rule.action.type.value.ActionDecrease;
+import world.rule.action.type.value.ActionIncrease;
 import world.rule.action.type.ActionKill;
-import world.rule.action.type.ActionSet;
+import world.rule.action.type.value.ActionSet;
 import world.rule.action.type.calculation.ActionDivide;
 import world.rule.action.type.calculation.ActionMultiply;
 import world.rule.action.type.condition.ActionCondition;
@@ -21,7 +21,7 @@ public abstract class Action {
         entityName =  prdObject.getEntity();
     }
 
-    public abstract void execute(Context context);
+    public abstract void execute(EntityInstance entityInstance, Context context);
 
     public ActionType getType() {
         return type;
@@ -35,31 +35,31 @@ public abstract class Action {
         this.entityName = entityName;
     }
 
-    public static Action createActionFromPRD(PRDAction prdAction){
+    public static Action createActionFromPRD(PRDAction prdAction, Context context){
         ActionType type = ActionType.valueOf(prdAction.getType());
         Action action = null;
         switch (type) {
             case calculation:
                 if (prdAction.getPRDMultiply() != null) {
-                    action = new ActionMultiply(prdAction);
+                    action = new ActionMultiply(prdAction, context);
                 } else if (prdAction.getPRDDivide() != null) {
-                    action = new ActionDivide(prdAction);
+                    action = new ActionDivide(prdAction, context);
                 }
                 break;
             case condition:
-                action = new ActionCondition(prdAction);
+                action = new ActionCondition(prdAction, context);
                 break;
             case decrease:
-                action = new ActionDecrease(prdAction);
+                action = new ActionDecrease(prdAction, context);
                 break;
             case increase:
-                action = new ActionIncrease(prdAction);
+                action = new ActionIncrease(prdAction, context);
                 break;
             case kill:
                 action = new ActionKill(prdAction);
                 break;
             case set:
-                action = new ActionSet(prdAction);
+                action = new ActionSet(prdAction, context);
                 break;
         }
         return action;
