@@ -9,21 +9,19 @@ import world.instance.property.PropertyInstance;
 
 public class ActionDivide extends ActionCalc {
 
-    public ActionDivide(PRDAction prdObject, Context context) {
+    private final double val1 = (double)arg1.getValue();
+    private final double val2 = (double)arg2.getValue();
+
+    public ActionDivide(PRDAction prdObject, Context context) throws Exception {
         super(prdObject, context);
+        if (val2 == 0){
+            throw new IllegalArgumentException("Dividing by 0 is not a valid action.");
+        }
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
-        double val1 = (double) arg1.getValue();
-        double val2 = (double) arg2.getValue();
-        if(val2 != 0){
+    public void execute(EntityInstance entityInstance, Context context) throws Exception{
             double result = val1 / val2;
-            PropertyInstance propertyInstance = entityInstance.getPropertyByName(resultPropertyName);
-            AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
-            if (Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()) {
-                entityInstance.getPropertyByName(resultPropertyName).setValue(result);
-            }
-        }
+            entityInstance.getPropertyByName(resultPropertyName).setValue(result);
     }
 }

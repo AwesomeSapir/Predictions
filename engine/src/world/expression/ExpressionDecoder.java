@@ -8,23 +8,14 @@ import java.util.function.Predicate;
 
 public class ExpressionDecoder {
 
-    public static Expression decodeExpression(String expressionString, String propertyName, Context context) {
+    public static Expression decodeExpression(String expressionString, String propertyName, Context context) throws Exception{
         String[] words = expressionString.split("\\(");
         String firstWord = words[0];
         String secondWord = words[1].substring(0, words[1].length() - 1);
-
+        FunctionType type;
         try {
-            FunctionType type = FunctionType.valueOf(firstWord.toUpperCase());
+            type = FunctionType.valueOf(firstWord.toUpperCase());
             // Check and handle auxiliary function expression
-            switch (type) {
-                case ENVIRONMENT:
-                    return new EnvironmentExpression(context, secondWord);
-                case RANDOM:
-                    int range = Integer.parseInt(secondWord);
-                    return new RandomExpression(range);
-                default:
-                    throw new IllegalArgumentException("Function type not supported");
-            }
         } catch (IllegalArgumentException e) {
             if (context.getPrimaryEntityDefinition().getProperties().values().stream().anyMatch(new Predicate<PropertyDefinition>() {
                 @Override
@@ -34,9 +25,19 @@ public class ExpressionDecoder {
             })) {
                 return new EntityPropertyExpression(expressionString);
             } else {
-                PropertyType type = context.getPrimaryEntityDefinition().getProperties().get(propertyName).getType();
-                return new FreeValueExpression(expressionString, type);
+                PropertyType propertyType = context.getPrimaryEntityDefinition().getProperties().get(propertyName).getType();
+                return new FreeValueExpression(expressionString, propertyType);
             }
         }
+            //Function type
+            switch (type) {
+                case ENVIRONMENT:
+                    return new EnvironmentExpression(context, secondWord);
+                case RANDOM:
+                    int range = Integer.parseInt(secondWord);
+                    return new RandomExpression(range);
+                default:
+                    throw new IllegalArgumentException("Function type not supported");
+            }
     }
 }

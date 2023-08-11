@@ -9,19 +9,19 @@ import world.instance.property.PropertyInstance;
 
 public class ActionMultiply extends ActionCalc {
 
-    public ActionMultiply(PRDAction prdObject, Context context) {
+    private final double val1 = (double)arg1.getValue();
+    private final double val2 = (double)arg2.getValue();
+    private final double result = val1 * val2;
+
+    public ActionMultiply(PRDAction prdObject, Context context) throws Exception {
         super(prdObject, context);
+        if(!Validator.validate(Double.toString(result)).isWholeInteger(result).isValid() && type.toString().equalsIgnoreCase("DECIMAL")){
+            throw new IllegalArgumentException("Property " + resultPropertyName + " must get only integer values.");
+        }
     }
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        double val1 = (double) arg1.getValue();
-        double val2 = (double) arg2.getValue();
-        double result = val1 * val2;
-        PropertyInstance propertyInstance = entityInstance.getPropertyByName(resultPropertyName);
-        AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
-        if (Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()) {
-            entityInstance.getPropertyByName(resultPropertyName).setValue(result);
-        }
+        entityInstance.getPropertyByName(resultPropertyName).setValue(result);
     }
 }

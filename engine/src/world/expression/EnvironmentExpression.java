@@ -10,12 +10,13 @@ public class EnvironmentExpression extends AbstractExpression{
         super(ExpressionType.AUXILIARY_FUNCTION);
         this.context = context;
         this.envVarName = envVarName;
+        value = context.getEnvironmentPropertyInstance(envVarName);
     }
 
 
     @Override
-    public Object getValue() throws IllegalArgumentException {
-        PropertyInstance envVar = context.getEnvironmentPropertyInstance(envVarName);
-        return envVar.getValue();
+    public Object getValue(){
+        PropertyInstance returnedValue = (PropertyInstance)value;
+        return returnedValue.getValue();
     }
 }

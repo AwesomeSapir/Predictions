@@ -8,6 +8,8 @@ import java.util.Random;
 public abstract class AbstractExpression implements Expression{
     private final ExpressionType type;
 
+    protected Object value;
+
     public AbstractExpression(ExpressionType type) {
         this.type = type;
     }

@@ -9,7 +9,7 @@ import world.instance.property.PropertyInstance;
 
 public class ActionSet extends ActionValue {
 
-    public ActionSet(PRDAction prdObject, Context context) {
+    public ActionSet(PRDAction prdObject, Context context)throws Exception {
         super(prdObject, context);
     }
 
@@ -19,12 +19,10 @@ public class ActionSet extends ActionValue {
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
 
         if(propertyInstance.getPropertyDefinition().isNumeric()){
-            AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
-            if(!Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()){
-                return;
+            if(!Validator.validate(Double.toString(result)).isWholeInteger(result).isValid() && type.toString().equalsIgnoreCase("DECIMAL")){
+                throw new IllegalArgumentException("Property " + propertyName + " must get only integer values.");
             }
         }
-
         propertyInstance.setValue(result);
     }
 }
