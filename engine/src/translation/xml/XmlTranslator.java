@@ -2,6 +2,7 @@ package translation.xml;
 
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
+import org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 import validator.Validator;
 import world.World;
 import world.definition.entity.EntityDefinition;
@@ -129,7 +130,11 @@ public class XmlTranslator implements Translator{
     public SingleCondition getSingleCondition(PRDCondition prdObject) throws InvalidClassException {
         Operator operator = Operator.fromDRP(prdObject.getOperator());
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getValue(), primaryEntityDefinition.getProperties().get(propertyName));
+        PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(propertyName);
+        if(propertyDefinition == null){
+            throw new IllegalArgumentException("Property '" + propertyName + "' referenced in SingleCondition does not exist.");
+        }
+        Expression value = getExpression(prdObject.getValue(), propertyDefinition);
         return new SingleCondition(operator, propertyName, value);
     }
 
@@ -196,6 +201,9 @@ public class XmlTranslator implements Translator{
             switch (type) {
                 case ENVIRONMENT:
                     PropertyInstance envProperty = activeEnvironment.getProperty(secondWord);
+                    if(envProperty == null){
+                        throw new UnsupportedOperationException("There is not environment variable with the name '" + secondWord + "'.");
+                    }
                     if(!Validator
                             .validate(envProperty.getPropertyDefinition().getType().toString())
                             .isSamePropertyType(propertyDefinition.getType())
@@ -204,7 +212,13 @@ public class XmlTranslator implements Translator{
                     }
                     return new EnvironmentExpression(envProperty);
                 case RANDOM:
-                    int range = Integer.parseInt(secondWord);
+                    int range;
+                    try {
+                        range = Integer.parseInt(secondWord);
+                    }
+                    catch (NumberFormatException e){
+                        throw new UnsupportedOperationException("The auxiliary function Random must get only integer values.");
+                    }
                     return new RandomExpression(range);
                 default:
                     throw new UnsupportedOperationException("Function type not supported");
@@ -212,6 +226,12 @@ public class XmlTranslator implements Translator{
         } catch (IllegalArgumentException e) {
             if (primaryEntityDefinition.getProperties().values().stream().anyMatch(
                     property -> property.getName().equals(expressionString))) {
+                if(!Validator
+                        .validate(primaryEntityDefinition.getProperties().get(expressionString).getType().toString())
+                        .isSamePropertyType(propertyDefinition.getType())
+                        .isValid()){
+                    throw new InvalidClassException("Properties not of same type: " + primaryEntityDefinition.getProperties().get(expressionString).getType() + " - " + propertyDefinition.getType());
+                }
                 return new EntityPropertyExpression(expressionString);
             } else {
                 PropertyType type = propertyDefinition.getType();
@@ -235,6 +255,16 @@ public class XmlTranslator implements Translator{
 
     public Action getAction(PRDAction prdObject) throws InvalidClassException {
         ActionType type = ActionType.valueOf(prdObject.getType());
+        String entityName = prdObject.getEntity();
+        if(!primaryEntityDefinition.getName().equals(entityName)){
+            throw new IllegalArgumentException("Entity '" + entityName + "' referenced in '" + type + "' action does not exist.");
+        }
+        if(!type.toString().equals("condition") && !type.toString().equals("kill")) {
+            PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
+            if (propertyDefinition == null) {
+                throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");
+            }
+        }
         Action action = null;
         switch (type) {
             case calculation:
@@ -265,6 +295,10 @@ public class XmlTranslator implements Translator{
         Map<String, PropertyDefinition> properties = new HashMap<>();
         for (PRDProperty prdProperty : prdObject.getPRDProperties().getPRDProperty()) {
             PropertyDefinition propertyDefinition = getPropertyDefinition(prdProperty);
+            String propertyName = propertyDefinition.getName();
+            if(properties.get(propertyName) != null){
+                throw new IllegalArgumentException("Duplicate property name '" + propertyName + "' within entity '" + name + "'.");
+            }
             properties.put(propertyDefinition.getName(), propertyDefinition);
         }
         return new EntityDefinition(name, population, properties);
@@ -273,9 +307,13 @@ public class XmlTranslator implements Translator{
     public EnvironmentManager getEnvironmentManager(PRDEvironment prdObject){
         Map<String, PropertyDefinition> properties = new HashMap<>();
         for (PRDEnvProperty prdProperty : prdObject.getPRDEnvProperty()) {
+            String name =prdProperty.getPRDName();
+            if(properties.get(name) != null){
+                throw new IllegalArgumentException("Duplicate environment variable name '" + name + "'.");
+            }
             PropertyType type = PropertyType.valueOf(prdProperty.getType().toUpperCase());
             Range range = getRange(prdProperty.getPRDRange());
-            PropertyDefinition propertyDefinition = getPropertyDefinitionByType(prdProperty.getPRDName(), type, null, range, true);
+            PropertyDefinition propertyDefinition = getPropertyDefinitionByType(name, type, null, range, true);
             properties.put(prdProperty.getPRDName(), propertyDefinition);
         }
         return new EnvironmentManager(properties);
