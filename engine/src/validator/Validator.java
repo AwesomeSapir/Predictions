@@ -1,5 +1,6 @@
 package validator;
 
+import world.definition.property.PropertyType;
 import world.type.Range;
 
 public class Validator {
@@ -49,6 +50,22 @@ public class Validator {
         return this;
     }
 
+    public Validator isValidString(){
+        String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !?,_-().";
+        int maxStringSize = 50;
+
+        for (char c : input.toCharArray()) {
+            if (CHARACTERS.indexOf(c) == -1) {
+                isValid = false;
+                break;
+            }
+        }
+        if (input.length() > maxStringSize){
+            isValid = false;
+        }
+        return this;
+    }
+
     public Validator isInRange(Range range){
         if (isDouble().isValid) {
             double value = Double.parseDouble(input);
@@ -70,6 +87,13 @@ public class Validator {
 
     public Validator isOnlyLetters(){
         if(!input.matches("^[a-zA-Z]+$")){
+            isValid = false;
+        }
+        return this;
+    }
+
+    public Validator isSamePropertyType(PropertyType type){
+        if(!input.equals(type.toString())){
             isValid = false;
         }
         return this;
