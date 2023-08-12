@@ -20,9 +20,9 @@ public class ActiveEnvironment {
         }
     }
 
-    public PropertyInstance getProperty(String name){
+    public PropertyInstance getProperty(String name) throws UnsupportedOperationException{
         if(!envVariables.containsKey(name)) {
-            throw new IllegalArgumentException("Can't find env variable with name " + name);
+            throw new UnsupportedOperationException("Can't find env variable with name " + name);
         }
         return envVariables.get(name);
     }

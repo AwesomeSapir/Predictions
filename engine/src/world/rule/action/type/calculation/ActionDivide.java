@@ -1,11 +1,8 @@
 package world.rule.action.type.calculation;
 
-import validator.Validator;
 import world.Context;
-import world.definition.property.AbstractNumericPropertyDefinition;
 import world.expression.Expression;
 import world.instance.entity.EntityInstance;
-import world.instance.property.PropertyInstance;
 import world.rule.action.ActionType;
 
 public class ActionDivide extends ActionCalc {
@@ -20,11 +17,9 @@ public class ActionDivide extends ActionCalc {
         double val2 = (double) arg2.getValue();
         if(val2 != 0){
             double result = val1 / val2;
-            PropertyInstance propertyInstance = entityInstance.getPropertyByName(resultPropertyName);
-            AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
-            if (Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()) {
-                entityInstance.getPropertyByName(resultPropertyName).setValue(result);
-            }
+            entityInstance.getPropertyByName(resultPropertyName).setValue(result);
+        } else {
+            throw new IllegalArgumentException("Can't divide by zero");
         }
     }
 }

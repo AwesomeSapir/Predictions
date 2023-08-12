@@ -92,9 +92,26 @@ public class Validator {
         return this;
     }
 
-    public Validator isSamePropertyType(PropertyType type){
-        if(!input.equals(type.toString())){
-            isValid = false;
+    public Validator isCompatibleWith(PropertyType typeCompareWith, String expToCompare){
+        if(input.equals(typeCompareWith.toString())) {
+            return this;
+        }
+
+        switch (typeCompareWith){
+            case DECIMAL:
+            case STRING:
+                isValid = false;
+                break;
+            case BOOLEAN:
+                if(!expToCompare.equals("true") && !expToCompare.equals("false")){
+                    isValid = false;
+                }
+                break;
+            case FLOAT:
+                if(!input.equals(PropertyType.DECIMAL.toString())){
+                    isValid = false;
+                }
+                break;
         }
         return this;
     }

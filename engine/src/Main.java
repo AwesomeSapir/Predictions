@@ -1,7 +1,7 @@
 public class Main {
 
-    //TODO Expression class
-    //TODO Xml Translator (Take every constructor prdObject and put in method)
+    //TODO Expression class                                                     - V
+    //TODO Xml Translator (Take every constructor prdObject and put in method)  - V
     //TODO UI
     //TODO Exceptions in constructors and methods
     //TODO DTO

@@ -2,7 +2,6 @@ package translation.xml;
 
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
-import org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 import validator.Validator;
 import world.World;
 import world.definition.entity.EntityDefinition;
@@ -201,12 +200,9 @@ public class XmlTranslator implements Translator{
             switch (type) {
                 case ENVIRONMENT:
                     PropertyInstance envProperty = activeEnvironment.getProperty(secondWord);
-                    if(envProperty == null){
-                        throw new UnsupportedOperationException("There is not environment variable with the name '" + secondWord + "'.");
-                    }
                     if(!Validator
                             .validate(envProperty.getPropertyDefinition().getType().toString())
-                            .isSamePropertyType(propertyDefinition.getType())
+                            .isCompatibleWith(propertyDefinition.getType(), secondWord)
                             .isValid()){
                         throw new InvalidClassException("Properties not of same type: " + envProperty.getPropertyDefinition().getType() + " - " + propertyDefinition.getType());
                     }
@@ -228,7 +224,7 @@ public class XmlTranslator implements Translator{
                     property -> property.getName().equals(expressionString))) {
                 if(!Validator
                         .validate(primaryEntityDefinition.getProperties().get(expressionString).getType().toString())
-                        .isSamePropertyType(propertyDefinition.getType())
+                        .isCompatibleWith(propertyDefinition.getType(), expressionString)
                         .isValid()){
                     throw new InvalidClassException("Properties not of same type: " + primaryEntityDefinition.getProperties().get(expressionString).getType() + " - " + propertyDefinition.getType());
                 }

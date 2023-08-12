@@ -1,6 +1,7 @@
 package world.rule.action.type.condition;
 
 import world.Context;
+import world.instance.entity.EntityInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,10 +18,10 @@ public class MultiCondition implements Condition {
     }
 
     @Override
-    public boolean evaluate(Context context) {
+    public boolean evaluate(EntityInstance entityInstance, Context context) {
         Boolean overallResult = null;
         for (Condition condition : subConditions){
-            boolean result = condition.evaluate(context);
+            boolean result = condition.evaluate(entityInstance, context);
             if (overallResult == null){
                 overallResult = result;
             }

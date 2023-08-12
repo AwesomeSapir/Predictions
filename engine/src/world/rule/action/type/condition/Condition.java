@@ -5,5 +5,5 @@ import world.instance.entity.EntityInstance;
 
 public interface Condition {
 
-    boolean evaluate(Context context);
+    boolean evaluate(EntityInstance entityInstance, Context context);
 }

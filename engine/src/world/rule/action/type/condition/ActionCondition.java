@@ -24,7 +24,7 @@ public class ActionCondition extends Action {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        if(conditions.evaluate(context)){
+        if(conditions.evaluate(entityInstance, context)){
             for (Action action : actionsThen) {
                 action.execute(entityInstance, context);
             }
