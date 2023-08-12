@@ -26,7 +26,6 @@ import world.rule.action.type.value.ActionSet;
 import world.termination.BySecond;
 import world.termination.ByTicks;
 import world.termination.Termination;
-import world.termination.TerminationCondition;
 import world.type.Range;
 import world.value.generator.ValueGenerator;
 import world.value.generator.ValueGeneratorFactory;
@@ -81,11 +80,17 @@ public class XmlTranslator implements Translator{
     public Rule getRule(PRDRule prdObject) throws InvalidClassException {
         List<Action> actions = new ArrayList<>();
         String name = prdObject.getName();
-        Activation activation = new Activation(prdObject.getPRDActivation());
+        Activation activation = getActivation(prdObject.getPRDActivation());
         for (PRDAction prdAction : prdObject.getPRDActions().getPRDAction()) {
             actions.add(getAction(prdAction));
         }
         return new Rule(name, activation, actions);
+    }
+
+    public Activation getActivation(PRDActivation prdObject){
+        Integer ticks = prdObject.getTicks();
+        Double probability = prdObject.getProbability();
+        return new Activation(ticks, probability);
     }
 
     public ActionCondition getActionCondition(PRDAction prdObject) throws InvalidClassException {
@@ -369,15 +374,16 @@ public class XmlTranslator implements Translator{
     }
 
     public Termination getTermination(PRDTermination prdObject){
-        List<TerminationCondition> terminationConditions = new ArrayList<>();
+        ByTicks byTicks = null;
+        BySecond bySecond = null;
         for (Object terminationCondition : prdObject.getPRDByTicksOrPRDBySecond()) {
             if (terminationCondition.getClass() == PRDByTicks.class){
-                terminationConditions.add(getByTicks((PRDByTicks) terminationCondition));
+                byTicks = getByTicks((PRDByTicks) terminationCondition);
             } else if (terminationCondition.getClass() == PRDBySecond.class) {
-                terminationConditions.add(getBySecond((PRDBySecond) terminationCondition));
+                bySecond = getBySecond((PRDBySecond) terminationCondition);
             }
         }
-        return new Termination(terminationConditions);
+        return new Termination(byTicks, bySecond);
     }
 
     public ByTicks getByTicks(PRDByTicks prdObject){

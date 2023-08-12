@@ -1,13 +1,26 @@
 package world.termination;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.sun.istack.internal.Nullable;
 
 public class Termination {
-    protected List<TerminationCondition> terminationConditions = new ArrayList<>();
 
-    public Termination(Collection<TerminationCondition> terminationConditions) {
-        this.terminationConditions.addAll(terminationConditions);
+    private final BySecond bySecond;
+    private final ByTicks byTicks;
+
+    public Termination(@Nullable ByTicks byTicks, @Nullable BySecond bySecond) {
+        this.bySecond = bySecond;
+        this.byTicks = byTicks;
+    }
+
+    public boolean isMet(int ticks, long seconds){
+        boolean isMetByTicks = false;
+        boolean isMetBySeconds = false;
+        if(bySecond != null){
+            isMetBySeconds = bySecond.isMet(seconds);
+        }
+        if(byTicks != null){
+            isMetByTicks = byTicks.isMet(ticks);
+        }
+        return isMetBySeconds || isMetByTicks;
     }
 }

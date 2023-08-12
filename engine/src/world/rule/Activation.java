@@ -1,30 +1,35 @@
 package world.rule;
 
-import engine.prd.PRDActivation;
+import com.sun.istack.internal.Nullable;
+
+import java.util.Random;
 
 public class Activation {
 
+    private final Random random = new Random();
     protected int ticks;
     protected double probability;
 
-    public Activation(PRDActivation prdObject) {
-        ticks = prdObject.getTicks();
-        probability = prdObject.getProbability();
+    public Activation(@Nullable Integer ticks, @Nullable Double probability) {
+        if(ticks != null){
+            this.ticks = ticks;
+        } else {
+            this.ticks = 1;
+        }
+
+        if(probability != null) {
+            this.probability = probability;
+        }else {
+            this.probability = 1;
+        }
     }
 
-    public int getTicks() {
-        return ticks;
+    public boolean canBeActivated(int ticks){
+        return (ticks % this.ticks == 0)  &&  sufficientProbability();
     }
 
-    public void setTicks(int ticks) {
-        this.ticks = ticks;
-    }
-
-    public double getProbability() {
-        return probability;
-    }
-
-    public void setProbability(double probability) {
-        this.probability = probability;
+    private boolean sufficientProbability(){
+        double randomProbability = random.nextDouble();
+        return randomProbability < this.probability;
     }
 }

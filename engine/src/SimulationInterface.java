@@ -1,14 +1,10 @@
-import javafx.util.Pair;
-
-import java.util.Collection;
+import java.util.Date;
 
 public interface SimulationInterface {
 
-    Object loadXml(String filepath);
-    Object getSimulationDetails();
-    Object getEnvironmentDefinitions();
-    Object setEnvironmentValues(Collection<Pair<String, Object>> envValues);
-    Object runSimulation();
-    Object getSimulations();
+    void run(int id, Date date);
 
+    int getId();
+
+    Date getDate();
 }
