@@ -1,14 +1,14 @@
 package world.rule.action.type;
 
-import engine.prd.PRDAction;
 import world.Context;
 import world.instance.entity.EntityInstance;
 import world.rule.action.Action;
+import world.rule.action.ActionType;
 
 public class ActionKill extends Action {
 
-    public ActionKill(PRDAction prdObject) {
-        super(prdObject);
+    public ActionKill(ActionType type, String entityName) {
+        super(type, entityName);
     }
 
     @Override

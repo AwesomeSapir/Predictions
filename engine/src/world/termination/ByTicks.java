@@ -1,12 +1,10 @@
 package world.termination;
 
-import engine.prd.PRDByTicks;
-
 public class ByTicks implements TerminationCondition{
     protected int count;
 
-    public ByTicks(PRDByTicks prdObject) {
-        count = prdObject.getCount();
+    public ByTicks(int count) {
+        this.count = count;
     }
 
     public int getCount() {

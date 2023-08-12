@@ -1,7 +1,5 @@
 package world;
 
-import engine.prd.PRDRule;
-import engine.prd.PRDWorld;
 import world.definition.entity.EntityDefinition;
 import world.instance.entity.EntityInstance;
 import world.instance.environment.ActiveEnvironment;
@@ -24,13 +22,10 @@ public class World implements Context {
     protected Map<String, Rule> rules;
     protected Termination termination;
 
-    public World(PRDWorld prdObject) {
-        // Environment initialization
-        environmentManager = new EnvironmentManager(prdObject.getPRDEvironment());
+    public World(EnvironmentManager environmentManager, EntityDefinition primaryEntityDefinition, Map<String, Rule> rules, Termination termination) {
         activeEnvironment = environmentManager.createActiveEnvironment();
         activeEnvironment.initProperties(environmentManager.getVariables());
 
-        primaryEntityDefinition = new EntityDefinition(prdObject.getPRDEntities().getPRDEntity().get(0));
         entityInstances = new ArrayList<>();
 
         // Entity instances initialization
@@ -40,11 +35,8 @@ public class World implements Context {
             entityInstances.add(entityInstance);
         }
 
-        // Rule initialization
-        for (PRDRule rule : prdObject.getPRDRules().getPRDRule()) {
-            rules.put(rule.getName(), new Rule(rule));
-        }
-        termination = new Termination(prdObject.getPRDTermination());
+        this.rules = rules;
+
     }
 
     public Map<String, Rule> getRules() {

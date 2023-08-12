@@ -1,16 +1,17 @@
 package world.rule.action.type.value;
 
-import engine.prd.PRDAction;
 import validator.Validator;
 import world.Context;
 import world.definition.property.AbstractNumericPropertyDefinition;
+import world.expression.Expression;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
+import world.rule.action.ActionType;
 
 public class ActionDecrease extends ActionValue {
 
-    public ActionDecrease(PRDAction prdObject, Context context) {
-        super(prdObject, context);
+    public ActionDecrease(ActionType type, String entityName, String propertyName, Expression value) {
+        super(type, entityName, propertyName, value);
     }
 
     @Override

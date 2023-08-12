@@ -1,10 +1,9 @@
 package world.rule;
 
-import engine.prd.PRDAction;
-import engine.prd.PRDRule;
 import world.rule.action.Action;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Rule {
@@ -13,12 +12,10 @@ public class Rule {
     protected Activation activation;
     protected List<Action> actions = new ArrayList<>();
 
-    public Rule(PRDRule prdObject) {
-        name = prdObject.getName();
-        activation = new Activation(prdObject.getPRDActivation());
-        for (PRDAction prdAction : prdObject.getPRDActions().getPRDAction()) {
-            actions.add(Action.createActionFromPRD(prdAction));
-        }
+    public Rule(String name, Activation activation, Collection<Action> actions) {
+        this.name = name;
+        this.activation = activation;
+        this.actions.addAll(actions);
     }
 
     public String getName() {

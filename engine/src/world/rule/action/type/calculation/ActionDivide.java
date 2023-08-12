@@ -1,16 +1,17 @@
 package world.rule.action.type.calculation;
 
-import engine.prd.PRDAction;
 import validator.Validator;
 import world.Context;
 import world.definition.property.AbstractNumericPropertyDefinition;
+import world.expression.Expression;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
+import world.rule.action.ActionType;
 
 public class ActionDivide extends ActionCalc {
 
-    public ActionDivide(PRDAction prdObject, Context context) {
-        super(prdObject, context);
+    public ActionDivide(ActionType type, String entityName, String resultPropertyName, Expression arg1, Expression arg2) {
+        super(type, entityName, resultPropertyName, arg1, arg2);
     }
 
     @Override

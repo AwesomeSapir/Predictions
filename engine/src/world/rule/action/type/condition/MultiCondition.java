@@ -1,33 +1,19 @@
 package world.rule.action.type.condition;
 
-import engine.prd.PRDCondition;
 import world.Context;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MultiCondition implements Condition {
 
     protected List<Condition> subConditions = new ArrayList<>();
-    protected Logical logical = Logical.and;
+    protected Logical logical;
 
-    public MultiCondition(PRDCondition prdObject, Context context) {
-        Singularity singularity = Singularity.valueOf(prdObject.getSingularity());
-        if (singularity == Singularity.multiple){
-            logical = Logical.valueOf(prdObject.getLogical());
-            for (PRDCondition prdCondition : prdObject.getPRDCondition()){
-                switch (Singularity.valueOf(prdCondition.getSingularity())) {
-                    case single:
-                        subConditions.add(new SingleCondition(prdObject, context));
-                        break;
-                    case multiple:
-                        subConditions.add(new MultiCondition(prdCondition, context));
-                        break;
-                }
-            }
-        } else {
-            subConditions.add(new SingleCondition(prdObject, context));
-        }
+    public MultiCondition(Logical logical, Collection<Condition> subConditions) {
+        this.logical = logical;
+        this.subConditions.addAll(subConditions);
     }
 
     @Override
