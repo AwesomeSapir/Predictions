@@ -1,27 +1,28 @@
 package world.rule.action.type.calculation;
 
-import engine.prd.PRDAction;
 import validator.Validator;
 import world.Context;
 import world.definition.property.AbstractNumericPropertyDefinition;
+import world.expression.Expression;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
+import world.rule.action.ActionType;
 
 public class ActionMultiply extends ActionCalc {
 
-    private final double val1 = (double)arg1.getValue();
-    private final double val2 = (double)arg2.getValue();
-    private final double result = val1 * val2;
-
-    public ActionMultiply(PRDAction prdObject, Context context) throws Exception {
-        super(prdObject, context);
-        if(!Validator.validate(Double.toString(result)).isWholeInteger(result).isValid() && type.toString().equalsIgnoreCase("DECIMAL")){
-            throw new IllegalArgumentException("Property " + resultPropertyName + " must get only integer values.");
-        }
+    public ActionMultiply(ActionType type, String entityName, String resultPropertyName, Expression arg1, Expression arg2) {
+        super(type, entityName, resultPropertyName, arg1, arg2);
     }
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        entityInstance.getPropertyByName(resultPropertyName).setValue(result);
+        double val1 = (double) arg1.getValue();
+        double val2 = (double) arg2.getValue();
+        double result = val1 * val2;
+        PropertyInstance propertyInstance = entityInstance.getPropertyByName(resultPropertyName);
+        AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
+        if (Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()) {
+            entityInstance.getPropertyByName(resultPropertyName).setValue(result);
+        }
     }
 }

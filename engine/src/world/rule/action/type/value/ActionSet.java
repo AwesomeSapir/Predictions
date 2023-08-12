@@ -1,16 +1,17 @@
 package world.rule.action.type.value;
 
-import engine.prd.PRDAction;
 import validator.Validator;
 import world.Context;
 import world.definition.property.AbstractNumericPropertyDefinition;
+import world.expression.Expression;
 import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
+import world.rule.action.ActionType;
 
 public class ActionSet extends ActionValue {
 
-    public ActionSet(PRDAction prdObject, Context context)throws Exception {
-        super(prdObject, context);
+    public ActionSet(ActionType type, String entityName, String propertyName, Expression value) {
+        super(type, entityName, propertyName, value);
     }
 
     @Override
@@ -19,10 +20,12 @@ public class ActionSet extends ActionValue {
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
 
         if(propertyInstance.getPropertyDefinition().isNumeric()){
-            if(!Validator.validate(Double.toString(result)).isWholeInteger(result).isValid() && type.toString().equalsIgnoreCase("DECIMAL")){
-                throw new IllegalArgumentException("Property " + propertyName + " must get only integer values.");
+            AbstractNumericPropertyDefinition<?> numericPropertyDefinition = (AbstractNumericPropertyDefinition<?>) propertyInstance.getPropertyDefinition();
+            if(!Validator.validate(Double.toString(result)).isInRange(numericPropertyDefinition.getRange()).isValid()){
+                return;
             }
         }
+
         propertyInstance.setValue(result);
     }
 }

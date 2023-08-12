@@ -1,7 +1,5 @@
 package world;
 
-import engine.prd.PRDRule;
-import engine.prd.PRDWorld;
 import world.definition.entity.EntityDefinition;
 import world.instance.entity.EntityInstance;
 import world.instance.environment.ActiveEnvironment;
@@ -20,31 +18,17 @@ public class World implements Context {
     protected EnvironmentManager environmentManager;
     protected ActiveEnvironment activeEnvironment;
     protected EntityDefinition primaryEntityDefinition;
-    protected List<EntityInstance> entityInstances;
+    protected List<EntityInstance> entityInstances = new ArrayList<>();
     protected Map<String, Rule> rules;
     protected Termination termination;
 
-    public World(PRDWorld prdObject) {
-        // Environment initialization
-        environmentManager = new EnvironmentManager(prdObject.getPRDEvironment());
-        activeEnvironment = environmentManager.createActiveEnvironment();
-        activeEnvironment.initProperties(environmentManager.getVariables());
-
-        primaryEntityDefinition = new EntityDefinition(prdObject.getPRDEntities().getPRDEntity().get(0));
-        entityInstances = new ArrayList<>();
-
-        // Entity instances initialization
-        for (int i = 0; i < primaryEntityDefinition.getPopulation(); i++) {
-            EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition, i + 1);
-            entityInstance.initProperties();
-            entityInstances.add(entityInstance);
-        }
-
-        // Rule initialization
-        for (PRDRule rule : prdObject.getPRDRules().getPRDRule()) {
-            rules.put(rule.getName(), new Rule(rule));
-        }
-        termination = new Termination(prdObject.getPRDTermination());
+    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityDefinition primaryEntityDefinition, Collection<EntityInstance> entityInstances, Map<String, Rule> rules, Termination termination) {
+        this.environmentManager = environmentManager;
+        this.activeEnvironment = activeEnvironment;
+        this.primaryEntityDefinition = primaryEntityDefinition;
+        this.entityInstances.addAll(entityInstances);
+        this.rules = rules;
+        this.termination = termination;
     }
 
     public Map<String, Rule> getRules() {
