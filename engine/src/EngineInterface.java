@@ -13,10 +13,11 @@ public interface EngineInterface {
     Collection<DTOEntity> getPastEntities(int id);
     Collection<DTOProperty> getPastEntityProperties(int id, String name);
     DTOSimulationHistogram getValuesForPropertyHistogram(int id, String name);
-    Collection<DTOEnvironmentVariable> getEnvironmentDefinitions();
-    void setEnvironmentValues(Collection<Pair<String, Object>> envValues);
-    DTOSimulationResult runSimulation();
+    Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException;
+    Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException;
+    void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException;
+    DTOSimulationResult runSimulation() throws NullPointerException;
     Collection<DTOSimulation> getPastSimulations();
-    DTOSimulationDetails getSimulationDetails();
+    DTOSimulationDetails getSimulationDetails() throws NullPointerException;
 
 }

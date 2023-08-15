@@ -60,6 +60,11 @@ public class Simulation implements SimulationInterface {
     }
 
     @Override
+    public Object getEnvironmentValue(String name) {
+        return world.getEnvironmentPropertyInstance(name).getValue();
+    }
+
+    @Override
     public EntityDefinition getPrimaryEntityDefinition() {
         return world.getPrimaryEntityDefinition();
     }

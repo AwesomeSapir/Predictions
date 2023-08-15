@@ -16,6 +16,8 @@ public interface SimulationInterface {
 
     void setEnvironmentValue(String name, Object value);
 
+    Object getEnvironmentValue(String name);
+
     EntityDefinition getPrimaryEntityDefinition();
 
     World getWorld();

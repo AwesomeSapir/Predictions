@@ -35,10 +35,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.InvalidClassException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class XmlTranslator implements Translator{
 
@@ -76,7 +73,7 @@ public class XmlTranslator implements Translator{
 
         termination = getTermination(prdWorld.getPRDTermination());
 
-        Map<String, Rule> rules = new HashMap<>();
+        Map<String, Rule> rules = new LinkedHashMap<>(); //TODO check order
         for (PRDRule rule : prdWorld.getPRDRules().getPRDRule()) {
             rules.put(rule.getName(), getRule(rule));
         }

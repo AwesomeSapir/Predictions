@@ -2,19 +2,19 @@ package dto.detail;
 
 public class DTOTermination {
 
-    private final long seconds;
-    private final int ticks;
+    private final Long seconds;
+    private final Integer ticks;
 
-    public DTOTermination(long seconds, int ticks) {
+    public DTOTermination(Long seconds, Integer ticks) {
         this.seconds = seconds;
         this.ticks = ticks;
     }
 
-    public long getSeconds() {
+    public Long getSeconds() {
         return seconds;
     }
 
-    public int getTicks() {
+    public Integer getTicks() {
         return ticks;
     }
 }

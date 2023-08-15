@@ -21,7 +21,7 @@ import java.util.*;
 public class Engine implements EngineInterface {
 
     private final Map<Integer, Simulation> pastSimulations = new HashMap<>();
-    private Simulation simulation;
+    private Simulation simulation = null;
     private int idCounter = 1;
 
 
@@ -49,11 +49,11 @@ public class Engine implements EngineInterface {
         return entityPopulations;
     }
 
-    private DTOEntity getEntity(EntityDefinition entityDefinition){
+    private DTOEntity getEntity(EntityDefinition entityDefinition) {
         return new DTOEntity(entityDefinition.getName(), entityDefinition.getPopulation(), getProperties(entityDefinition));
     }
 
-    private Collection<DTOEntity> getEntities(Simulation simulation){
+    private Collection<DTOEntity> getEntities(Simulation simulation) {
         List<DTOEntity> entities = new ArrayList<>();
         EntityDefinition entityDefinition = simulation.getPrimaryEntityDefinition();
         entities.add(getEntity(entityDefinition));
@@ -65,11 +65,11 @@ public class Engine implements EngineInterface {
         return getEntities(pastSimulations.get(id));
     }
 
-    private Collection<DTOProperty> getProperties(EntityDefinition entityDefinition){
+    private Collection<DTOProperty> getProperties(EntityDefinition entityDefinition) {
         List<DTOProperty> properties = new ArrayList<>();
-        for (PropertyDefinition propertyDefinition : entityDefinition.getProperties().values()){
+        for (PropertyDefinition propertyDefinition : entityDefinition.getProperties().values()) {
             DTORange range = null;
-            if(propertyDefinition.getRange() != null) {
+            if (propertyDefinition.getRange() != null) {
                 range = new DTORange(propertyDefinition.getRange().from(), propertyDefinition.getRange().to());
             }
             properties.add(new DTOProperty(propertyDefinition.getName(), propertyDefinition.getType().toString(), range, propertyDefinition.isRandomInit()));
@@ -85,18 +85,19 @@ public class Engine implements EngineInterface {
     @Override
     public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String name) {
         List<Object> values = new ArrayList<>();
-        for (EntityInstance entityInstance : pastSimulations.get(id).getWorld().getPrimaryEntityInstances()){
+        for (EntityInstance entityInstance : pastSimulations.get(id).getWorld().getPrimaryEntityInstances()) {
             values.add(entityInstance.getPropertyByName(name).getValue());
         }
-        return new DTOSimulationHistogram(values);
+        return new DTOSimulationHistogram(values, name);
     }
 
     @Override
-    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() {
+    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException{
+        isSimulationLoaded();
         List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
-        for(PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()){
+        for (PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()) {
             DTORange range = null;
-            if(propertyDefinition.getRange() != null) {
+            if (propertyDefinition.getRange() != null) {
                 range = new DTORange(propertyDefinition.getRange().from(), propertyDefinition.getRange().to());
             }
             environmentVariables.add(new DTOEnvironmentVariable(propertyDefinition.getName(), propertyDefinition.getType().toString(), range));
@@ -105,7 +106,19 @@ public class Engine implements EngineInterface {
     }
 
     @Override
-    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) {
+    public Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException {
+        isSimulationLoaded();
+        List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
+        for(PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()){
+            Object value = simulation.getEnvironmentValue(propertyDefinition.getName());
+            environmentVariables.add(new DTOEnvironmentVariable(propertyDefinition.getName(), value));
+        }
+        return environmentVariables;
+    }
+
+    @Override
+    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException{
+        isSimulationLoaded();
         List<Pair<String, Object>> values = new ArrayList<>(envValues);
         for (Pair<String, Object> envVar : values) {
             simulation.setEnvironmentValue(envVar.getKey(), envVar.getValue());
@@ -113,43 +126,51 @@ public class Engine implements EngineInterface {
     }
 
     @Override
-    public DTOSimulationResult runSimulation() {
-        if (simulation != null) {
-            simulation.run(idCounter);
-            Termination termination = simulation.getTermination();
-            archiveSimulation();
-            return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), simulation.getId());
-        } else {
-            throw new IllegalStateException("No simulation loaded, can't run");
-        }
+    public DTOSimulationResult runSimulation() throws NullPointerException {
+        isSimulationLoaded();
+
+        simulation.run(idCounter);
+        Termination termination = simulation.getTermination();
+        archiveSimulation();
+        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), simulation.getId());
     }
 
     @Override
     public Collection<DTOSimulation> getPastSimulations() {
         List<DTOSimulation> simulations = new ArrayList<>();
-        for (Simulation simulation : pastSimulations.values()){
+        for (Simulation simulation : pastSimulations.values()) {
             simulations.add(new DTOSimulation(simulation.getDate(), simulation.getId()));
         }
         return simulations;
     }
 
     @Override
-    public DTOSimulationDetails getSimulationDetails() {
+    public DTOSimulationDetails getSimulationDetails() throws NullPointerException {
+        isSimulationLoaded();
+
         List<DTORule> rules = new ArrayList<>();
-        for (Rule rule : simulation.getWorld().getRules().values()){
+        for (Rule rule : simulation.getWorld().getRules().values()) {
             List<String> actionNames = new ArrayList<>();
-            for (Action action : rule.getActions()){
+            for (Action action : rule.getActions()) {
                 actionNames.add(action.getType().toString());
             }
             rules.add(new DTORule(rule.getName(), rule.getActivation().getTicks(), rule.getActivation().getProbability(), actionNames));
         }
 
-        DTOTermination termination = new DTOTermination(simulation.getTermination().getBySecond().getCount(), (int) simulation.getTermination().getByTicks().getCount());
+        DTOTermination termination = new DTOTermination(
+                Optional.ofNullable(simulation.getTermination().getBySecond()).map(o -> o.getCount()).orElse(null),
+                Optional.ofNullable(simulation.getTermination().getByTicks()).map(o -> (int) o.getCount()).orElse(null));
         return new DTOSimulationDetails(getEntities(simulation), rules, termination);
     }
 
     private void archiveSimulation() {
         pastSimulations.put(simulation.getId(), simulation);
         idCounter++;
+    }
+
+    private void isSimulationLoaded() throws NullPointerException {
+        if (simulation == null) {
+            throw new NullPointerException("No simulation is loaded.");
+        }
     }
 }

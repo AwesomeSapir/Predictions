@@ -4,8 +4,8 @@ import com.sun.istack.internal.Nullable;
 
 public class Termination {
 
-    private final BySecond bySecond;
-    private final ByTicks byTicks;
+    private final @Nullable BySecond bySecond;
+    private final @Nullable ByTicks byTicks;
 
     private boolean isMetByTicks = false;
     private boolean isMetBySeconds = false;
@@ -33,11 +33,11 @@ public class Termination {
         return isMetBySeconds;
     }
 
-    public BySecond getBySecond() {
+    public @Nullable BySecond getBySecond() {
         return bySecond;
     }
 
-    public ByTicks getByTicks() {
+    public @Nullable ByTicks getByTicks() {
         return byTicks;
     }
 }
