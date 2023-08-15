@@ -30,6 +30,10 @@ import world.type.Range;
 import world.value.generator.ValueGenerator;
 import world.value.generator.ValueGeneratorFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +50,12 @@ public class XmlTranslator implements Translator{
     private List<EntityInstance> entityInstances = new ArrayList<>();
     private Termination termination;
 
-    public XmlTranslator(PRDWorld prdWorld) {
-        this.prdWorld = prdWorld;
+    private static final String JAXB_XML_GAME_PACKAGE_NAME = "engine.prd";
+
+    public XmlTranslator(InputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
+        Unmarshaller u = jc.createUnmarshaller();
+        this.prdWorld = (PRDWorld) u.unmarshal(in);
     }
 
     @Override
@@ -345,11 +353,11 @@ public class XmlTranslator implements Translator{
                 } else {
                     valueGenerator = ValueGeneratorFactory.createRandomInteger(range);
                 }
-                propertyDefinition = new IntegerPropertyDefinition(name, range, valueGenerator);
+                propertyDefinition = new IntegerPropertyDefinition(name, range, valueGenerator, isRandomInit);
                 break;
             }
             case BOOLEAN: {
-                propertyDefinition = new BooleanPropertyDefinition(name, ValueGeneratorFactory.createRandomBoolean());
+                propertyDefinition = new BooleanPropertyDefinition(name, ValueGeneratorFactory.createRandomBoolean(), isRandomInit);
                 break;
             }
             case FLOAT: {
@@ -360,11 +368,11 @@ public class XmlTranslator implements Translator{
                 } else {
                     valueGenerator = ValueGeneratorFactory.createRandomDouble(range);
                 }
-                propertyDefinition = new DoublePropertyDefinition(name, range, valueGenerator);
+                propertyDefinition = new DoublePropertyDefinition(name, range, valueGenerator, isRandomInit);
                 break;
             }
             case STRING: {
-                propertyDefinition = new StringPropertyDefinition(name, ValueGeneratorFactory.createRandomString());
+                propertyDefinition = new StringPropertyDefinition(name, ValueGeneratorFactory.createRandomString(), isRandomInit);
                 break;
             }
             default:

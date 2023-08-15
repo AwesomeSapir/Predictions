@@ -11,4 +11,9 @@ public class ByTicks implements TerminationCondition{
     public boolean isMet(long compareTo) {
         return compareTo >= count;
     }
+
+    @Override
+    public long getCount() {
+        return count;
+    }
 }

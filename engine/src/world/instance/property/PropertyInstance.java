@@ -1,6 +1,5 @@
 package world.instance.property;
 
-import world.definition.property.AbstractNumericPropertyDefinition;
 import world.definition.property.PropertyDefinition;
 import world.definition.property.PropertyType;
 
@@ -29,7 +28,7 @@ public class PropertyInstance {
 
     public void setValue(Object value) {
         if(propertyDefinition.getType() == PropertyType.DECIMAL || propertyDefinition.getType() == PropertyType.FLOAT){
-            if(!((AbstractNumericPropertyDefinition<?>) propertyDefinition).getRange().isInRange((double) value)){
+            if(propertyDefinition.getRange() != null && !propertyDefinition.getRange().isInRange((double) value)){
                 return;
             }
         }

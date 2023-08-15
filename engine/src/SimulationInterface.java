@@ -1,10 +1,22 @@
-import java.util.Date;
+import world.World;
+import world.definition.entity.EntityDefinition;
+import world.termination.Termination;
+
+import java.time.LocalDateTime;
 
 public interface SimulationInterface {
 
-    void run(int id, Date date);
+    void run(int id);
 
     int getId();
 
-    Date getDate();
+    LocalDateTime getDate();
+
+    Termination getTermination();
+
+    void setEnvironmentValue(String name, Object value);
+
+    EntityDefinition getPrimaryEntityDefinition();
+
+    World getWorld();
 }

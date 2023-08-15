@@ -62,4 +62,8 @@ public class World implements Context {
     public Collection<EntityInstance> getPrimaryEntityInstances() {
         return entityInstances;
     }
+
+    public EnvironmentManager getEnvironmentManager() {
+        return environmentManager;
+    }
 }

@@ -32,4 +32,12 @@ public class Activation {
         double randomProbability = random.nextDouble();
         return randomProbability < this.probability;
     }
+
+    public int getTicks() {
+        return ticks;
+    }
+
+    public double getProbability() {
+        return probability;
+    }
 }

@@ -5,7 +5,7 @@ import world.value.generator.ValueGenerator;
 
 public class IntegerPropertyDefinition extends AbstractNumericPropertyDefinition<Integer> {
 
-    public IntegerPropertyDefinition(String name, Range range, ValueGenerator<Integer> valueGenerator) {
-        super(name, range, valueGenerator);
+    public IntegerPropertyDefinition(String name, Range range, ValueGenerator<Integer> valueGenerator, boolean isRandomInit) {
+        super(name, range, valueGenerator, isRandomInit);
     }
 }

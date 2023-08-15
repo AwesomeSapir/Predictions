@@ -1,27 +1,30 @@
 import world.World;
+import world.definition.entity.EntityDefinition;
 import world.instance.entity.EntityInstance;
 import world.rule.Rule;
 import world.rule.action.Action;
+import world.termination.Termination;
 
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Simulation implements SimulationInterface {
-    private World world;
+    private final World world;
     private int id;
-    private Date date;
+    private LocalDateTime date;
 
     public Simulation(World world) {
         this.world = world;
     }
 
     @Override
-    public void run(int id, Date date) {
+    public void run(int id) {
         this.id = id;
-        this.date = date;
-        long begin = date.getTime()/1000;
+
+        LocalDateTime begin = LocalDateTime.now();
         int tick = 0;
 
-        while (!world.getTermination().isMet(tick, System.currentTimeMillis()/1000 - begin)){
+        while (!world.getTermination().isMet(tick, Duration.between(begin, LocalDateTime.now()).getSeconds())){
             tick++;
             for (EntityInstance entityInstance : world.getPrimaryEntityInstances()){
                 for (Rule rule : world.getRules().values()){
@@ -33,6 +36,7 @@ public class Simulation implements SimulationInterface {
                 }
             }
         }
+        this.date = begin;
     }
 
     @Override
@@ -41,7 +45,27 @@ public class Simulation implements SimulationInterface {
     }
 
     @Override
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
+    }
+
+    @Override
+    public Termination getTermination() {
+        return world.getTermination();
+    }
+
+    @Override
+    public void setEnvironmentValue(String name, Object value) {
+        world.getEnvironmentPropertyInstance(name).setValue(value);
+    }
+
+    @Override
+    public EntityDefinition getPrimaryEntityDefinition() {
+        return world.getPrimaryEntityDefinition();
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
     }
 }

@@ -1,5 +1,6 @@
 package world.definition.property;
 
+import world.type.Range;
 import world.value.generator.ValueGenerator;
 
 public abstract class AbstractPropertyDefinition<T> implements PropertyDefinition{
@@ -8,10 +9,13 @@ public abstract class AbstractPropertyDefinition<T> implements PropertyDefinitio
     private final PropertyType type;
     private final ValueGenerator<T> valueGenerator;
 
-    public AbstractPropertyDefinition(String name, PropertyType type, ValueGenerator<T> valueGenerator) {
+    private final boolean isRandomInit;
+
+    public AbstractPropertyDefinition(String name, PropertyType type, ValueGenerator<T> valueGenerator, boolean isRandomInit) {
         this.name = name;
         this.type = type;
         this.valueGenerator = valueGenerator;
+        this.isRandomInit = isRandomInit;
     }
 
     public String getName() {
@@ -29,5 +33,15 @@ public abstract class AbstractPropertyDefinition<T> implements PropertyDefinitio
     @Override
     public boolean isNumeric() {
         return false;
+    }
+
+    @Override
+    public boolean isRandomInit() {
+        return isRandomInit;
+    }
+
+    @Override
+    public Range getRange() {
+        return null;
     }
 }

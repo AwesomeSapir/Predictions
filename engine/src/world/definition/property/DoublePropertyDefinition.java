@@ -5,7 +5,7 @@ import world.value.generator.ValueGenerator;
 
 public class DoublePropertyDefinition extends AbstractNumericPropertyDefinition<Double> {
 
-    public DoublePropertyDefinition(String name, Range range, ValueGenerator<Double> valueGenerator) {
-        super(name, range, valueGenerator);
+    public DoublePropertyDefinition(String name, Range range, ValueGenerator<Double> valueGenerator, boolean isRandomInit) {
+        super(name, range, valueGenerator, isRandomInit);
     }
 }
