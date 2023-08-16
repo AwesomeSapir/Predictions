@@ -6,7 +6,7 @@ import validator.Validator;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Main implements UIFunctions {
+public class Main implements UIFunctions { //TODO delete interface
 
     private final Scanner scanner = new Scanner(System.in);
     private final EngineInterface engine = new Engine();

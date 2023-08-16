@@ -200,11 +200,10 @@ public class XmlTranslator implements Translator{
     }
 
     public Expression getExpression(String expressionString, PropertyDefinition propertyDefinition) throws InvalidClassException {
-        String[] words = expressionString.split("\\(");
-        String firstWord = words[0];
-        String secondWord = words[1].substring(0, words[1].length() - 1);
-
         try {
+            String[] words = expressionString.split("\\(");
+            String firstWord = words[0];
+            String secondWord = words[1].substring(0, words[1].length() - 1);
             FunctionType type = FunctionType.valueOf(firstWord.toUpperCase());
             // Check and handle auxiliary function expression
             switch (type) {
@@ -318,7 +317,12 @@ public class XmlTranslator implements Translator{
                 throw new IllegalArgumentException("Duplicate environment variable name '" + name + "'.");
             }
             PropertyType type = PropertyType.valueOf(prdProperty.getType().toUpperCase());
-            Range range = getRange(prdProperty.getPRDRange());
+            Range range;
+            if(prdProperty.getPRDRange() != null) {
+                range = getRange(prdProperty.getPRDRange());
+            } else {
+                 range = null;
+            }
             PropertyDefinition propertyDefinition = getPropertyDefinitionByType(name, type, null, range, true);
             properties.put(prdProperty.getPRDName(), propertyDefinition);
         }
@@ -333,7 +337,12 @@ public class XmlTranslator implements Translator{
         String propertyName = prdObject.getPRDName();
         PropertyType type = PropertyType.valueOf(prdObject.getType().toUpperCase());
         String init = prdObject.getPRDValue().getInit();
-        Range range = getRange(prdObject.getPRDRange());
+        Range range;
+        if(prdObject.getPRDRange() != null) {
+            range = getRange(prdObject.getPRDRange());
+        } else {
+            range = null;
+        }
         boolean isRandomInit = prdObject.getPRDValue().isRandomInitialize();
 
         return getPropertyDefinitionByType(propertyName, type, init, range, isRandomInit);
