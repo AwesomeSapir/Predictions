@@ -228,7 +228,7 @@ public class XmlTranslator implements Translator{
                 default:
                     throw new UnsupportedOperationException("Function type not supported");
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
             if (primaryEntityDefinition.getProperties().values().stream().anyMatch(
                     property -> property.getName().equals(expressionString))) {
                 if(!Validator
@@ -261,11 +261,17 @@ public class XmlTranslator implements Translator{
     public Action getAction(PRDAction prdObject) throws InvalidClassException {
         ActionType type = ActionType.valueOf(prdObject.getType());
         String entityName = prdObject.getEntity();
+        PropertyDefinition propertyDefinition;
         if(!primaryEntityDefinition.getName().equals(entityName)){
             throw new IllegalArgumentException("Entity '" + entityName + "' referenced in '" + type + "' action does not exist.");
         }
         if(!type.toString().equals("condition") && !type.toString().equals("kill")) {
-            PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
+            if(!type.toString().equals("calculation")) {
+                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
+            }
+            else{
+                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getResultProp());
+            }
             if (propertyDefinition == null) {
                 throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");
             }
