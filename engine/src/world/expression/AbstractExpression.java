@@ -1,9 +1,6 @@
 package world.expression;
 
-import world.instance.property.PropertyInstance;
-import world.Context;
-
-import java.util.Random;
+import world.instance.entity.EntityInstance;
 
 public abstract class AbstractExpression implements Expression{
     private final ExpressionType type;
@@ -18,6 +15,6 @@ public abstract class AbstractExpression implements Expression{
     public ExpressionType getType() {
         return type;
     }
-    public abstract Object getValue();
+    public abstract Object getValue(EntityInstance entityInstance);
 
 }

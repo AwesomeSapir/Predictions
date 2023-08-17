@@ -15,6 +15,6 @@ public class ActionSet extends ActionValue {
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
-        propertyInstance.setValue(value.getValue());
+        propertyInstance.setValue(value.getValue(entityInstance));
     }
 }

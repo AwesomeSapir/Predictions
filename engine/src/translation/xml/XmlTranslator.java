@@ -93,9 +93,15 @@ public class XmlTranslator implements Translator{
     }
 
     public Activation getActivation(PRDActivation prdObject){
-        Integer ticks = prdObject.getTicks();
-        Double probability = prdObject.getProbability();
-        return new Activation(ticks, probability);
+        Activation activation;
+        if(prdObject == null){
+            activation = new Activation(null, null);
+        } else {
+            Integer ticks = prdObject.getTicks();
+            Double probability = prdObject.getProbability();
+            activation = new Activation(ticks, probability);
+        }
+        return activation;
     }
 
     public ActionCondition getActionCondition(PRDAction prdObject) throws InvalidClassException {
@@ -107,8 +113,10 @@ public class XmlTranslator implements Translator{
         for (PRDAction prdThenAction : prdObject.getPRDThen().getPRDAction()) {
             actionsThen.add(getAction(prdThenAction));
         }
-        for (PRDAction prdElseAction : prdObject.getPRDElse().getPRDAction()) {
-            actionsElse.add(getAction(prdElseAction));
+        if(prdObject.getPRDElse() != null){
+            for (PRDAction prdElseAction : prdObject.getPRDElse().getPRDAction()) {
+                actionsElse.add(getAction(prdElseAction));
+            }
         }
         return new ActionCondition(actionType, entityName, conditions, actionsThen, actionsElse);
     }
@@ -122,7 +130,7 @@ public class XmlTranslator implements Translator{
             for (PRDCondition prdCondition : prdObject.getPRDCondition()){
                 switch (Singularity.valueOf(prdCondition.getSingularity())) {
                     case single:
-                        subConditions.add(getSingleCondition(prdObject));
+                        subConditions.add(getSingleCondition(prdCondition));
                         break;
                     case multiple:
                         subConditions.add(getMultiCondition(prdCondition));
@@ -139,6 +147,9 @@ public class XmlTranslator implements Translator{
     public SingleCondition getSingleCondition(PRDCondition prdObject) throws InvalidClassException {
         Operator operator = Operator.fromDRP(prdObject.getOperator());
         String propertyName = prdObject.getProperty();
+        if(!primaryEntityDefinition.getName().equals(prdObject.getEntity())){
+            throw new IllegalArgumentException("Entity '" + prdObject.getEntity() + "' referenced in 'single condition' does not exist.");
+        }
         PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(propertyName);
         if(propertyDefinition == null){
             throw new IllegalArgumentException("Property '" + propertyName + "' referenced in SingleCondition does not exist.");
@@ -173,7 +184,7 @@ public class XmlTranslator implements Translator{
         ActionCalc action;
         String entityName = prdObject.getEntity();
         ActionType actionType = ActionType.valueOf(prdObject.getType());
-        String resultPropertyName = prdObject.getProperty();
+        String resultPropertyName = prdObject.getResultProp();
         PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(resultPropertyName);
 
         if (prdObject.getPRDMultiply() != null) {
@@ -228,7 +239,7 @@ public class XmlTranslator implements Translator{
                 default:
                     throw new UnsupportedOperationException("Function type not supported");
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
             if (primaryEntityDefinition.getProperties().values().stream().anyMatch(
                     property -> property.getName().equals(expressionString))) {
                 if(!Validator
@@ -261,11 +272,17 @@ public class XmlTranslator implements Translator{
     public Action getAction(PRDAction prdObject) throws InvalidClassException {
         ActionType type = ActionType.valueOf(prdObject.getType());
         String entityName = prdObject.getEntity();
+        PropertyDefinition propertyDefinition;
         if(!primaryEntityDefinition.getName().equals(entityName)){
             throw new IllegalArgumentException("Entity '" + entityName + "' referenced in '" + type + "' action does not exist.");
         }
         if(!type.toString().equals("condition") && !type.toString().equals("kill")) {
-            PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
+            if(!type.toString().equals("calculation")) {
+                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
+            }
+            else{
+                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getResultProp());
+            }
             if (propertyDefinition == null) {
                 throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");
             }

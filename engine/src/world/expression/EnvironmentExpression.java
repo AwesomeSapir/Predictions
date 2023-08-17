@@ -1,5 +1,6 @@
 package world.expression;
 
+import world.instance.entity.EntityInstance;
 import world.instance.property.PropertyInstance;
 
 public class EnvironmentExpression extends AbstractExpression{
@@ -10,7 +11,7 @@ public class EnvironmentExpression extends AbstractExpression{
     }
 
     @Override
-    public Object getValue() throws IllegalArgumentException {
+    public Object getValue(EntityInstance entityInstance) throws IllegalArgumentException {
         return envPropertyInstance.getValue();
     }
 }

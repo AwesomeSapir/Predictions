@@ -1,5 +1,7 @@
 package world.expression;
 
+import world.instance.entity.EntityInstance;
+
 public class FreeValueExpression extends AbstractExpression {
     private final Object value;
 
@@ -10,7 +12,7 @@ public class FreeValueExpression extends AbstractExpression {
 
 
     @Override
-    public Object getValue() {
+    public Object getValue(EntityInstance entityInstance) {
         return value;
     }
 }

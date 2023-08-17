@@ -14,9 +14,10 @@ public class ActionIncrease extends ActionValue {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        double by = (double) value.getValue();
+        double by = Double.parseDouble(value.getValue(entityInstance).toString());
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
-        double result = (double) propertyInstance.getValue() + by;
+        double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
+        double result = propertyValue + by;
 
         propertyInstance.setValue(result);
     }

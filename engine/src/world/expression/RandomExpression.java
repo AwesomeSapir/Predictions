@@ -1,7 +1,6 @@
 package world.expression;
 
-import world.Context;
-import world.instance.property.PropertyInstance;
+import world.instance.entity.EntityInstance;
 
 import java.util.Random;
 
@@ -15,7 +14,7 @@ public class RandomExpression extends AbstractExpression{
     }
 
     @Override
-    public Object getValue(){
+    public Object getValue(EntityInstance entityInstance){
         return random.nextInt(arg + 1);
     }
 

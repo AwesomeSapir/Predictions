@@ -6,6 +6,9 @@ public class Range {
     protected final double to;
 
     public Range(double from, double to) {
+        if(from > to){
+            throw new IllegalArgumentException("Range is invalid, from: " + from + " is bigger than to: " + to + ".");
+        }
         this.from = from;
         this.to = to;
     }

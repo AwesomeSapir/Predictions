@@ -13,8 +13,8 @@ public class ActionDivide extends ActionCalc {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        double val1 = (double) arg1.getValue();
-        double val2 = (double) arg2.getValue();
+        double val1 = Double.parseDouble(arg1.getValue(entityInstance).toString());
+        double val2 = Double.parseDouble(arg2.getValue(entityInstance).toString());
         if(val2 != 0){
             double result = val1 / val2;
             entityInstance.getPropertyByName(resultPropertyName).setValue(result);

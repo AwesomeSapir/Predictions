@@ -28,7 +28,7 @@ public class PropertyInstance {
 
     public void setValue(Object value) {
         if(propertyDefinition.getType() == PropertyType.DECIMAL || propertyDefinition.getType() == PropertyType.FLOAT){
-            if(propertyDefinition.getRange() != null && !propertyDefinition.getRange().isInRange((double) value)){
+            if(propertyDefinition.getRange() != null && !propertyDefinition.getRange().isInRange(Double.parseDouble(value.toString()))){
                 return;
             }
         }

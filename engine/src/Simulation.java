@@ -7,6 +7,8 @@ import world.termination.Termination;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Simulation implements SimulationInterface {
     private final World world;
@@ -20,12 +22,23 @@ public class Simulation implements SimulationInterface {
     @Override
     public void run(int id) {
         this.id = id;
-
         LocalDateTime begin = LocalDateTime.now();
+        this.date = begin;
         int tick = 0;
 
         while (!world.getTermination().isMet(tick, Duration.between(begin, LocalDateTime.now()).getSeconds())){
             tick++;
+            List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
+            for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
+                for (Rule rule : world.getRules().values()){
+                    if(rule.getActivation().canBeActivated(tick)){
+                        for (Action action : rule.getActions()){
+                            action.execute(entityInstances.get(i), world);
+                        }
+                    }
+                }
+            }
+            /*
             for (EntityInstance entityInstance : world.getPrimaryEntityInstances()){
                 for (Rule rule : world.getRules().values()){
                     if(rule.getActivation().canBeActivated(tick)){
@@ -34,9 +47,9 @@ public class Simulation implements SimulationInterface {
                         }
                     }
                 }
-            }
+            }*/
         }
-        this.date = begin;
+
     }
 
     @Override

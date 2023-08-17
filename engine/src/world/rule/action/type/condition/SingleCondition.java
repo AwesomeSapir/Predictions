@@ -18,10 +18,10 @@ public class SingleCondition implements Condition {
 
     public boolean evaluate(EntityInstance entityInstance, Context context){
         Object entityValue = entityInstance.getPropertyByName(propertyName).getValue();
-        Object expValue = value.getValue();
+        Object expValue = value.getValue(entityInstance);
         if(context.getPrimaryEntityDefinition().getProperties().get(propertyName).isNumeric()){
-            double numEntityValue = (double) entityValue;
-            double numExpValue = (double) expValue;
+            double numEntityValue = Double.parseDouble(entityValue.toString());
+            double numExpValue = Double.parseDouble(expValue.toString());
             switch (operator){
                 case neq:
                     return numEntityValue != numExpValue;

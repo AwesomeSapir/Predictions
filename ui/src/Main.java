@@ -24,35 +24,41 @@ public class Main implements UIFunctions { //TODO delete interface
         menu.add("Load");
 
         while (true) {
+            System.out.println();
+            System.out.println();
             for (int i = 0; i < menu.size(); i++) {
                 System.out.println((i + 1) + ". " + menu.get(i));
             }
-            int selection = mainClass.getSelectionForCollection(menu, "Select an option:") + 1;
-            switch (selection){
-                case 1:
-                    mainClass.loadFile();
-                    break;
-                case 2:
-                    mainClass.showSimulationDetails();
-                    break;
-                case 3:
-                    mainClass.runSimulation();
-                    break;
-                case 4:
-                    mainClass.showPastSimulation();
-                    break;
-                case 5:
-                    mainClass.exit();
-                    break;
-                case 6:
-                    mainClass.save();
-                    break;
-                case 7:
-                    mainClass.load();
-                    break;
+
+            try {
+                int selection = mainClass.getSelectionForCollection(menu, "Select an option:") + 1;
+                switch (selection){
+                    case 1:
+                        mainClass.loadFile();
+                        break;
+                    case 2:
+                        mainClass.showSimulationDetails();
+                        break;
+                    case 3:
+                        mainClass.runSimulation();
+                        break;
+                    case 4:
+                        mainClass.showPastSimulation();
+                        break;
+                    case 5:
+                        mainClass.exit();
+                        break;
+                    case 6:
+                        mainClass.save();
+                        break;
+                    case 7:
+                        mainClass.load();
+                        break;
+                }
+            } catch (Exception e){
+                System.out.println(e.getMessage());
             }
         }
-
     }
 
 
@@ -64,8 +70,7 @@ public class Main implements UIFunctions { //TODO delete interface
             engine.loadXml(filepath);
             System.out.println("The file was loaded successfully.");
         } catch (Exception e) {
-            System.out.print("The file isn't valid:");
-            System.out.println(e.getMessage());
+            System.out.println("The file isn't valid: " + e.getMessage());
         }
     }
 
@@ -202,7 +207,11 @@ public class Main implements UIFunctions { //TODO delete interface
 
             System.out.println(index + ". Environment variable: " + name);
             System.out.println("Type: " + type);
-            System.out.println("Range: (" + environmentVariable.getRange().getFrom() + ", " + environmentVariable.getRange().getTo() + ")");
+            if(environmentVariable.getRange() != null) {
+                System.out.println("Range: (" + environmentVariable.getRange().getFrom() + ", " + environmentVariable.getRange().getTo() + ")");
+            } else {
+                System.out.println("Range: N/A");
+            }
             index++;
         }
     }
@@ -224,6 +233,10 @@ public class Main implements UIFunctions { //TODO delete interface
     public void showPastSimulation() {
         System.out.println("Past Simulations:");
         List<DTOSimulation> pastSimulations = new ArrayList<>(engine.getPastSimulations());
+        if(pastSimulations.isEmpty()){
+            System.out.println("None found.");
+            return;
+        }
         printPastSimulations(pastSimulations);
 
         DTOSimulation simulation = pastSimulations.get(getSelectionForCollection(pastSimulations, "Select a simulation to display:"));
@@ -240,9 +253,15 @@ public class Main implements UIFunctions { //TODO delete interface
                 break;
             case 1:
                 List<DTOEntity> entities = new ArrayList<>(engine.getPastEntities(simulation.getId()));
+                for (int i = 0; i < entities.size(); i++) {
+                    System.out.println((i+1) + ". " + entities.get(i).getName());
+                }
                 int entityIndex = getSelectionForCollection(entities, "Select an entity:");
                 DTOEntity entity = entities.get(entityIndex);
                 List<DTOProperty> properties = new ArrayList<>(engine.getPastEntityProperties(simulation.getId(), entity.getName()));
+                for (int i = 0; i < properties.size(); i++) {
+                    System.out.println((i+1) + ". " + properties.get(i).getName());
+                }
                 int propertyIndex = getSelectionForCollection(properties, "Select a property:");
                 DTOProperty property = properties.get(propertyIndex);
                 DTOSimulationHistogram histogram = engine.getValuesForPropertyHistogram(simulation.getId(), property.getName());
@@ -253,6 +272,9 @@ public class Main implements UIFunctions { //TODO delete interface
 
     public void printSimulationHistogram(DTOSimulationHistogram histogram){
         System.out.println("Histogram for " + histogram.getPropertyName() + ":");
+        if(histogram.getValueToCount().isEmpty()){
+            System.out.println("No entities left with this property.");
+        }
         for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()){
             System.out.println(entry.getValue() + " instances where " + histogram.getPropertyName() + " is " + entry.getKey());
         }
@@ -263,7 +285,6 @@ public class Main implements UIFunctions { //TODO delete interface
             System.out.println("Entity Name: " + entityPopulation.getEntity().getName());
             System.out.println("Initial Quantity: " + entityPopulation.getInitialPopulation());
             System.out.println("Final Quantity: " + entityPopulation.getFinalPopulation());
-            System.out.println();
         }
     }
 
