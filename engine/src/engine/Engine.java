@@ -133,9 +133,9 @@ public class Engine implements EngineInterface, Serializable {
         isSimulationLoaded();
         simulation.run(idCounter);
         int id = idCounter;
+        Termination termination = simulation.getTermination();
         archiveSimulation();
 
-        Termination termination = simulation.getTermination();
         return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }
 

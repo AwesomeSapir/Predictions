@@ -16,12 +16,15 @@ public class ConsoleUI implements MainUI{
     private final EngineInterface engine = new Engine();
 
     public void loadFile() {
+        System.out.println();
         System.out.print("Enter the full path to the XML file: ");
         String filepath = scanner.nextLine();
         try {
             engine.loadXml(filepath);
+            System.out.println();
             System.out.println("The file was loaded successfully.");
         } catch (Exception e) {
+            System.out.println();
             System.out.println("The file isn't valid: " + e.getMessage());
         }
     }
@@ -32,6 +35,7 @@ public class ConsoleUI implements MainUI{
     }
 
     public void printSimulationDetails(DTOSimulationDetails simulationDetails) throws NullPointerException {
+        System.out.println();
         System.out.println("Entities:");
         for (DTOEntity entity : simulationDetails.getEntities()) {
             System.out.println("Entity Name: " + entity.getName());
@@ -80,6 +84,7 @@ public class ConsoleUI implements MainUI{
         List<Pair<String, Object>> newValues = new ArrayList<>();
         boolean exit = environmentVariables.isEmpty();
         while (!exit) {
+            System.out.println();
             System.out.println("Select 0 to continue or an environment variable to initialize:");
             String input = scanner.nextLine();
             if (Validator.validate(input).isInteger().isInRange(0, environmentVariables.size()).isValid()) {
@@ -118,10 +123,12 @@ public class ConsoleUI implements MainUI{
                     if (value != null) {
                         newValues.add(new Pair<>(environmentVariable.getName(), value));
                     } else {
+                        System.out.println();
                         System.out.println("The new value is invalid.");
                     }
                 }
             } else {
+                System.out.println();
                 System.out.println("Invalid selection.");
             }
         }
@@ -129,27 +136,41 @@ public class ConsoleUI implements MainUI{
 
         printEnvValues(engine.getEnvironmentValues());
 
+        System.out.println();
         System.out.println("Running simulation...");
         DTOSimulationResult simulationResult = engine.runSimulation();
-        System.out.println("engine.Simulation finished.");
+        System.out.println();
+        System.out.println();
+        System.out.println("Simulation finished.");
         printSimulationResult(simulationResult);
     }
 
     public void printEnvValues(Collection<DTOEnvironmentVariable> environmentVariables) {
         int index = 1;
+        System.out.println();
         System.out.println("Environment Values:");
         for (DTOEnvironmentVariable environmentVariable : environmentVariables) {
             String name = environmentVariable.getName();
-            String value = environmentVariable.getValue().toString();
+            Object value = environmentVariable.getValue();
 
             System.out.println(index + ". Environment variable: " + name);
-            System.out.println("Value: " + value);
+            System.out.print("Value: ");
+            printObjectByClass(value);
             index++;
         }
     }
 
+    public void printObjectByClass(Object value){
+        if(value instanceof String){
+            System.out.println("\"" + value +"\"");
+        }
+        else{
+            System.out.println(value);
+        }
+    }
     public void printEnvDefinitions(Collection<DTOEnvironmentVariable> environmentVariables) {
         int index = 1;
+        System.out.println();
         System.out.println("Environment Variables:");
         for (DTOEnvironmentVariable environmentVariable : environmentVariables) {
             String name = environmentVariable.getName();
@@ -167,7 +188,8 @@ public class ConsoleUI implements MainUI{
     }
 
     public void printSimulationResult(DTOSimulationResult simulationResult) {
-        System.out.println("engine.Simulation result:");
+        System.out.println();
+        System.out.println("Simulation result:");
         System.out.println("Id: " + simulationResult.getId());
         String termination = "";
         if (simulationResult.isBySeconds()) {
@@ -180,6 +202,7 @@ public class ConsoleUI implements MainUI{
     }
 
     public void showPastSimulation() {
+        System.out.println();
         System.out.println("Past Simulations:");
         List<DTOSimulation> pastSimulations = new ArrayList<>(engine.getPastSimulations());
         if(pastSimulations.isEmpty()){
@@ -188,32 +211,41 @@ public class ConsoleUI implements MainUI{
         }
         printPastSimulations(pastSimulations);
 
+        System.out.println();
         DTOSimulation simulation = pastSimulations.get(getSelectionForCollection(pastSimulations, "Select a simulation to display:"));
         List<String> detailTypes = new ArrayList<>();
         detailTypes.add("Amount of entities");
         detailTypes.add("Property value histogram");
+        System.out.println();
         for (int i = 0; i<detailTypes.size(); i++){
             System.out.println((i+1) + ". " + detailTypes.get(i));
         }
 
+        System.out.println();
         switch (getSelectionForCollection(detailTypes, "Select display type:")){
             case 0:
+                System.out.println();
                 printEntityPopulation(engine.getDetailsByEntityCount(simulation.getId()));
                 break;
             case 1:
+                System.out.println();
                 List<DTOEntity> entities = new ArrayList<>(engine.getPastEntities(simulation.getId()));
                 for (int i = 0; i < entities.size(); i++) {
                     System.out.println((i+1) + ". " + entities.get(i).getName());
                 }
+                System.out.println();
                 int entityIndex = getSelectionForCollection(entities, "Select an entity:");
                 DTOEntity entity = entities.get(entityIndex);
+                System.out.println();
                 List<DTOProperty> properties = new ArrayList<>(engine.getPastEntityProperties(simulation.getId(), entity.getName()));
                 for (int i = 0; i < properties.size(); i++) {
                     System.out.println((i+1) + ". " + properties.get(i).getName());
                 }
+                System.out.println();
                 int propertyIndex = getSelectionForCollection(properties, "Select a property:");
                 DTOProperty property = properties.get(propertyIndex);
                 DTOSimulationHistogram histogram = engine.getValuesForPropertyHistogram(simulation.getId(), property.getName());
+                System.out.println();
                 printSimulationHistogram(histogram);
                 break;
         }
@@ -225,7 +257,8 @@ public class ConsoleUI implements MainUI{
             System.out.println("No entities left with this property.");
         }
         for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()){
-            System.out.println(entry.getValue() + " instances where " + histogram.getPropertyName() + " is " + entry.getKey());
+            System.out.print(entry.getValue() + " instances where " + histogram.getPropertyName() + " is ");
+            printObjectByClass(entry.getKey());
         }
     }
 
@@ -247,7 +280,9 @@ public class ConsoleUI implements MainUI{
                 selection = Integer.parseInt(input);
                 exit = true;
             } else {
+                System.out.println();
                 System.out.println("Invalid selection.");
+                System.out.println();
             }
         }
         return selection - 1;
@@ -294,8 +329,8 @@ public class ConsoleUI implements MainUI{
     public void run() {
         List<String> menu = new ArrayList<>();
         menu.add("Load XML File");
-        menu.add("Display engine.Simulation Details");
-        menu.add("Run engine.Simulation");
+        menu.add("Display Simulation Details");
+        menu.add("Run Simulation");
         menu.add("Display Past Runs");
         menu.add("Exit");
         menu.add("Save");
@@ -307,7 +342,7 @@ public class ConsoleUI implements MainUI{
             for (int i = 0; i < menu.size(); i++) {
                 System.out.println((i + 1) + ". " + menu.get(i));
             }
-
+            System.out.println();
             try {
                 int selection = getSelectionForCollection(menu, "Select an option:") + 1;
                 switch (selection){
