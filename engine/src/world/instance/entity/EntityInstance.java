@@ -4,10 +4,11 @@ import world.definition.entity.EntityDefinition;
 import world.definition.property.PropertyDefinition;
 import world.instance.property.PropertyInstance;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityInstance {
+public class EntityInstance implements Serializable {
 
     private final EntityDefinition entityDefinition;
     private final int id;

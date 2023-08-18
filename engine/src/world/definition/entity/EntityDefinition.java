@@ -2,10 +2,11 @@ package world.definition.entity;
 
 import world.definition.property.PropertyDefinition;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityDefinition {
+public class EntityDefinition implements Serializable {
 
     private final String name;
     private final int population;

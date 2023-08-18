@@ -3,11 +3,12 @@ package world.rule.action.type.condition;
 import world.Context;
 import world.instance.entity.EntityInstance;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class MultiCondition implements Condition {
+public class MultiCondition implements Condition, Serializable {
 
     protected List<Condition> subConditions = new ArrayList<>();
     protected Logical logical;

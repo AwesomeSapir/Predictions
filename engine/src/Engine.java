@@ -12,32 +12,33 @@ import world.rule.action.Action;
 import world.termination.Termination;
 
 import javax.xml.bind.JAXBException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InvalidClassException;
+import java.io.*;
 import java.util.*;
 
-public class Engine implements EngineInterface {
+public class Engine implements EngineInterface, Serializable {
 
-    private final Map<Integer, Simulation> pastSimulations = new HashMap<>();
+    private final Map<Integer, Simulation> pastSimulations = new LinkedHashMap<>();
     private Simulation simulation = null;
+    private String filepath;
     private int idCounter = 1;
 
 
     @Override
     public void loadXml(String filepath) {
         try {
-            InputStream inputStream = new FileInputStream(filepath);
-            Translator translator = new XmlTranslator(inputStream);
-            simulation = new Simulation(translator.getWorld());
+            simulation = new Simulation(getWorldFromFile(filepath));
+            this.filepath = filepath;
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Could not find a suitable XML file at path '" + filepath + "'");
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (InvalidClassException e) {
+        } catch (JAXBException | InvalidClassException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public World getWorldFromFile(String filepath) throws FileNotFoundException, JAXBException, InvalidClassException {
+        InputStream inputStream = new FileInputStream(filepath);
+        Translator translator = new XmlTranslator(inputStream);
+        return translator.getWorld();
     }
 
     @Override
@@ -128,11 +129,12 @@ public class Engine implements EngineInterface {
     @Override
     public DTOSimulationResult runSimulation() throws NullPointerException {
         isSimulationLoaded();
-
         simulation.run(idCounter);
-        Termination termination = simulation.getTermination();
+        int id = idCounter;
         archiveSimulation();
-        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), simulation.getId());
+
+        Termination termination = simulation.getTermination();
+        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }
 
     @Override
@@ -165,12 +167,39 @@ public class Engine implements EngineInterface {
 
     private void archiveSimulation() {
         pastSimulations.put(simulation.getId(), simulation);
+        try {
+            simulation = new Simulation(getWorldFromFile(filepath));
+        } catch (FileNotFoundException | JAXBException | InvalidClassException e) {
+            throw new RuntimeException(e);
+        }
         idCounter++;
     }
 
     private void isSimulationLoaded() throws NullPointerException {
         if (simulation == null) {
             throw new NullPointerException("No simulation is loaded.");
+        }
+    }
+
+    @Override
+    public void saveToFile(String filepath) {
+        try (ObjectOutputStream encoder = new ObjectOutputStream(new FileOutputStream(filepath.concat(".xml")))){
+            encoder.writeObject(this);
+            encoder.flush();
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving to file: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void loadFromFile(String filepath) {
+        try (ObjectInputStream decoder = new ObjectInputStream(new FileInputStream(filepath.concat(".xml")))){
+            Engine engine = (Engine) decoder.readObject();
+            this.pastSimulations.putAll(engine.pastSimulations);
+            this.simulation = engine.simulation;
+            this.idCounter = engine.idCounter;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException("Error loading from file: " + e.getMessage());
         }
     }
 }

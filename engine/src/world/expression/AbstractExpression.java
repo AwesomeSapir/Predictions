@@ -2,7 +2,9 @@ package world.expression;
 
 import world.instance.entity.EntityInstance;
 
-public abstract class AbstractExpression implements Expression{
+import java.io.Serializable;
+
+public abstract class AbstractExpression implements Expression, Serializable {
     private final ExpressionType type;
 
     protected Object value;

@@ -1,6 +1,8 @@
 package world.termination;
 
-public class ByTicks implements TerminationCondition{
+import java.io.Serializable;
+
+public class ByTicks implements TerminationCondition, Serializable {
     protected long count;
 
     public ByTicks(int count) {

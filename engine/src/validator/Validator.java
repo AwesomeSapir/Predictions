@@ -3,7 +3,9 @@ package validator;
 import world.definition.property.PropertyType;
 import world.type.Range;
 
-public class Validator {
+import java.io.Serializable;
+
+public class Validator implements Serializable {
 
     private boolean isValid = true;
     private final String input;

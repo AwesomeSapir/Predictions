@@ -1,6 +1,8 @@
 package world.type;
 
-public class Range {
+import java.io.Serializable;
+
+public class Range implements Serializable {
 
     protected final double from;
     protected final double to;

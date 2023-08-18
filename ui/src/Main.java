@@ -315,16 +315,32 @@ public class Main implements UIFunctions { //TODO delete interface
 
     @Override
     public void exit() {
-
+        System.out.println("System is exiting.");
+        scanner.close();
+        System.exit(0);
     }
 
     @Override
     public void save() {
-
+        System.out.print("Enter the path of the file you want save to: ");
+        String filepath = scanner.nextLine();
+        try {
+            engine.saveToFile(filepath);
+            System.out.println("System was saved to file successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void load() {
-
+        System.out.print("Enter the path of the file you saved to: ");
+        String filepath = scanner.nextLine();
+        try {
+            engine.loadFromFile(filepath);
+            System.out.println("System was loaded from file successfully.");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

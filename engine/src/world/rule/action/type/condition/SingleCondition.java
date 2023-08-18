@@ -4,7 +4,9 @@ import world.Context;
 import world.expression.Expression;
 import world.instance.entity.EntityInstance;
 
-public class SingleCondition implements Condition {
+import java.io.Serializable;
+
+public class SingleCondition implements Condition, Serializable {
 
     protected Operator operator;
     protected String propertyName;

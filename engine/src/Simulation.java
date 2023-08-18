@@ -5,12 +5,13 @@ import world.rule.Rule;
 import world.rule.action.Action;
 import world.termination.Termination;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Simulation implements SimulationInterface {
+public class Simulation implements SimulationInterface, Serializable {
     private final World world;
     private int id;
     private LocalDateTime date;
@@ -38,16 +39,6 @@ public class Simulation implements SimulationInterface {
                     }
                 }
             }
-            /*
-            for (EntityInstance entityInstance : world.getPrimaryEntityInstances()){
-                for (Rule rule : world.getRules().values()){
-                    if(rule.getActivation().canBeActivated(tick)){
-                        for (Action action : rule.getActions()){
-                            action.execute(entityInstance, world);
-                        }
-                    }
-                }
-            }*/
         }
 
     }
@@ -85,5 +76,16 @@ public class Simulation implements SimulationInterface {
     @Override
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public Simulation clone() {
+        try {
+            Simulation clone = (Simulation) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

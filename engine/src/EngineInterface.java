@@ -19,5 +19,7 @@ public interface EngineInterface {
     DTOSimulationResult runSimulation() throws NullPointerException;
     Collection<DTOSimulation> getPastSimulations();
     DTOSimulationDetails getSimulationDetails() throws NullPointerException;
+    void saveToFile(String filepath);
+    void loadFromFile(String filepath);
 
 }

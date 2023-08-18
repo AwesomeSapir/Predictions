@@ -2,9 +2,10 @@ package world.rule;
 
 import com.sun.istack.internal.Nullable;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Activation {
+public class Activation implements Serializable {
 
     private final Random random = new Random();
     protected int ticks;

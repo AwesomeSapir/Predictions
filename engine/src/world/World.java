@@ -8,12 +8,13 @@ import world.instance.property.PropertyInstance;
 import world.rule.Rule;
 import world.termination.Termination;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class World implements Context {
+public class World implements Context, Serializable {
 
     protected EnvironmentManager environmentManager;
     protected ActiveEnvironment activeEnvironment;

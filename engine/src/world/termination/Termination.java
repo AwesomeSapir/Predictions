@@ -2,7 +2,9 @@ package world.termination;
 
 import com.sun.istack.internal.Nullable;
 
-public class Termination {
+import java.io.Serializable;
+
+public class Termination implements Serializable {
 
     private final @Nullable BySecond bySecond;
     private final @Nullable ByTicks byTicks;

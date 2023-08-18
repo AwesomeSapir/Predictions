@@ -3,7 +3,9 @@ package world.rule.action;
 import world.Context;
 import world.instance.entity.EntityInstance;
 
-public abstract class Action {
+import java.io.Serializable;
+
+public abstract class Action implements Serializable {
 
     protected final ActionType type;
     protected String entityName;

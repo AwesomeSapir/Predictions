@@ -3,7 +3,9 @@ package world.definition.property;
 import world.type.Range;
 import world.value.generator.ValueGenerator;
 
-public abstract class AbstractPropertyDefinition<T> implements PropertyDefinition{
+import java.io.Serializable;
+
+public abstract class AbstractPropertyDefinition<T> implements PropertyDefinition, Serializable {
 
     private final String name;
     private final PropertyType type;

@@ -1,6 +1,8 @@
 package world.termination;
 
-public class BySecond implements TerminationCondition{
+import java.io.Serializable;
+
+public class BySecond implements TerminationCondition, Serializable {
 
     protected long count;
 

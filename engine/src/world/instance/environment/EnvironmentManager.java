@@ -2,10 +2,11 @@ package world.instance.environment;
 
 import world.definition.property.PropertyDefinition;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-public class EnvironmentManager {
+public class EnvironmentManager implements Serializable {
 
     private final Map<String, PropertyDefinition> properties;
 

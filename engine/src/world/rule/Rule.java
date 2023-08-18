@@ -2,11 +2,12 @@ package world.rule;
 
 import world.rule.action.Action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Rule {
+public class Rule implements Serializable {
 
     protected String name;
     protected Activation activation;

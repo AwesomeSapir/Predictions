@@ -73,7 +73,7 @@ public class XmlTranslator implements Translator{
 
         termination = getTermination(prdWorld.getPRDTermination());
 
-        Map<String, Rule> rules = new LinkedHashMap<>(); //TODO check order
+        Map<String, Rule> rules = new LinkedHashMap<>();
         for (PRDRule rule : prdWorld.getPRDRules().getPRDRule()) {
             rules.put(rule.getName(), getRule(rule));
         }

@@ -3,7 +3,9 @@ package world.instance.property;
 import world.definition.property.PropertyDefinition;
 import world.definition.property.PropertyType;
 
-public class PropertyInstance {
+import java.io.Serializable;
+
+public class PropertyInstance implements Serializable {
 
     private PropertyDefinition propertyDefinition;
     private Object value;
