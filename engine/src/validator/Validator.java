@@ -1,7 +1,7 @@
 package validator;
 
-import world.definition.property.PropertyType;
-import world.type.Range;
+import engine.world.definition.property.PropertyType;
+import engine.world.type.Range;
 
 import java.io.Serializable;
 

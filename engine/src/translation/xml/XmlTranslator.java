@@ -2,33 +2,33 @@ package translation.xml;
 
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
+import engine.world.definition.property.*;
+import engine.world.expression.*;
+import engine.world.rule.action.type.condition.*;
 import validator.Validator;
-import world.World;
-import world.definition.entity.EntityDefinition;
-import world.definition.property.*;
-import world.expression.*;
-import world.instance.entity.EntityInstance;
-import world.instance.environment.ActiveEnvironment;
-import world.instance.environment.EnvironmentManager;
-import world.instance.property.PropertyInstance;
-import world.rule.Activation;
-import world.rule.Rule;
-import world.rule.action.Action;
-import world.rule.action.ActionType;
-import world.rule.action.type.ActionKill;
-import world.rule.action.type.calculation.ActionCalc;
-import world.rule.action.type.calculation.ActionDivide;
-import world.rule.action.type.calculation.ActionMultiply;
-import world.rule.action.type.condition.*;
-import world.rule.action.type.value.ActionDecrease;
-import world.rule.action.type.value.ActionIncrease;
-import world.rule.action.type.value.ActionSet;
-import world.termination.BySecond;
-import world.termination.ByTicks;
-import world.termination.Termination;
-import world.type.Range;
-import world.value.generator.ValueGenerator;
-import world.value.generator.ValueGeneratorFactory;
+import engine.world.World;
+import engine.world.definition.entity.EntityDefinition;
+import engine.world.instance.entity.EntityInstance;
+import engine.world.instance.environment.ActiveEnvironment;
+import engine.world.instance.environment.EnvironmentManager;
+import engine.world.instance.property.PropertyInstance;
+import engine.world.rule.Activation;
+import engine.world.rule.Rule;
+import engine.world.rule.action.Action;
+import engine.world.rule.action.ActionType;
+import engine.world.rule.action.type.ActionKill;
+import engine.world.rule.action.type.calculation.ActionCalc;
+import engine.world.rule.action.type.calculation.ActionDivide;
+import engine.world.rule.action.type.calculation.ActionMultiply;
+import engine.world.rule.action.type.value.ActionDecrease;
+import engine.world.rule.action.type.value.ActionIncrease;
+import engine.world.rule.action.type.value.ActionSet;
+import engine.world.termination.BySecond;
+import engine.world.termination.ByTicks;
+import engine.world.termination.Termination;
+import engine.world.type.Range;
+import engine.world.value.generator.ValueGenerator;
+import engine.world.value.generator.ValueGeneratorFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -44,7 +44,7 @@ public class XmlTranslator implements Translator{
     private EnvironmentManager environmentManager;
     private ActiveEnvironment activeEnvironment;
     private EntityDefinition primaryEntityDefinition;
-    private List<EntityInstance> entityInstances = new ArrayList<>();
+    private final List<EntityInstance> entityInstances = new ArrayList<>();
     private Termination termination;
 
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "engine.prd";
@@ -66,7 +66,7 @@ public class XmlTranslator implements Translator{
 
         // Entity instances initialization
         for (int i = 0; i < primaryEntityDefinition.getPopulation(); i++) {
-            EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition, i + 1);
+            EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition);
             entityInstance.initProperties();
             entityInstances.add(entityInstance);
         }
