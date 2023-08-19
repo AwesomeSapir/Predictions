@@ -21,7 +21,6 @@ public class ConsoleUI implements MainUI{
     }
 
     public void loadFile() {
-        System.out.println();
         System.out.print("Enter the full path to the XML file: ");
         String filepath = scanner.nextLine();
         try {
@@ -200,10 +199,12 @@ public class ConsoleUI implements MainUI{
                 "Past Simulations",
                 object -> "Running date: " + ((DTOSimulation)object).getBeginTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss")) + "\n   Unique identifier: " + ((DTOSimulation)object).getId());
 
+        System.out.println();
         DTOSimulation simulation = pastSimulations.get(menuHelper.getSelectionForCollection(pastSimulations, "Select a simulation to display"));
         List<String> detailTypes = Arrays.asList(
                 "Amount of entities",
                 "Property value histogram");
+
         System.out.println();
         menuHelper.printMenu(detailTypes,
                 "Display Types",
@@ -221,14 +222,16 @@ public class ConsoleUI implements MainUI{
                 menuHelper.printMenu(entities,
                         "Entities",
                         object -> ((DTOEntity)object).getName());
+                System.out.println();
                 int entityIndex = menuHelper.getSelectionForCollection(entities, "Select an entity");
 
                 DTOEntity entity = entities.get(entityIndex);
-                System.out.println();
                 List<DTOProperty> properties = new ArrayList<>(engine.getPastEntityProperties(simulation.getId(), entity.getName()));
+                System.out.println();
                 menuHelper.printMenu(properties,
                         "Properties",
                         object -> ((DTOProperty)object).getName());
+                System.out.println();
                 int propertyIndex = menuHelper.getSelectionForCollection(properties, "Select a property");
                 System.out.println();
                 DTOProperty property = properties.get(propertyIndex);
@@ -279,14 +282,17 @@ public class ConsoleUI implements MainUI{
         String filepath = scanner.nextLine();
         try {
             engine.loadFromFile(filepath);
+            System.out.println();
             System.out.println("System was loaded from file successfully.");
         } catch (Exception e) {
+            System.out.println();
             System.out.println(e.getMessage());
         }
     }
 
     @Override
     public void run() {
+        System.out.println();
         List<String> menu = new ArrayList<>();
         menu.add("Load XML File");
         menu.add("Display Simulation Details");
@@ -325,6 +331,7 @@ public class ConsoleUI implements MainUI{
                         break;
                 }
             } catch (Exception e){
+                System.out.println();
                 System.out.println("An error occurred: " + e.getMessage());
             }
             System.out.println();

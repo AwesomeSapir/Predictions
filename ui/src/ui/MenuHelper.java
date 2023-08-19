@@ -24,6 +24,7 @@ public class MenuHelper {
                 exit = true;
             } else {
                 System.out.println("Invalid selection.");
+                System.out.println();
             }
         }
         return selection - 1;
