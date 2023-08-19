@@ -287,6 +287,7 @@ public class ConsoleUI implements MainUI{
 
     @Override
     public void run() {
+        System.out.println();
         List<String> menu = new ArrayList<>();
         menu.add("Load XML File");
         menu.add("Display Simulation Details");
