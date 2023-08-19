@@ -17,7 +17,7 @@ public class MenuHelper {
         boolean exit = collection.isEmpty();
         int selection = 0;
         while (!exit) {
-            System.out.println(prompt);
+            System.out.print(prompt + ": ");
             String input = scanner.nextLine();
             if (Validator.validate(input).isInteger().isInRange(1, collection.size()).isValid()) {
                 selection = Integer.parseInt(input);

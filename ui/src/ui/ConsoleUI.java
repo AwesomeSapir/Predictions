@@ -92,11 +92,11 @@ public class ConsoleUI implements MainUI{
             String result = "";
             DTOEnvironmentVariable environmentVariable = (DTOEnvironmentVariable) object;
             result += "Variable name: " + environmentVariable.getName();
-            result += "Type: " + environmentVariable.getType();
+            result += "\n   Type: " + environmentVariable.getType();
             if(environmentVariable.getRange() != null) {
-                result += "Range: (" + environmentVariable.getRange().getFrom() + ", " + environmentVariable.getRange().getTo() + ")";
+                result += "\n   Range: (" + environmentVariable.getRange().getFrom() + ", " + environmentVariable.getRange().getTo() + ")";
             } else {
-                result += "Range: N/A";
+                result += "\n   Range: N/A";
             }
             return result;
         });
@@ -158,24 +158,25 @@ public class ConsoleUI implements MainUI{
                 "Environment Values",
                 object ->
                         "Environment variable: " + ((DTOEnvironmentVariable)object).getName() +
-                                "\nValue: " + ((DTOEnvironmentVariable)object).getValue());
+                                "\n   Value: " + formatValueByClass(((DTOEnvironmentVariable)object).getValue()));
 
         System.out.println();
         System.out.println("Running simulation...");
         DTOSimulationResult simulationResult = engine.runSimulation();
         System.out.println();
-        System.out.println();
         System.out.println("Simulation finished.");
         printSimulationResult(simulationResult);
     }
 
-    public void printObjectByClass(Object value){
+    public String formatValueByClass(Object value){
+        String result = "";
         if(value instanceof String){
-            System.out.println("\"" + value +"\"");
+            result += "\"" + value +"\"";
         }
         else{
-            System.out.println(value);
+            result += value.toString();
         }
+        return result;
     }
 
     public void printSimulationResult(DTOSimulationResult simulationResult) {
@@ -196,19 +197,20 @@ public class ConsoleUI implements MainUI{
         System.out.println();
         List<DTOSimulation> pastSimulations = new ArrayList<>(engine.getPastSimulations());
         menuHelper.printMenu(pastSimulations,
-                "Past Simulations:",
+                "Past Simulations",
                 object -> "Running date: " + ((DTOSimulation)object).getBeginTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss")) + "\n   Unique identifier: " + ((DTOSimulation)object).getId());
 
-        DTOSimulation simulation = pastSimulations.get(menuHelper.getSelectionForCollection(pastSimulations, "Select a simulation to display:"));
+        DTOSimulation simulation = pastSimulations.get(menuHelper.getSelectionForCollection(pastSimulations, "Select a simulation to display"));
         List<String> detailTypes = Arrays.asList(
                 "Amount of entities",
                 "Property value histogram");
         System.out.println();
         menuHelper.printMenu(detailTypes,
+                "Display Types",
                 Object::toString);
 
         System.out.println();
-        switch (menuHelper.getSelectionForCollection(detailTypes, "Select display type:")){
+        switch (menuHelper.getSelectionForCollection(detailTypes, "Select display type")){
             case 0:
                 System.out.println();
                 printEntityPopulation(engine.getDetailsByEntityCount(simulation.getId()));
@@ -217,17 +219,17 @@ public class ConsoleUI implements MainUI{
                 System.out.println();
                 List<DTOEntity> entities = new ArrayList<>(engine.getPastEntities(simulation.getId()));
                 menuHelper.printMenu(entities,
-                        "Entities:",
+                        "Entities",
                         object -> ((DTOEntity)object).getName());
-                int entityIndex = menuHelper.getSelectionForCollection(entities, "Select an entity:");
+                int entityIndex = menuHelper.getSelectionForCollection(entities, "Select an entity");
 
                 DTOEntity entity = entities.get(entityIndex);
                 System.out.println();
                 List<DTOProperty> properties = new ArrayList<>(engine.getPastEntityProperties(simulation.getId(), entity.getName()));
                 menuHelper.printMenu(properties,
-                        "Properties:",
+                        "Properties",
                         object -> ((DTOProperty)object).getName());
-                int propertyIndex = menuHelper.getSelectionForCollection(properties, "Select a property:");
+                int propertyIndex = menuHelper.getSelectionForCollection(properties, "Select a property");
                 System.out.println();
                 DTOProperty property = properties.get(propertyIndex);
                 DTOSimulationHistogram histogram = engine.getValuesForPropertyHistogram(simulation.getId(), property.getName());
@@ -243,8 +245,7 @@ public class ConsoleUI implements MainUI{
             System.out.println("No entities left with this property.");
         }
         for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()){
-            System.out.print(entry.getValue() + " instances where " + histogram.getPropertyName() + " is ");
-            printObjectByClass(entry.getKey());
+            System.out.println(entry.getValue() + " instances where " + histogram.getPropertyName() + " is " + formatValueByClass(entry.getKey()));
         }
     }
 
@@ -296,12 +297,10 @@ public class ConsoleUI implements MainUI{
         menu.add("Load");
 
         while (true) {
-            System.out.println();
-            System.out.println();
             menuHelper.printMenu(menu, "Main Menu", Object::toString);
             System.out.println();
             try {
-                int selection = menuHelper.getSelectionForCollection(menu, "Select an option:") + 1;
+                int selection = menuHelper.getSelectionForCollection(menu, "Select an option") + 1;
                 switch (selection){
                     case 1:
                         loadFile();
@@ -328,6 +327,8 @@ public class ConsoleUI implements MainUI{
             } catch (Exception e){
                 System.out.println("An error occurred: " + e.getMessage());
             }
+            System.out.println();
+            System.out.println();
         }
     }
 
