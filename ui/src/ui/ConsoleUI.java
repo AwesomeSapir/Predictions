@@ -103,7 +103,7 @@ public class ConsoleUI implements MainUI{
         boolean exit = environmentVariables.isEmpty();
         while (!exit) {
             System.out.println();
-            System.out.println("Select 0 to continue or an environment variable to initialize:");
+            System.out.print("Select 0 to continue or an environment variable to initialize: ");
             String input = scanner.nextLine();
             if (Validator.validate(input).isInteger().isInRange(0, environmentVariables.size()).isValid()) {
                 int selection = Integer.parseInt(input);
@@ -112,31 +112,33 @@ public class ConsoleUI implements MainUI{
                 } else {
                     DTOEnvironmentVariable environmentVariable = environmentVariables.get(selection - 1);
                     String type = environmentVariable.getType();
-                    System.out.println("Enter a value for the variable (" + type + "):");
-                    String strValue = scanner.nextLine();
+                    System.out.print("Enter a value for the variable (" + type + "): ");
                     Object value = null;
-                    Validator validator = Validator.validate(strValue);
-                    switch (type) {
-                        case "DECIMAL":
-                            if (validator.isInteger().isInRange(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo()).isValid()) {
-                                value = Integer.parseInt(strValue);
-                            }
-                            break;
-                        case "FLOAT":
-                            if (validator.isDouble().isInRange(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo()).isValid()) {
-                                value = Double.parseDouble(strValue);
-                            }
-                            break;
-                        case "STRING":
-                            if (validator.isValidString().isValid()) {
-                                value = strValue;
-                            }
-                            break;
-                        case "BOOLEAN":
-                            if (validator.isBoolean().isValid()) {
-                                value = Boolean.parseBoolean(strValue);
-                            }
-                            break;
+                    if(type.equals("BOOLEAN")){
+                        System.out.println();
+                        List<Boolean> booleans = Arrays.asList(true, false);
+                        menuHelper.printMenu(booleans, Object::toString);
+                        value = booleans.get(menuHelper.getSelectionForCollection(booleans, "Select a boolean value"));
+                    } else {
+                        String strValue = scanner.nextLine();
+                        Validator validator = Validator.validate(strValue);
+                        switch (type) {
+                            case "DECIMAL":
+                                if (validator.isInteger().isInRange(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo()).isValid()) {
+                                    value = Integer.parseInt(strValue);
+                                }
+                                break;
+                            case "FLOAT":
+                                if (validator.isDouble().isInRange(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo()).isValid()) {
+                                    value = Double.parseDouble(strValue);
+                                }
+                                break;
+                            case "STRING":
+                                if (validator.isValidString().isValid()) {
+                                    value = strValue;
+                                }
+                                break;
+                        }
                     }
                     if (value != null) {
                         newValues.add(new Pair<>(environmentVariable.getName(), value));

@@ -2,10 +2,6 @@ package engine;
 
 import dto.detail.*;
 import dto.simulation.*;
-import exception.xml.XMLNotFoundException;
-import javafx.util.Pair;
-import translation.xml.Translator;
-import translation.xml.XmlTranslator;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.definition.property.PropertyDefinition;
@@ -13,6 +9,9 @@ import engine.world.instance.entity.EntityInstance;
 import engine.world.rule.Rule;
 import engine.world.rule.action.Action;
 import engine.world.termination.Termination;
+import javafx.util.Pair;
+import translation.xml.Translator;
+import translation.xml.XmlTranslator;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -32,7 +31,7 @@ public class Engine implements EngineInterface, Serializable {
             simulation = new Simulation(getWorldFromFile(filepath));
             this.filepath = filepath;
         } catch (FileNotFoundException e) {
-            throw new XMLNotFoundException("Could not find a suitable XML file at path '" + filepath + "'");
+            throw new IllegalArgumentException("Could not find a suitable XML file at path '" + filepath + "'");
         } catch (JAXBException | InvalidClassException e) {
             throw new RuntimeException(e);
         }
