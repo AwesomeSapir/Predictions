@@ -201,8 +201,11 @@ public class ConsoleUI implements MainUI{
                 "Past Simulations",
                 object -> "Running date: " + ((DTOSimulation)object).getBeginTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss")) + "\n   Unique identifier: " + ((DTOSimulation)object).getId());
 
-        System.out.println();
-        DTOSimulation simulation = pastSimulations.get(menuHelper.getSelectionForCollection(pastSimulations, "Select a simulation to display"));
+        int pastSimulationIndex = menuHelper.getSelectionForCollection(pastSimulations, "Select a simulation to display");
+        if(pastSimulationIndex < 0){
+            return;
+        }
+        DTOSimulation simulation = pastSimulations.get(pastSimulationIndex);
         List<String> detailTypes = Arrays.asList(
                 "Amount of entities",
                 "Property value histogram");
@@ -226,7 +229,9 @@ public class ConsoleUI implements MainUI{
                         object -> ((DTOEntity)object).getName());
                 System.out.println();
                 int entityIndex = menuHelper.getSelectionForCollection(entities, "Select an entity");
-
+                if(entityIndex < 0){
+                    return;
+                }
                 DTOEntity entity = entities.get(entityIndex);
                 List<DTOProperty> properties = new ArrayList<>(engine.getPastEntityProperties(simulation.getId(), entity.getName()));
                 System.out.println();
@@ -235,6 +240,9 @@ public class ConsoleUI implements MainUI{
                         object -> ((DTOProperty)object).getName());
                 System.out.println();
                 int propertyIndex = menuHelper.getSelectionForCollection(properties, "Select a property");
+                if(propertyIndex < 0){
+                    return;
+                }
                 System.out.println();
                 DTOProperty property = properties.get(propertyIndex);
                 DTOSimulationHistogram histogram = engine.getValuesForPropertyHistogram(simulation.getId(), property.getName());

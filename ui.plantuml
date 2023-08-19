@@ -1,0 +1,42 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class ConsoleUI {
+  - menuHelper: MenuHelper
+  - engine: EngineInterface
+  - scanner: Scanner
+  + printSimulationResult(DTOSimulationResult): void
+  + printSimulationDetails(DTOSimulationDetails): void
+  + runSimulation(): void
+  + printEntityPopulation(Collection<DTOEntityPopulation>): void
+  + loadFile(): void
+  + load(): void
+  + exit(): void
+  + showSimulationDetails(): void
+  + formatValueByClass(Object): String
+  + showPastSimulation(): void
+  + save(): void
+  + printSimulationHistogram(DTOSimulationHistogram): void
+  + run(): void
+}
+class Main {
+  + main(String[]): void
+}
+interface MainUI << interface >> {
+  + run(): void
+}
+class MenuHelper {
+  - scanner: Scanner
+  + printMenu(Collection<?>, String, StringFunction): void
+  + getSelectionForCollection(Collection<?>, String): int
+  + printMenu(Collection<?>, StringFunction): void
+}
+interface StringFunction << interface >> {
+  + getText(Object): String
+}
+
+ConsoleUI       -[#008200,dashed]-^  MainUI         
+@enduml

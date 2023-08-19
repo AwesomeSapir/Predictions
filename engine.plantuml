@@ -1,0 +1,457 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class AbstractExpression {
+  # value: Object
+  - type: ExpressionType
+  + getType(): ExpressionType
+  + getValue(EntityInstance): Object
+}
+class AbstractNumericPropertyDefinition<T> {
+  - range: Range
+  + isNumeric(): boolean
+  + getRange(): Range
+}
+class AbstractPropertyDefinition<T> {
+  - valueGenerator: ValueGenerator<T>
+  - type: PropertyType
+  - isRandomInit: boolean
+  - name: String
+  + getType(): PropertyType
+  + isRandomInit(): boolean
+  + generateValue(): T
+  + isNumeric(): boolean
+  + getRange(): Range
+  + getName(): String
+}
+class Action {
+  # type: ActionType
+  # entityName: String
+  + execute(EntityInstance, Context): void
+  + getEntity(): String
+  + getType(): ActionType
+}
+class ActionCalc {
+  # resultPropertyName: String
+  # arg2: Expression
+  # arg1: Expression
+}
+class ActionCondition {
+  # actionsElse: List<Action>
+  # conditions: MultiCondition
+  # actionsThen: List<Action>
+  + execute(EntityInstance, Context): void
+}
+class ActionDecrease {
+  + execute(EntityInstance, Context): void
+}
+class ActionDivide {
+  + execute(EntityInstance, Context): void
+}
+class ActionIncrease {
+  + execute(EntityInstance, Context): void
+}
+class ActionKill {
+  + execute(EntityInstance, Context): void
+}
+class ActionMultiply {
+  + execute(EntityInstance, Context): void
+}
+class ActionSet {
+  + execute(EntityInstance, Context): void
+}
+enum ActionType << enumeration >> {
+  + kill: 
+  + calculation: 
+  + increase: 
+  + condition: 
+  + set: 
+  + decrease: 
+  + values(): ActionType[]
+  + valueOf(String): ActionType
+}
+class ActionValue {
+  # propertyName: String
+  # value: Expression
+  + getValue(): Expression
+  + getPropertyName(): String
+}
+class Activation {
+  - random: Random
+  # probability: double
+  # ticks: int
+  + getTicks(): int
+  + canBeActivated(int): boolean
+  + getProbability(): double
+  - sufficientProbability(): boolean
+}
+class ActiveEnvironment {
+  - envVariables: Map<String, PropertyInstance>
+  + initProperties(Collection<PropertyDefinition>): void
+  + getProperty(String): PropertyInstance
+  + addPropertyInstance(PropertyInstance): void
+}
+class BooleanPropertyDefinition
+class BySecond {
+  # count: long
+  + isMet(long): boolean
+  + getCount(): long
+}
+class ByTicks {
+  # count: long
+  + isMet(long): boolean
+  + getCount(): long
+}
+interface Condition << interface >> {
+  + evaluate(EntityInstance, Context): boolean
+}
+interface Context << interface >> {
+  + getPrimaryEntityDefinition(): EntityDefinition
+  + getPrimaryEntityInstances(): Collection<EntityInstance>
+  + getEnvironmentPropertyInstance(String): PropertyInstance
+  + removeEntity(EntityInstance): void
+}
+class DoublePropertyDefinition
+class Engine {
+  - simulation: SimulationInterface
+  - pastSimulations: Map<Integer, SimulationInterface>
+  - idCounter: int
+  - filepath: String
+  + saveToFile(String): void
+  - getEntity(EntityDefinition): DTOEntity
+  - archiveSimulation(): void
+  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
+  + getSimulationDetails(): DTOSimulationDetails
+  + getPastEntities(int): Collection<DTOEntity>
+  + getWorldFromFile(String): World
+  - getEntities(SimulationInterface): Collection<DTOEntity>
+  + runSimulation(): DTOSimulationResult
+  + setEnvironmentValues(Collection<Pair<String, Object>>): void
+  + getDetailsByEntityCount(int): Collection<DTOEntityPopulation>
+  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
+  + getPastSimulations(): Collection<DTOSimulation>
+  - isSimulationLoaded(): void
+  + loadFromFile(String): void
+  + loadXml(String): void
+  - getProperties(EntityDefinition): Collection<DTOProperty>
+  + getPastEntityProperties(int, String): Collection<DTOProperty>
+  + getValuesForPropertyHistogram(int, String): DTOSimulationHistogram
+}
+interface EngineInterface << interface >> {
+  + runSimulation(): DTOSimulationResult
+  + getValuesForPropertyHistogram(int, String): DTOSimulationHistogram
+  + getPastSimulations(): Collection<DTOSimulation>
+  + saveToFile(String): void
+  + setEnvironmentValues(Collection<Pair<String, Object>>): void
+  + loadFromFile(String): void
+  + loadXml(String): void
+  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
+  + getDetailsByEntityCount(int): Collection<DTOEntityPopulation>
+  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
+  + getPastEntityProperties(int, String): Collection<DTOProperty>
+  + getSimulationDetails(): DTOSimulationDetails
+  + getPastEntities(int): Collection<DTOEntity>
+}
+class EntityDefinition {
+  - name: String
+  - properties: Map<String, PropertyDefinition>
+  - population: int
+  + getProperties(): Map<String, PropertyDefinition>
+  + getName(): String
+  + getPopulation(): int
+}
+class EntityInstance {
+  - entityDefinition: EntityDefinition
+  - properties: Map<String, PropertyInstance>
+  + addPropertyInstance(PropertyInstance): void
+  + initProperties(): void
+  + getPropertyByName(String): PropertyInstance
+}
+class EntityPropertyExpression {
+  + getValue(EntityInstance): Object
+}
+class EnvironmentExpression {
+  - envPropertyInstance: PropertyInstance
+  + getValue(EntityInstance): Object
+}
+class EnvironmentManager {
+  - properties: Map<String, PropertyDefinition>
+  + getVariables(): Collection<PropertyDefinition>
+  + createActiveEnvironment(): ActiveEnvironment
+  + addEnvironmentVariable(PropertyDefinition): void
+}
+interface Expression << interface >> {
+  + getType(): ExpressionType
+  + getValue(EntityInstance): Object
+}
+enum ExpressionType << enumeration >> {
+  + ENTITY_PROPERTY: 
+  + AUXILIARY_FUNCTION: 
+  + FREE_VALUE: 
+  + values(): ExpressionType[]
+  + valueOf(String): ExpressionType
+}
+class FixedValueGenerator<T> {
+  - fixedValue: T
+  + generateValue(): T
+}
+class FreeValueExpression {
+  - value: Object
+  + getValue(EntityInstance): Object
+}
+enum FunctionType << enumeration >> {
+  + RANDOM: 
+  + ENVIRONMENT: 
+  + valueOf(String): FunctionType
+  + values(): FunctionType[]
+}
+class IntegerPropertyDefinition
+enum Logical << enumeration >> {
+  + and: 
+  + or: 
+  + values(): Logical[]
+  + valueOf(String): Logical
+}
+class MultiCondition {
+  # logical: Logical
+  # subConditions: List<Condition>
+  + evaluate(EntityInstance, Context): boolean
+}
+enum Operator << enumeration >> {
+  + neq: 
+  + eq: 
+  + bt: 
+  + lt: 
+  - operator: String
+  + values(): Operator[]
+  + valueOf(String): Operator
+  + fromDRP(String): Operator
+  + getOperator(): String
+}
+interface PropertyDefinition << interface >> {
+  + getName(): String
+  + getType(): PropertyType
+  + isRandomInit(): boolean
+  + generateValue(): Object
+  + isNumeric(): boolean
+  + getRange(): Range
+}
+class PropertyInstance {
+  - propertyDefinition: PropertyDefinition
+  - value: Object
+  + getValue(): Object
+  + getPropertyDefinition(): PropertyDefinition
+  + setValue(Object): void
+}
+enum PropertyType << enumeration >> {
+  + BOOLEAN: 
+  + DECIMAL: 
+  + FLOAT: 
+  + STRING: 
+  + values(): PropertyType[]
+  + valueOf(String): PropertyType
+}
+class RandomBooleanValueGenerator {
+  + generateValue(): Boolean
+}
+class RandomDoubleValueGenerator {
+  # from: Double
+  # to: Double
+  + generateValue(): Double
+}
+class RandomExpression {
+  - arg: int
+  - random: Random
+  + getValue(EntityInstance): Object
+  + getType(): ExpressionType
+}
+class RandomIntegerValueGenerator {
+  # from: Integer
+  # to: Integer
+  + generateValue(): Integer
+}
+class RandomStringValueGenerator {
+  - CHARACTERS: String
+  + generateValue(): String
+}
+class RandomValueGenerator<T> {
+  # random: Random
+}
+class Range {
+  # to: double
+  # from: double
+  + isInRange(double): boolean
+  + to(): double
+  + from(): double
+}
+class Rule {
+  # activation: Activation
+  # actions: List<Action>
+  # name: String
+  + getName(): String
+  + getActivation(): Activation
+  + getActions(): List<Action>
+}
+class Simulation {
+  - world: World
+  - id: int
+  - date: LocalDateTime
+  + getEnvironmentValue(String): Object
+  + getPrimaryEntityDefinition(): EntityDefinition
+  + getTermination(): Termination
+  + getDate(): LocalDateTime
+  + run(int): void
+  + getWorld(): World
+  + getId(): int
+  + setEnvironmentValue(String, Object): void
+}
+interface SimulationInterface << interface >> {
+  + setEnvironmentValue(String, Object): void
+  + getTermination(): Termination
+  + getId(): int
+  + run(int): void
+  + getWorld(): World
+  + getDate(): LocalDateTime
+  + getPrimaryEntityDefinition(): EntityDefinition
+  + getEnvironmentValue(String): Object
+}
+class SingleCondition {
+  # operator: Operator
+  # propertyName: String
+  # value: Expression
+  + evaluate(EntityInstance, Context): boolean
+}
+enum Singularity << enumeration >> {
+  + multiple: 
+  + single: 
+  + values(): Singularity[]
+  + valueOf(String): Singularity
+}
+class StringPropertyDefinition
+class Termination {
+  - isMetBySeconds: boolean
+  - bySecond: BySecond
+  - isMetByTicks: boolean
+  - byTicks: ByTicks
+  + isMetByTicks(): boolean
+  + getBySecond(): BySecond
+  + isMet(int, long): boolean
+  + isMetBySeconds(): boolean
+  + getByTicks(): ByTicks
+}
+interface TerminationCondition << interface >> {
+  + getCount(): long
+  + isMet(long): boolean
+}
+interface Translator << interface >> {
+  + getWorld(): World
+}
+class Validator {
+  - isValid: boolean
+  - input: String
+  + isValid(): boolean
+  + isInteger(): Validator
+  + isValidString(): Validator
+  + isInRange(Range): Validator
+  + validate(String): Validator
+  + isCompatibleWith(PropertyType, String): Validator
+  + isOnlyLetters(): Validator
+  + isBoolean(): Validator
+  + isInRange(double, double): Validator
+  + isDouble(): Validator
+}
+interface ValueGenerator<T> << interface >> {
+  + generateValue(): T
+}
+interface ValueGeneratorFactory << interface >> {
+  + createRandomInteger(Range): ValueGenerator<Integer>
+  + createFixed(T): ValueGenerator<T>
+  + createRandomString(): ValueGenerator<String>
+  + createRandomBoolean(): ValueGenerator<Boolean>
+  + createRandomDouble(Range): ValueGenerator<Double>
+}
+class World {
+  # environmentManager: EnvironmentManager
+  # primaryEntityDefinition: EntityDefinition
+  # termination: Termination
+  # rules: Map<String, Rule>
+  # activeEnvironment: ActiveEnvironment
+  # entityInstances: List<EntityInstance>
+  + removeEntity(EntityInstance): void
+  + getEnvironmentManager(): EnvironmentManager
+  + getRules(): Map<String, Rule>
+  + getPrimaryEntityDefinition(): EntityDefinition
+  + getPrimaryEntityInstances(): Collection<EntityInstance>
+  + getEnvironmentPropertyInstance(String): PropertyInstance
+  + getTermination(): Termination
+}
+class XmlTranslator {
+  - activeEnvironment: ActiveEnvironment
+  - entityInstances: List<EntityInstance>
+  - world: World
+  - prdWorld: PRDWorld
+  - primaryEntityDefinition: EntityDefinition
+  - termination: Termination
+  - environmentManager: EnvironmentManager
+  - JAXB_XML_GAME_PACKAGE_NAME: String
+  + getEntityDefinition(PRDEntity): EntityDefinition
+  + getActionIncrease(PRDAction): ActionIncrease
+  + getActionDecrease(PRDAction): ActionDecrease
+  + getByTicks(PRDByTicks): ByTicks
+  + getRule(PRDRule): Rule
+  + getSingleCondition(PRDCondition): SingleCondition
+  + getActionCondition(PRDAction): ActionCondition
+  + getWorld(): World
+  + getPropertyDefinition(PRDProperty): PropertyDefinition
+  + getExpression(String, PropertyDefinition): Expression
+  + getBySecond(PRDBySecond): BySecond
+  + getActionSet(PRDAction): ActionSet
+  + getMultiCondition(PRDCondition): MultiCondition
+  + getRange(PRDRange): Range
+  + getTermination(PRDTermination): Termination
+  + getActivation(PRDActivation): Activation
+  + getActionCalc(PRDAction): ActionCalc
+  + getEnvironmentManager(PRDEvironment): EnvironmentManager
+  + getActionKill(PRDAction): ActionKill
+  + getPropertyDefinitionByType(String, PropertyType, String, Range, boolean): PropertyDefinition
+  + getAction(PRDAction): Action
+}
+
+AbstractExpression                 -[#008200,dashed]-^  Expression                        
+AbstractNumericPropertyDefinition  -[#000082,plain]-^  AbstractPropertyDefinition        
+AbstractPropertyDefinition         -[#008200,dashed]-^  PropertyDefinition                
+ActionCalc                         -[#000082,plain]-^  Action                            
+ActionCondition                    -[#000082,plain]-^  Action                            
+ActionDecrease                     -[#000082,plain]-^  ActionValue                       
+ActionDivide                       -[#000082,plain]-^  ActionCalc                        
+ActionIncrease                     -[#000082,plain]-^  ActionValue                       
+ActionKill                         -[#000082,plain]-^  Action                            
+ActionMultiply                     -[#000082,plain]-^  ActionCalc                        
+ActionSet                          -[#000082,plain]-^  ActionValue                       
+ActionValue                        -[#000082,plain]-^  Action                            
+BooleanPropertyDefinition          -[#000082,plain]-^  AbstractPropertyDefinition        
+BySecond                           -[#008200,dashed]-^  TerminationCondition              
+ByTicks                            -[#008200,dashed]-^  TerminationCondition              
+DoublePropertyDefinition           -[#000082,plain]-^  AbstractNumericPropertyDefinition 
+Engine                             -[#008200,dashed]-^  EngineInterface                   
+EntityPropertyExpression           -[#000082,plain]-^  AbstractExpression                
+EnvironmentExpression              -[#000082,plain]-^  AbstractExpression                
+FixedValueGenerator                -[#008200,dashed]-^  ValueGenerator                    
+FreeValueExpression                -[#000082,plain]-^  AbstractExpression                
+IntegerPropertyDefinition          -[#000082,plain]-^  AbstractNumericPropertyDefinition 
+MultiCondition                     -[#008200,dashed]-^  Condition                         
+RandomBooleanValueGenerator        -[#000082,plain]-^  RandomValueGenerator              
+RandomDoubleValueGenerator         -[#000082,plain]-^  RandomValueGenerator              
+RandomExpression                   -[#000082,plain]-^  AbstractExpression                
+RandomIntegerValueGenerator        -[#000082,plain]-^  RandomValueGenerator              
+RandomStringValueGenerator         -[#000082,plain]-^  RandomValueGenerator              
+RandomValueGenerator               -[#008200,dashed]-^  ValueGenerator                    
+Simulation                         -[#008200,dashed]-^  SimulationInterface               
+SingleCondition                    -[#008200,dashed]-^  Condition                         
+StringPropertyDefinition           -[#000082,plain]-^  AbstractPropertyDefinition        
+World                              -[#008200,dashed]-^  Context                           
+XmlTranslator                      -[#008200,dashed]-^  Translator                        
+@enduml
