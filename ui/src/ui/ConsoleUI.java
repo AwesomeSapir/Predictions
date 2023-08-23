@@ -4,20 +4,27 @@ import dto.detail.*;
 import dto.simulation.*;
 import engine.Engine;
 import engine.EngineInterface;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 import validator.Validator;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class ConsoleUI implements MainUI{
+public class ConsoleUI extends Application implements MainUI{
 
-    private final Scanner scanner = new Scanner(System.in);
-    private final EngineInterface engine = new Engine();
-    private final MenuHelper menuHelper;
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        primaryStage.setTitle("Predictions");
 
-    public ConsoleUI() {
-        menuHelper = new MenuHelper(scanner);
+        Parent load = FXMLLoader.load(getClass().getResource("main/mainScreen.fxml"));
+        Scene scene = new Scene(load, 600, 400);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public void loadFile() {
@@ -301,52 +308,7 @@ public class ConsoleUI implements MainUI{
     }
 
     @Override
-    public void run() {
-        System.out.println();
-        List<String> menu = new ArrayList<>();
-        menu.add("Load XML File");
-        menu.add("Display Simulation Details");
-        menu.add("Run Simulation");
-        menu.add("Display Past Runs");
-        menu.add("Exit");
-        menu.add("Save");
-        menu.add("Load");
-
-        while (true) {
-            menuHelper.printMenu(menu, "Main Menu", Object::toString);
-            System.out.println();
-            try {
-                int selection = menuHelper.getSelectionForCollection(menu, "Select an option") + 1;
-                switch (selection){
-                    case 1:
-                        loadFile();
-                        break;
-                    case 2:
-                        showSimulationDetails();
-                        break;
-                    case 3:
-                        runSimulation();
-                        break;
-                    case 4:
-                        showPastSimulation();
-                        break;
-                    case 5:
-                        exit();
-                        break;
-                    case 6:
-                        save();
-                        break;
-                    case 7:
-                        load();
-                        break;
-                }
-            } catch (Exception e){
-                System.out.println();
-                System.out.println("An error occurred: " + e.getMessage());
-            }
-            System.out.println();
-            System.out.println();
-        }
+    public void run(String[] args) {
+        launch(args);
     }
-
 }

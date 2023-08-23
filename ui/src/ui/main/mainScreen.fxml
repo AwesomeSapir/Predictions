@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.main.MainController">
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+         <content>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Details">
+                     <content>
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                             <fx:include fx:id="tabDetails" source="../subcomponent/detail/tabDetails.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                         </AnchorPane>
+                     </content>
+                </Tab>
+                <Tab text="New Execution">
+                     <content>
+                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                             <fx:include fx:id="tabExecution" source="../subcomponent/execution/tabExecution.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                         </AnchorPane>
+                     </content>
+                </Tab>
+                  <Tab text="Results">
+                      <content>
+                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                              <fx:include fx:id="tabResults" source="../subcomponent/result/tabResults.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                          </AnchorPane>
+                      </content>
+                  </Tab>
+              </tabs>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </TabPane>
+         </content>
+      </ScrollPane>
+   </center>
+   <top>
+      <BorderPane prefHeight="83.0" prefWidth="483.0" BorderPane.alignment="CENTER">
+         <left>
+            <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseXMLFile" text="Load File" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="8.0" />
+               </BorderPane.margin>
+            </Button>
+         </left>
+         <right>
+            <Button fx:id="queueManagementButton" mnemonicParsing="false" text="Queue Management" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="8.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
+         <center>
+            <TextField fx:id="filePathTextField" editable="false" prefHeight="26.0" prefWidth="254.0" promptText="Current Loaded File Path" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="8.0" right="8.0" />
+               </BorderPane.margin>
+            </TextField>
+         </center>
+         <top>
+            <Label text="Predictions" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="8.0" />
+               </BorderPane.margin>
+            </Label>
+         </top>
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+         </padding>
+      </BorderPane>
+   </top>
+</BorderPane>

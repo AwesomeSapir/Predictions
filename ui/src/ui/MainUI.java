@@ -1,6 +1,5 @@
 package ui;
 
 public interface MainUI {
-
-    void run();
+    void run(String[] args);
 }
