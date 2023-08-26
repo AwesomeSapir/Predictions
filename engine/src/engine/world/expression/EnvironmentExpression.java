@@ -14,4 +14,9 @@ public class EnvironmentExpression extends AbstractExpression{
     public Object getValue(EntityInstance entityInstance) throws IllegalArgumentException {
         return envPropertyInstance.getValue();
     }
+
+    @Override
+    public String toString() {
+        return "environment(" + envPropertyInstance.getPropertyDefinition().getName() + ")";
+    }
 }

@@ -7,8 +7,6 @@ import java.io.Serializable;
 public abstract class AbstractExpression implements Expression, Serializable {
     private final ExpressionType type;
 
-    protected Object value;
-
     public AbstractExpression(ExpressionType type) {
         this.type = type;
     }
@@ -18,5 +16,4 @@ public abstract class AbstractExpression implements Expression, Serializable {
         return type;
     }
     public abstract Object getValue(EntityInstance entityInstance);
-
 }

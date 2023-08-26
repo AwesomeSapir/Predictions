@@ -10,9 +10,13 @@ public class FreeValueExpression extends AbstractExpression {
         this.value = value;
     }
 
-
     @Override
     public Object getValue(EntityInstance entityInstance) {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 }

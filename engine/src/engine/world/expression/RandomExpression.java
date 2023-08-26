@@ -20,6 +20,11 @@ public class RandomExpression extends AbstractExpression{
 
     @Override
     public ExpressionType getType() {
-        return null;
+        return ExpressionType.AUXILIARY_FUNCTION;
+    }
+
+    @Override
+    public String toString() {
+        return "random(" + arg + ")";
     }
 }

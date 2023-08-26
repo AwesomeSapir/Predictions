@@ -4,13 +4,20 @@ import engine.world.instance.entity.EntityInstance;
 
 public class EntityPropertyExpression extends AbstractExpression{
 
+    private final String propertyName;
+
     public EntityPropertyExpression(String propertyName){
         super(ExpressionType.ENTITY_PROPERTY);
-        value = propertyName;
+        this.propertyName = propertyName;
     }
 
     @Override
     public Object getValue(EntityInstance entityInstance) {
-        return entityInstance.getPropertyByName(value.toString()).getValue();
+        return entityInstance.getPropertyByName(propertyName).getValue();
+    }
+
+    @Override
+    public String toString() {
+        return propertyName;
     }
 }

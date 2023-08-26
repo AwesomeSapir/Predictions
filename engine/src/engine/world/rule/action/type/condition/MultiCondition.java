@@ -37,4 +37,25 @@ public class MultiCondition implements Condition, Serializable {
         }
         return overallResult;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        String logicalStr = "";
+        switch (logical){
+            case and:
+                logicalStr = " && ";
+                break;
+            case or:
+                logicalStr = " || ";
+                break;
+        }
+        int index = 0;
+        for (Condition condition : subConditions){
+            result.append(condition.toString()).append((index < subConditions.size() - 1) ? logicalStr : "");
+            index++;
+        }
+
+        return "(" + result + ")";
+    }
 }

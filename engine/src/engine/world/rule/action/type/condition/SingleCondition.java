@@ -46,4 +46,24 @@ public class SingleCondition implements Condition, Serializable {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        String operatorStr = "";
+        switch (operator){
+            case neq:
+                operatorStr = "!=";
+                break;
+            case eq:
+                operatorStr = "==";
+                break;
+            case bt:
+                operatorStr = ">";
+                break;
+            case lt:
+                operatorStr = "<";
+                break;
+        }
+        return propertyName + operatorStr + value.toString();
+    }
 }

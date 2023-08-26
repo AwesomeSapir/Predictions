@@ -16,4 +16,16 @@ public abstract class ActionCalc extends Action {
         this.arg1 = arg1;
         this.arg2 = arg2;
     }
+
+    public String getResultPropertyName() {
+        return resultPropertyName;
+    }
+
+    public Expression getArg1() {
+        return arg1;
+    }
+
+    public Expression getArg2() {
+        return arg2;
+    }
 }

@@ -1,6 +1,10 @@
 package engine;
 
 import dto.detail.*;
+import dto.detail.action.DTOAction;
+import dto.detail.action.DTOActionCalc;
+import dto.detail.action.DTOActionCondition;
+import dto.detail.action.DTOActionValue;
 import dto.simulation.*;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
@@ -8,6 +12,9 @@ import engine.world.definition.property.PropertyDefinition;
 import engine.world.instance.entity.EntityInstance;
 import engine.world.rule.Rule;
 import engine.world.rule.action.Action;
+import engine.world.rule.action.type.calculation.ActionCalc;
+import engine.world.rule.action.type.condition.ActionCondition;
+import engine.world.rule.action.type.value.ActionValue;
 import engine.world.termination.Termination;
 import javafx.util.Pair;
 import translation.xml.Translator;
@@ -154,17 +161,34 @@ public class Engine implements EngineInterface, Serializable {
 
         List<DTORule> rules = new ArrayList<>();
         for (Rule rule : simulation.getWorld().getRules().values()) {
-            List<String> actionNames = new ArrayList<>();
-            for (Action action : rule.getActions()) {
-                actionNames.add(action.getType().toString());
-            }
-            rules.add(new DTORule(rule.getName(), rule.getActivation().getTicks(), rule.getActivation().getProbability(), actionNames));
+            rules.add(new DTORule(rule.getName(), rule.getActivation().getTicks(), rule.getActivation().getProbability(), getActions(rule.getActions())));
         }
 
         DTOTermination termination = new DTOTermination(
                 Optional.ofNullable(simulation.getTermination().getBySecond()).map(o -> o.getCount()).orElse(null),
                 Optional.ofNullable(simulation.getTermination().getByTicks()).map(o -> (int) o.getCount()).orElse(null));
         return new DTOSimulationDetails(getEntities(simulation), rules, termination);
+    }
+
+    private Collection<DTOAction> getActions(Collection<Action> actions){
+        List<DTOAction> result = new ArrayList<>();
+        for (Action action : actions) {
+            DTOAction dtoAction;
+            if(action instanceof ActionValue){
+                ActionValue actionValue = (ActionValue) action;
+                dtoAction = new DTOActionValue(actionValue.getType().toString(), actionValue.getEntity(), actionValue.getPropertyName(), actionValue.getValue().toString());
+            } else if(action instanceof ActionCalc){
+                ActionCalc actionCalc = (ActionCalc) action;
+                dtoAction = new DTOActionCalc(actionCalc.getType().toString(), actionCalc.getEntity(), actionCalc.getResultPropertyName(), actionCalc.getArg1().toString(), actionCalc.getArg2().toString());
+            } else if(action instanceof ActionCondition){
+                ActionCondition actionCondition = (ActionCondition) action;
+                dtoAction = new DTOActionCondition(actionCondition.getType().toString(), actionCondition.getEntity(), actionCondition.getConditions().toString(), getActions(actionCondition.getActionsThen()), getActions(actionCondition.getActionsElse()));
+            } else {
+                dtoAction = new DTOAction(action.getType().toString(), action.getEntity());
+            }
+            result.add(dtoAction);
+        }
+        return result;
     }
 
     private void archiveSimulation() {

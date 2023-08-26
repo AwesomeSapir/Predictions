@@ -34,4 +34,16 @@ public class ActionCondition extends Action {
             }
         }
     }
+
+    public MultiCondition getConditions() {
+        return conditions;
+    }
+
+    public List<Action> getActionsThen() {
+        return actionsThen;
+    }
+
+    public List<Action> getActionsElse() {
+        return actionsElse;
+    }
 }
