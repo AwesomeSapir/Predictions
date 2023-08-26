@@ -1,7 +1,5 @@
 package ui;
 
-import dto.detail.*;
-import dto.simulation.*;
 import engine.Engine;
 import engine.EngineInterface;
 import javafx.application.Application;
@@ -9,24 +7,30 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-import validator.Validator;
-
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import ui.main.MainController;
 
 public class ConsoleUI extends Application implements MainUI{
+
+    private EngineInterface engine = new Engine();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Predictions");
 
-        Parent load = FXMLLoader.load(getClass().getResource("main/mainScreen.fxml"));
-        Scene scene = new Scene(load, 600, 400);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("main/mainScreen.fxml"));
+        Parent root = loader.load();
+
+        MainController mainController = loader.getController();
+        mainController.setEngine(engine);
+
+
+        Scene scene = new Scene(root, 600, 400);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    /*
     public void loadFile() {
         System.out.print("Enter the full path to the XML file: ");
         String filepath = scanner.nextLine();
@@ -306,6 +310,8 @@ public class ConsoleUI extends Application implements MainUI{
             System.out.println(e.getMessage());
         }
     }
+    */
+
 
     @Override
     public void run(String[] args) {

@@ -1,7 +1,8 @@
 package ui.main;
 
-import engine.Engine;
 import engine.EngineInterface;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,7 +15,9 @@ import java.io.File;
 
 public class MainController {
 
-    EngineInterface engine = new Engine();
+    private EngineInterface engine;
+    private SimpleBooleanProperty isFileSelected = new SimpleBooleanProperty(false);
+    private SimpleStringProperty filePath = new SimpleStringProperty();
 
     @FXML private BorderPane mainBorderPane;
     @FXML private Button chooseFileButton;
@@ -27,7 +30,23 @@ public class MainController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
 
         File selectedFile = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
-        filePathTextField.setText(selectedFile.getAbsolutePath());
+        //filePathTextField.setText(selectedFile.getAbsolutePath());
+        if(selectedFile == null){
+            return;
+        }
         engine.loadXml(selectedFile.getAbsolutePath());
+        isFileSelected.set(true);
+        filePath.set(selectedFile.getAbsolutePath());
+    }
+
+    @FXML
+    private void initialize() {
+        tabDetailsController.setIsFileSelected(isFileSelected);
+        filePathTextField.textProperty().bind(filePath);
+    }
+
+    public void setEngine(EngineInterface engine) {
+        this.engine = engine;
+        tabDetailsController.setEngine(engine);
     }
 }
