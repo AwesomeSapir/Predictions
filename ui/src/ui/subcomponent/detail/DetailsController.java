@@ -1,7 +1,6 @@
 package ui.subcomponent.detail;
 
-import dto.detail.DTOEntity;
-import dto.detail.DTOProperty;
+import dto.detail.*;
 import dto.simulation.DTOSimulationDetails;
 import engine.EngineInterface;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -27,6 +26,13 @@ public class DetailsController {
         TreeItem<String> branchRules = new TreeItem<>("Rules");
         TreeItem<String> branchTermination = new TreeItem<>("Termination");
 
+
+        List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>(engine.getEnvironmentDefinitions());
+        for(DTOEnvironmentVariable envVar: environmentVariables){
+            TreeItem<String> itemEnvVar = new TreeItem<>(envVar.getName());
+            branchEnvVars.getChildren().add(itemEnvVar);
+        }
+
         for (DTOEntity entity : simulationDetails.getEntities()) {
             TreeItem<String> itemEntity = new TreeItem<>(entity.getName());
             branchEntities.getChildren().add(itemEntity);
@@ -34,6 +40,29 @@ public class DetailsController {
             for (DTOProperty property : properties) {
                 itemEntity.getChildren().add(new TreeItem<>(property.getName()));
             }
+        }
+
+        for (DTORule rule : simulationDetails.getRules()) {
+            TreeItem<String> itemRule = new TreeItem<>(rule.getName());
+            branchRules.getChildren().add(itemRule);
+            for (String action : rule.getActions()) {
+                itemRule.getChildren().add(new TreeItem<>(action));
+            }
+        }
+
+        DTOTermination termination = simulationDetails.getTermination();
+
+        if (termination.getTicks() != null) {
+            TreeItem<String> itemTermination = new TreeItem<>("Ticks");
+            TreeItem<String> ticksAmount = new TreeItem<>(termination.getTicks().toString());
+            itemTermination.getChildren().add(ticksAmount);
+            branchTermination.getChildren().add(itemTermination);
+        }
+        if (termination.getSeconds() != null) {
+            TreeItem<String> itemTermination = new TreeItem<>("Seconds");
+            TreeItem<String> secondsAmount = new TreeItem<>(termination.getSeconds().toString());
+            itemTermination.getChildren().add(secondsAmount);
+            branchTermination.getChildren().add(itemTermination);
         }
 
         rootItem.getChildren().addAll(branchEnvVars, branchEntities, branchRules, branchTermination);
