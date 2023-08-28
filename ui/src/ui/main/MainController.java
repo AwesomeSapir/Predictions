@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import ui.subcomponent.detail.DetailsController;
+import ui.subcomponent.execution.ExecutionController;
 
 import java.io.File;
 
@@ -23,6 +24,7 @@ public class MainController {
     @FXML private Button chooseFileButton;
     @FXML private TextField filePathTextField;
     @FXML private DetailsController tabDetailsController;
+    @FXML private ExecutionController tabExecutionController;
 
     @FXML
     void chooseXMLFile(ActionEvent event){
@@ -37,16 +39,23 @@ public class MainController {
         engine.loadXml(selectedFile.getAbsolutePath());
         isFileSelected.set(true);
         filePath.set(selectedFile.getAbsolutePath());
-    }
 
-    @FXML
-    private void initialize() {
-        tabDetailsController.setIsFileSelected(isFileSelected);
-        filePathTextField.textProperty().bind(filePath);
+        tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
     }
 
     public void setEngine(EngineInterface engine) {
         this.engine = engine;
         tabDetailsController.setEngine(engine);
+    }
+
+    @FXML
+    public void initialize() {
+        tabDetailsController.setIsFileSelected(isFileSelected);
+        if(tabExecutionController == null){
+            System.out.println("INIT NULL");
+        } else {
+            System.out.println("INIT NOT NULL");
+        }
+        filePathTextField.textProperty().bind(filePath);
     }
 }
