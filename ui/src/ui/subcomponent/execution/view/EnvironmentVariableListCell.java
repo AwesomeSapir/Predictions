@@ -26,6 +26,9 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
     @FXML public Label labelMin;
     @FXML public Label labelMax;
 
+    private double minValue;
+    private double maxValue;
+
     @FXML public ToggleSwitch toggleSwitchBoolean;
 
 
@@ -36,10 +39,9 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
 
     private Parent layout;
 
-    private boolean isNumericType;
-
+    private boolean isDecimalType;
+    private boolean isFloatType;
     private boolean isBooleanType;
-
     private boolean isStringType;
 
 
@@ -50,13 +52,7 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
 
     @FXML
     public void initialize(){
-        if (isNumericType) {
-            // Set up UI components and bindings for numeric type
-            Bindings.bindBidirectional(textFieldAmount.textProperty(), sliderAmount.valueProperty(), new NumberStringConverter());
-            labelMin.textProperty().bind(sliderAmount.minProperty().asString());
-            labelMax.textProperty().bind(sliderAmount.maxProperty().asString());
-        }
-        else if(isBooleanType){
+        if(isBooleanType){
             // Listen to the selected property of the toggle switch
             toggleSwitchBoolean.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
@@ -78,6 +74,23 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
                 validStringProperty.set(Validator.validate(newValue).isValidString().isValid());
             });
         }
+
+        else{
+            sliderAmount.setMin(minValue);
+            sliderAmount.setMax(maxValue);
+            // Set up UI components and bindings for numeric type
+            if(isDecimalType){
+                //Trying to make the labels to represent integer values
+                /*labelMin.setText(String.valueOf(Integer.parseInt(labelMin.getText())));
+                labelMax.setText(String.valueOf(Integer.parseInt(labelMax.getText())));*/
+
+                sliderAmount.valueProperty().addListener((obs, oldval, newVal) ->
+                        sliderAmount.setValue(newVal.intValue()));
+            }
+            Bindings.bindBidirectional(textFieldAmount.textProperty(), sliderAmount.valueProperty(), new NumberStringConverter());
+            labelMin.textProperty().bind(sliderAmount.minProperty().asString());
+            labelMax.textProperty().bind(sliderAmount.maxProperty().asString());
+        }
     }
 
     @Override
@@ -88,9 +101,15 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
             setGraphic(null);
             return;
         }
-        isNumericType = "DECIMAL".equals(item.getType()) || "FLOAT".equals(item.getType());
+        isDecimalType = "DECIMAL".equals(item.getType());
+        isFloatType = "FLOAT".equals(item.getType());
         isBooleanType = "BOOLEAN".equals(item.getType());
         isStringType = "STRING".equals(item.getType());
+
+        if(isDecimalType || isFloatType){
+            minValue = item.getRange().getFrom();
+            maxValue = item.getRange().getTo();
+        }
 
         String fxmlFileName = getFxmlFileNameForType(item.getType());
         loadFxmlLayout(fxmlFileName);
@@ -104,7 +123,7 @@ public class EnvironmentVariableListCell extends ListCell<DTOEnvironmentVariable
     private String getFxmlFileNameForType(String type) {
         if (isBooleanType) {
             return "viewItemBoolean.fxml";
-        } else if (isNumericType) {
+        } else if (isDecimalType || isFloatType) {
             return "viewItemNumeric.fxml";
         } else if (isStringType) {
             return "viewItemString.fxml";
