@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ui.main.MainController;
 
+import java.util.Objects;
+
 public class ConsoleUI extends Application implements MainUI{
 
     private EngineInterface engine = new Engine();
@@ -26,6 +28,8 @@ public class ConsoleUI extends Application implements MainUI{
 
 
         Scene scene = new Scene(root, 600, 400);
+        scene.getStylesheets().add(
+                Objects.requireNonNull(getClass().getResource("main/main.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

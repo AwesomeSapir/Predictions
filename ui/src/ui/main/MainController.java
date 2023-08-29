@@ -41,6 +41,7 @@ public class MainController {
         filePath.set(selectedFile.getAbsolutePath());
 
         tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
+        tabExecutionController.setEnvironmentVariables(engine.getEnvironmentDefinitions());
     }
 
     public void setEngine(EngineInterface engine) {

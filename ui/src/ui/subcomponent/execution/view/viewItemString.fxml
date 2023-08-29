@@ -24,8 +24,8 @@
             <Font size="14.0" />
         </font>
     </Label>
-    <TextField fx:id="textFieldAmount" alignment="CENTER" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-   <Label text="Error" textFill="RED" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
+    <TextField fx:id="textFieldString" alignment="CENTER" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+   <Label fx:id="labelError" text="Invalid String" textFill="RED" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
       <GridPane.margin>
          <Insets top="8.0" />
       </GridPane.margin>
