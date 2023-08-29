@@ -5,16 +5,17 @@ import dto.detail.DTOEnvironmentVariable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import ui.subcomponent.execution.view.EntityListCell;
-import ui.subcomponent.execution.view.EnvironmentVariableListCell;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.VBox;
+import ui.customcomponent.view.EntityPopulationView;
+import ui.customcomponent.view.EnvironmentVariableView;
 
 import java.util.Collection;
 
 public class ExecutionController {
-
-    @FXML public ListView<DTOEntity> listEntityPopulations;
-    @FXML public ListView<DTOEnvironmentVariable> listEnvironmentVariables;
+    @FXML public VBox vboxEntityPopulation;
+    @FXML public VBox vboxEnvVariables;
 
     private ObservableList<DTOEntity> entities;
 
@@ -24,20 +25,25 @@ public class ExecutionController {
     public void initialize(){
         entities = FXCollections.observableArrayList();
         environmentVariables = FXCollections.observableArrayList();
-
-        listEntityPopulations.setCellFactory(param -> new EntityListCell());
-        listEntityPopulations.setItems(entities);
-
-        listEnvironmentVariables.setCellFactory(param -> new EnvironmentVariableListCell());
-        listEnvironmentVariables.setItems(environmentVariables);
-
     }
 
     public void setEntities(Collection<DTOEntity> entities) {
+        this.entities.clear();
         this.entities.addAll(entities);
+        for (DTOEntity entity : entities){
+            vboxEntityPopulation.getChildren().addAll(
+                    new EntityPopulationView(entity),
+                    new Separator(Orientation.HORIZONTAL));
+        }
     }
 
     public void setEnvironmentVariables(Collection<DTOEnvironmentVariable> environmentVariables) {
+        this.environmentVariables.clear();
         this.environmentVariables.addAll(environmentVariables);
+        for (DTOEnvironmentVariable environmentVariable : environmentVariables){
+            vboxEnvVariables.getChildren().addAll(
+                    new EnvironmentVariableView(environmentVariable).getView(),
+                    new Separator(Orientation.HORIZONTAL));
+        }
     }
 }

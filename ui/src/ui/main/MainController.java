@@ -52,11 +52,6 @@ public class MainController {
     @FXML
     public void initialize() {
         tabDetailsController.setIsFileSelected(isFileSelected);
-        if(tabExecutionController == null){
-            System.out.println("INIT NULL");
-        } else {
-            System.out.println("INIT NOT NULL");
-        }
         filePathTextField.textProperty().bind(filePath);
     }
 }
