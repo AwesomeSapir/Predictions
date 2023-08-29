@@ -1,4 +1,86 @@
-.root {
-    -fx-background-color: #00b7ff;
-    -fx-fill: #818181;
+* {
+    -primary-background: #212121;
+    -secondary-background: #01579B;
+    -secondary-light: #B3E5FC;
+    -primary-fill: #607D8B;
+    -primary-text: #FAFAFA;
+    -accent-fill: #0091EA;
+    -border-color: #40C4FF;
+    -seperator-color: #424242;
+    -seperator-width: 1;
+}
+
+.root,
+.tab-pane,
+.tab-pane > .tab-header-area,
+.tab-pane > .tab-content-area,
+.tab-pane > .tab-header-area > .tab-header-background,
+.tab-pane > .tab-header-area > .headers-region,
+.tab,
+.scroll-pane,
+.tree-view,
+.tree-cell {
+    -fx-background-color: -primary-background;
+    -fx-text-fill: -primary-text;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected .focus-indicator {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: -accent-fill;
+    -fx-border-width: 4px;
+    -fx-border-radius: 16px 16px 0 0;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: transparent;
+}
+
+.button {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -accent-fill;
+    -fx-border-radius: 50%;
+    -fx-border-width: 4px;
+    -fx-background-color: -primary-background;
+    -fx-font-weight: bold;
+}
+
+.tree-cell:expanded > .tree-disclosure-node .arrow,
+.tree-cell > .tree-disclosure-node .arrow {
+    -fx-background-color: -primary-text;
+}
+
+.label, .button {
+    -fx-text-fill: -primary-text;
+}
+
+.table-row-cell{
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-border-width: 4px;
+}
+
+.table-cell{
+    -fx-background-color: transparent;
+    -fx-border-width: 4px;
+    -fx-text-fill: -primary-text;
+}
+
+.table-view,
+.column-header,
+.filler {
+    -fx-background-color: -primary-background;
+    -fx-border-color: -seperator-color;
+    -fx-border-width: 1px;
+    -fx-text-fill: -primary-text;
+}
+
+.split-pane .split-pane-divider{
+    -fx-background-color: -secondary-background;
 }
