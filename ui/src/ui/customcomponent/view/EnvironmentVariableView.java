@@ -16,7 +16,7 @@ public class EnvironmentVariableView  {
         switch (environmentVariable.getType()){
             case "DECIMAL":
             case "FLOAT":
-                view = new NumericItemView();
+                view = new NumericItemView(Double.MIN_VALUE, Double.MAX_VALUE);
                 if(environmentVariable.getRange() != null) {
                     ((NumericItemView) view).setRange(environmentVariable.getRange());
                 }

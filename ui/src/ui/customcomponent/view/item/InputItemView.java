@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
+import java.net.URL;
 
 public abstract class InputItemView<T> extends GridPane {
 
@@ -16,13 +17,15 @@ public abstract class InputItemView<T> extends GridPane {
     protected SimpleBooleanProperty isValid;
     protected ObjectProperty<T> value;
 
-    public InputItemView(String fxmlPath) {
+    public InputItemView() {
         super();
         title = new SimpleStringProperty();
         isValid = new SimpleBooleanProperty(true);
         value = new SimpleObjectProperty<>();
+    }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+    protected void load(URL fxmlPath){
+        FXMLLoader fxmlLoader = new FXMLLoader(fxmlPath);
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
         try {

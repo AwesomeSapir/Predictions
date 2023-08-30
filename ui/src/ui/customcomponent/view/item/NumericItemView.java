@@ -20,8 +20,11 @@ public class NumericItemView extends InputItemView<Double> {
     protected SimpleDoubleProperty min;
     protected SimpleDoubleProperty max;
 
-    public NumericItemView() {
-        super("/ui/customcomponent/view/item/viewItemNumeric.fxml");
+    public NumericItemView(double min, double max){
+        super();
+        this.min = new SimpleDoubleProperty(min);
+        this.max = new SimpleDoubleProperty(max);
+        load(getClass().getResource("/ui/customcomponent/view/item/viewItemNumeric.fxml"));
     }
 
     public void setRange(DTORange range){
@@ -47,16 +50,13 @@ public class NumericItemView extends InputItemView<Double> {
         }
         value.set(min.getValue());
         value.bindBidirectional(sliderAmount.valueProperty().asObject());
-        textFieldAmount.textProperty().bindBidirectional(value, new DoubleStringConverter());
+        Bindings.bindBidirectional(textFieldAmount.textProperty(), value, new DoubleStringConverter());
         System.out.println("set value to " + min.get());
     }
 
     @FXML
     public void initialize(){
         super.initialize();
-        min = new SimpleDoubleProperty(Double.MIN_VALUE);
-        max = new SimpleDoubleProperty(Double.MAX_VALUE);
-
         clear();
 
         sliderAmount.minProperty().bind(min);

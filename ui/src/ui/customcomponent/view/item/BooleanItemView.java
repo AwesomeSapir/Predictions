@@ -12,7 +12,8 @@ public class BooleanItemView extends InputItemView<Boolean> {
     @FXML protected Label labelText;
 
     public BooleanItemView() {
-        super("/ui/customcomponent/view/item/viewItemBoolean.fxml");
+        super();
+        load(getClass().getResource("/ui/customcomponent/view/item/viewItemBoolean.fxml"));
     }
 
     @Override

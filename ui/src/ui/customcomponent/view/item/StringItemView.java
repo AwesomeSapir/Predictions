@@ -16,7 +16,9 @@ public class StringItemView extends InputItemView<String> {
     protected Validator validator;
 
     public StringItemView() {
-        super("/ui/customcomponent/view/item/viewItemString.fxml");
+        super();
+        isValid = new SimpleBooleanProperty(true);
+        load(getClass().getResource("/ui/customcomponent/view/item/viewItemString.fxml"));
     }
 
     public void setValidator(Validator validator) {
@@ -36,7 +38,6 @@ public class StringItemView extends InputItemView<String> {
     @FXML
     public void initialize(){
         super.initialize();
-        isValid = new SimpleBooleanProperty(true);
         clear();
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             isValid.set(Validator.validate(newValue).isValidString().isValid());
