@@ -28,7 +28,8 @@ public class StringItemView extends InputItemView<String> {
         if(value.isBound()){
             value.unbind();
         }
-        value.set("");
+        textField.textProperty().set("");
+        isValid.set(true);
         value.bind(textField.textProperty());
     }
 

@@ -47,7 +47,7 @@ public class NumericItemView extends InputItemView<Double> {
         }
         value.set(min.getValue());
         value.bindBidirectional(sliderAmount.valueProperty().asObject());
-        Bindings.bindBidirectional(textFieldAmount.textProperty(), sliderAmount.valueProperty(), new NumberStringConverter());
+        textFieldAmount.textProperty().bindBidirectional(value, new DoubleStringConverter());
         System.out.println("set value to " + min.get());
     }
 

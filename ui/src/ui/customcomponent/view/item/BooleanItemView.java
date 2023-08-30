@@ -20,7 +20,7 @@ public class BooleanItemView extends InputItemView<Boolean> {
         if (value.isBound()){
             value.unbind();
         }
-        value.set(true);
+        toggleSwitch.selectedProperty().set(true);
         value.bind(toggleSwitch.selectedProperty());
     }
 
