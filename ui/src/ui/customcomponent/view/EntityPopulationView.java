@@ -10,6 +10,8 @@ public class EntityPopulationView extends NumericItemView {
     public EntityPopulationView(DTOEntity entity) {
         this.entity = entity;
         title.set(entity.getName());
+        min.set(0);
+        max.set(1000); //TODO
     }
 
     public void setEntity(DTOEntity entity) {

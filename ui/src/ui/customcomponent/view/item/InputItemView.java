@@ -1,6 +1,6 @@
 package ui.customcomponent.view.item;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -8,15 +8,19 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 
-public abstract class InputItemView extends GridPane {
+public abstract class InputItemView<T> extends GridPane {
 
     @FXML private Label labelTitle;
 
     protected SimpleStringProperty title;
+    protected SimpleBooleanProperty isValid;
+    protected ObjectProperty<T> value;
 
     public InputItemView(String fxmlPath) {
         super();
         title = new SimpleStringProperty();
+        isValid = new SimpleBooleanProperty(true);
+        value = new SimpleObjectProperty<>();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
         fxmlLoader.setController(this);
@@ -31,6 +35,24 @@ public abstract class InputItemView extends GridPane {
     public void setTitle(String title) {
         this.title.set(title);
     }
+
+    public boolean isValid() {
+        return isValid.get();
+    }
+
+    public SimpleBooleanProperty isValidProperty() {
+        return isValid;
+    }
+
+    public Object getValue() {
+        return value.get();
+    }
+
+    public ObjectProperty<T> valueProperty() {
+        return value;
+    }
+
+    public abstract void clear();
 
     @FXML
     public void initialize(){

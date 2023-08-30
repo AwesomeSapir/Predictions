@@ -8,9 +8,9 @@
 
     <bottom>
         <AnchorPane minHeight="-Infinity" prefHeight="64.0" prefWidth="599.0" BorderPane.alignment="CENTER">
-            <Button layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="Clear"
+            <Button fx:id="buttonClear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="Clear"
                     AnchorPane.leftAnchor="14.0"/>
-            <Button layoutX="544.0" layoutY="19.0" mnemonicParsing="false" text="Start"
+            <Button fx:id="buttonStart" layoutX="544.0" layoutY="19.0" mnemonicParsing="false" text="Start"
                     AnchorPane.rightAnchor="14.400000000000091"/>
         </AnchorPane>
     </bottom>

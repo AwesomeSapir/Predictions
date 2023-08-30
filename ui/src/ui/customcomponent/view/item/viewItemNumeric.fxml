@@ -25,8 +25,8 @@
             <Font size="14.0"/>
         </font>
     </Label>
-    <Slider fx:id="sliderAmount" blockIncrement="1.0" majorTickUnit="1.0" max="1000.0" minorTickCount="0"
-            prefHeight="14.0" prefWidth="57.0" snapToTicks="true" value="500.0" GridPane.columnSpan="2"
+    <Slider fx:id="sliderAmount" blockIncrement="1.0" majorTickUnit="1.0" minorTickCount="0"
+            prefHeight="14.0" prefWidth="57.0" snapToTicks="true" GridPane.columnSpan="2"
             GridPane.rowIndex="1"/>
     <TextField fx:id="textFieldAmount" alignment="CENTER" promptText="Value" GridPane.columnIndex="2"
                GridPane.rowIndex="1"/>

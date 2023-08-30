@@ -6,26 +6,28 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.controlsfx.control.ToggleSwitch;
 
-public class BooleanItemView extends InputItemView {
+public class BooleanItemView extends InputItemView<Boolean> {
 
     @FXML protected ToggleSwitch toggleSwitch;
     @FXML protected Label labelText;
-
-    protected SimpleBooleanProperty isEnabled;
 
     public BooleanItemView() {
         super("/ui/customcomponent/view/item/viewItemBoolean.fxml");
     }
 
-    public boolean isEnabled() {
-        return isEnabled.get();
+    @Override
+    public void clear() {
+        if (value.isBound()){
+            value.unbind();
+        }
+        value.set(true);
+        value.bind(toggleSwitch.selectedProperty());
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        isEnabled = new SimpleBooleanProperty(true);
-        BidirectionalBinding.bind(toggleSwitch.selectedProperty(), isEnabled);
-        labelText.textProperty().bind(isEnabled.asString());
+        clear();
+        labelText.textProperty().bind(value.asString());
     }
 }

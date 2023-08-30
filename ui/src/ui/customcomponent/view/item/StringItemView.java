@@ -7,13 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import validator.Validator;
 
-public class StringItemView extends InputItemView {
+public class StringItemView extends InputItemView<String> {
 
     @FXML private TextField textField;
     @FXML private Label labelError;
 
     protected SimpleStringProperty title;
-    protected SimpleBooleanProperty isInputValid;
     protected Validator validator;
 
     public StringItemView() {
@@ -24,18 +23,24 @@ public class StringItemView extends InputItemView {
         this.validator = validator;
     }
 
+    @Override
+    public void clear() {
+        if(value.isBound()){
+            value.unbind();
+        }
+        value.set("");
+        value.bind(textField.textProperty());
+    }
+
     @FXML
     public void initialize(){
         super.initialize();
-        isInputValid = new SimpleBooleanProperty(true);
+        isValid = new SimpleBooleanProperty(true);
+        clear();
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isInputValid.set(Validator.validate(newValue).isValidString().isValid());
-            if(!isInputValid.get()){
-                textField.textProperty().set(oldValue);
-            }
+            isValid.set(Validator.validate(newValue).isValidString().isValid());
         });
-        labelError.visibleProperty().bind(isInputValid.not());
+        labelError.visibleProperty().bind(isValid.not());
         labelError.setText("Invalid characters, only A-Z, a-z, 0-9 are allowed.");
     }
-
 }

@@ -47,6 +47,14 @@ public class MainController {
     public void setEngine(EngineInterface engine) {
         this.engine = engine;
         tabDetailsController.setEngine(engine);
+
+        //TODO deltetetetetete before submitting
+        engine.loadXml("C:\\Users\\melch\\Downloads\\master-ex1.xml");
+        isFileSelected.set(true);
+        filePath.set("C:\\Users\\melch\\Downloads\\master-ex1.xml");
+
+        tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
+        tabExecutionController.setEnvironmentVariables(engine.getEnvironmentDefinitions());
     }
 
     @FXML

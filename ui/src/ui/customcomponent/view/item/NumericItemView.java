@@ -7,24 +7,25 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.NumberStringConverter;
 
-public class NumericItemView extends InputItemView {
+public class NumericItemView extends InputItemView<Double> {
 
     @FXML protected Slider sliderAmount;
     @FXML protected TextField textFieldAmount;
     @FXML protected Label labelMin;
     @FXML protected Label labelMax;
 
-    private SimpleDoubleProperty min;
-    private SimpleDoubleProperty max;
-    private SimpleDoubleProperty amount;
+    protected SimpleDoubleProperty min;
+    protected SimpleDoubleProperty max;
 
     public NumericItemView() {
         super("/ui/customcomponent/view/item/viewItemNumeric.fxml");
     }
 
     public void setRange(DTORange range){
+        System.out.println("setRange");
         setMin(range.getFrom());
         setMax(range.getTo());
     }
@@ -37,34 +38,41 @@ public class NumericItemView extends InputItemView {
         this.max.set(max);
     }
 
-    public double getAmount() {
-        return amount.get();
+    @Override
+    public void clear() {
+        System.out.println("in numeric clear");
+        if(value.isBound()){
+            value.unbindBidirectional(sliderAmount.valueProperty().asObject());
+            textFieldAmount.textProperty().unbindBidirectional(value);
+        }
+        value.set(min.getValue());
+        value.bindBidirectional(sliderAmount.valueProperty().asObject());
+        Bindings.bindBidirectional(textFieldAmount.textProperty(), sliderAmount.valueProperty(), new NumberStringConverter());
+        System.out.println("set value to " + min.get());
     }
 
     @FXML
     public void initialize(){
         super.initialize();
+        min = new SimpleDoubleProperty(Double.MIN_VALUE);
+        max = new SimpleDoubleProperty(Double.MAX_VALUE);
 
-        min = new SimpleDoubleProperty(0);
-        max = new SimpleDoubleProperty(1000);
-        amount = new SimpleDoubleProperty((min.get() + max.get())/2);
+        clear();
 
-        min.addListener((observable, oldValue, newValue) -> {
-            if(amount.lessThan(newValue.doubleValue()).get()){
-                amount.setValue(newValue);
-            }
-        });
-        max.addListener((observable, oldValue, newValue) -> {
-            if(amount.greaterThan(newValue.doubleValue()).get()){
-                amount.setValue(newValue);
-            }
-        });
-
-        Bindings.bindBidirectional(amount, sliderAmount.valueProperty());
-        Bindings.bindBidirectional(textFieldAmount.textProperty(), amount, new NumberStringConverter());
         sliderAmount.minProperty().bind(min);
         sliderAmount.maxProperty().bind(max);
         labelMin.textProperty().bind(min.asString());
         labelMax.textProperty().bind(max.asString());
+
+        min.addListener((observable, oldValue, newValue) -> {
+            if(value.get() < newValue.doubleValue()){
+                value.setValue(newValue.doubleValue());
+            }
+        });
+        max.addListener((observable, oldValue, newValue) -> {
+            if(value.get() > newValue.doubleValue()){
+                value.setValue(newValue.doubleValue());
+            }
+        });
     }
 }
