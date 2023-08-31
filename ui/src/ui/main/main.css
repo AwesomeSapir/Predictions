@@ -1,16 +1,17 @@
 * {
     -primary-background: #212121;
-    -secondary-background: #01579B;
+    -secondary-background: #424242;
+    -secondary-accent: #01579B;
     -secondary-light: #B3E5FC;
     -primary-fill: #607D8B;
     -primary-text: #FAFAFA;
     -secondary-text: #9E9E9E;
-    -accent-fill: #0091EA;
+    -primary-accent: #0091EA;
     -border-color: #40C4FF;
     -seperator-color: #424242;
     -seperator-width: 1;
     -error: #FF1744;
-    -textfield-background: #424242;
+    -interact-background: #424242;
 }
 
 .root,
@@ -37,9 +38,9 @@ VBox,
 
 .tab-pane .tab:selected {
     -fx-background-color: transparent;
-    -fx-border-color: -accent-fill;
-    -fx-border-width: 4px;
-    -fx-border-radius: 16px 16px 0 0;
+    -fx-border-color: -primary-accent;
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
 }
 
 .tab-pane .tab:selected .tab-label {
@@ -48,37 +49,38 @@ VBox,
 }
 
 .tab-pane .tab-label {
+    -fx-font-weight: bold;
     -fx-text-fill: -primary-text;
     -fx-border-color: transparent;
 }
 
 .tab {
-    -fx-background-color: -secondary-background;
-    -fx-background-radius: 16px 16px 0 0;
+    -fx-background-color: -secondary-accent;
+    -fx-background-radius: 16px;
 }
 
 .button {
     -fx-text-fill: -primary-text;
-    -fx-border-color: -accent-fill;
+    -fx-border-color: -primary-accent;
     -fx-border-radius: 50%;
-    -fx-border-width: 4px;
+    -fx-border-width: 2px;
     -fx-background-color: -primary-background;
     -fx-font-weight: bold;
 }
 
 .text-field {
-    -fx-background-color: -textfield-background;
+    -fx-background-color: -interact-background;
     -fx-background-radius: 12px;
     -fx-border-radius: 8px;
-    -fx-border-color: -accent-fill;
-    -fx-border-width: 4px;
+    -fx-border-color: -primary-accent;
+    -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
     -fx-prompt-text-fill: -secondary-text;
 }
 
 .tree-cell:expanded > .tree-disclosure-node .arrow,
 .tree-cell > .tree-disclosure-node .arrow {
-    -fx-background-color: -primary-text;
+    -fx-background-color: -primary-accent;
 }
 
 .label, .button {
@@ -86,14 +88,14 @@ VBox,
 }
 
 .table-row-cell{
-    -fx-background-color: -secondary-background;
+    -fx-background-color: -secondary-accent;
     -fx-background-radius: 16px;
-    -fx-border-width: 4px;
+    -fx-border-width: 2px;
 }
 
 .table-cell{
     -fx-background-color: transparent;
-    -fx-border-width: 4px;
+    -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
 }
 
@@ -106,8 +108,18 @@ VBox,
     -fx-text-fill: -primary-text;
 }
 
+.split-pane{
+    -fx-background-color: -primary-background;
+    -fx-border-color: -secondary-background;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-padding: 4px;
+}
 .split-pane .split-pane-divider{
-    -fx-background-color: -secondary-background;
+    -fx-background-color: -secondary-accent;
+    -fx-max-width: 4px;
+    -fx-min-width: 4px;
+    -fx-pref-width: 4px;
 }
 
 #labelError {
@@ -121,7 +133,69 @@ VBox,
 
 .separator,
 .separator .line{
-    -fx-background-color: -seperator-color;
     -fx-border-color: -seperator-color;
-    -fx-pref-height: -seperator-width;
+    -fx-border-width: 0.5;
+}
+
+.slider .track{
+    -fx-background-color: -interact-background;
+}
+.slider .thumb{
+    -fx-background-color: -primary-accent;
+}
+
+.toggle-switch:selected .thumb-area {
+    -fx-background-color: -secondary-accent;
+}
+
+.toggle-switch .thumb-area {
+    -fx-background-color: -interact-background;
+}
+
+.toggle-switch .thumb ,
+.toggle-switch:selected .thumb{
+    -fx-background-color: -primary-accent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -secondary-accent;
+    -fx-background-radius: 16px;
+}
+
+.scroll-bar,
+.scroll-bar .track {
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 16px;
+}
+
+.corner{
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 0.0 10.0 0.0;
+
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 10.0 0.0 0.0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.15em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.0 0.15em;
 }
