@@ -19,6 +19,7 @@ public class StringItemView extends InputItemView<String> {
         super();
         isValid = new SimpleBooleanProperty(true);
         load(getClass().getResource("/ui/customcomponent/view/item/viewItemString.fxml"));
+        labelError.setText("Invalid characters, only A-Z, a-z, 0-9 are allowed.");
     }
 
     public void setValidator(Validator validator) {
@@ -27,22 +28,21 @@ public class StringItemView extends InputItemView<String> {
 
     @Override
     public void clear() {
-        if(value.isBound()){
-            value.unbind();
-        }
         textField.textProperty().set("");
-        isValid.set(true);
-        value.bind(textField.textProperty());
+    }
+
+    @Override
+    protected void bind() {
+        super.bind();
+        value.bindBidirectional(textField.textProperty());
+        labelError.visibleProperty().bind(isValid.not());
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            isValid.set(Validator.validate(newValue).isValidString().isValid());
+        });
     }
 
     @FXML
     public void initialize(){
         super.initialize();
-        clear();
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isValid.set(Validator.validate(newValue).isValidString().isValid());
-        });
-        labelError.visibleProperty().bind(isValid.not());
-        labelError.setText("Invalid characters, only A-Z, a-z, 0-9 are allowed.");
     }
 }

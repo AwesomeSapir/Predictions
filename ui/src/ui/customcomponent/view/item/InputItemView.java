@@ -57,8 +57,13 @@ public abstract class InputItemView<T> extends GridPane {
 
     public abstract void clear();
 
+    protected void bind(){
+        labelTitle.textProperty().bind(title);
+    }
+
     @FXML
     public void initialize(){
-        labelTitle.textProperty().bind(title);
+        bind();
+        clear();
     }
 }

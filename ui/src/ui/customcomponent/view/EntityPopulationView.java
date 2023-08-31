@@ -19,6 +19,16 @@ public class EntityPopulationView extends NumericItemView {
     }
 
     @Override
+    public void clear() {
+        super.clear();
+    }
+
+    @Override
+    protected void bind() {
+        super.bind();
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
     }

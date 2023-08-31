@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root type="javafx.scene.layout.GridPane" hgap="8.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -24,7 +24,7 @@
             <Font size="14.0" />
         </font>
     </Label>
-    <TextField fx:id="textField" alignment="CENTER" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+    <TextField fx:id="textField" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
    <Label fx:id="labelError" text="Error" textFill="RED" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
       <GridPane.margin>
          <Insets top="8.0" />

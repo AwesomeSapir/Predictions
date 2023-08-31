@@ -1,7 +1,5 @@
 package ui.customcomponent.view.item;
 
-import com.sun.javafx.binding.BidirectionalBinding;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import org.controlsfx.control.ToggleSwitch;
@@ -18,17 +16,19 @@ public class BooleanItemView extends InputItemView<Boolean> {
 
     @Override
     public void clear() {
-        if (value.isBound()){
-            value.unbind();
-        }
         toggleSwitch.selectedProperty().set(true);
-        value.bind(toggleSwitch.selectedProperty());
+
+    }
+
+    @Override
+    protected void bind() {
+        super.bind();
+        value.bindBidirectional(toggleSwitch.selectedProperty());
+        labelText.textProperty().bind(value.asString());
     }
 
     @Override
     public void initialize() {
         super.initialize();
-        clear();
-        labelText.textProperty().bind(value.asString());
     }
 }
