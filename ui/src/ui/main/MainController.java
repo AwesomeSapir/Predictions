@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import ui.subcomponent.detail.DetailsController;
 import ui.subcomponent.execution.ExecutionController;
+import ui.subcomponent.result.ResultsController;
 
 import java.io.File;
 
@@ -25,6 +26,8 @@ public class MainController {
     @FXML private TextField filePathTextField;
     @FXML private DetailsController tabDetailsController;
     @FXML private ExecutionController tabExecutionController;
+
+    @FXML private ResultsController tabResultController;
 
     @FXML
     void chooseXMLFile(ActionEvent event){
@@ -55,6 +58,7 @@ public class MainController {
 
         tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
         tabExecutionController.setEnvironmentVariables(engine.getEnvironmentDefinitions());
+
     }
 
     @FXML
