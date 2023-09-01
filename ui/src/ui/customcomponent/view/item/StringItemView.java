@@ -19,7 +19,7 @@ public class StringItemView extends InputItemView<String> {
         super();
         isValid = new SimpleBooleanProperty(true);
         load(getClass().getResource("/ui/customcomponent/view/item/viewItemString.fxml"));
-        labelError.setText("Invalid characters, only A-Z, a-z, 0-9 are allowed.");
+        labelError.setText("Invalid input. The possible characters are: A-Z, a-z, 0-9, white space, the following: !?,_-().");
     }
 
     public void setValidator(Validator validator) {

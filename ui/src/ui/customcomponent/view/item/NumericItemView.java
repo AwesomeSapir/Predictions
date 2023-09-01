@@ -1,13 +1,14 @@
 package ui.customcomponent.view.item;
 
 import dto.detail.DTORange;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import validator.Validator;
 
 public class NumericItemView extends InputItemView<Double> {
 
@@ -16,6 +17,8 @@ public class NumericItemView extends InputItemView<Double> {
     @FXML protected Label labelMin;
     @FXML protected Label labelMax;
 
+    @FXML private Label labelErrorNumeric;
+
     protected SimpleDoubleProperty min;
     protected SimpleDoubleProperty max;
 
@@ -23,7 +26,9 @@ public class NumericItemView extends InputItemView<Double> {
         super();
         this.min = new SimpleDoubleProperty(min);
         this.max = new SimpleDoubleProperty(max);
+        isValid = new SimpleBooleanProperty(true);
         load(getClass().getResource("/ui/customcomponent/view/item/viewItemNumeric.fxml"));
+        labelErrorNumeric.setText("Invalid value. The range values is: '" + min + "-" + max + "'");
     }
 
     public void setRange(DTORange range){
@@ -52,7 +57,20 @@ public class NumericItemView extends InputItemView<Double> {
         sliderAmount.valueProperty().addListener((observable, oldValue, newValue) -> {
             textFieldAmount.textProperty().set(String.format("%.1f", newValue.doubleValue()));
         });
+       /* textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty()) {
+                if (Double.parseDouble(newValue) < min.get()) {
+                    sliderAmount.valueProperty().set(min.getValue());
+                } else if (Double.parseDouble(newValue) > max.get()) {
+                    sliderAmount.valueProperty().set(max.getValue());
+                } else {
+                    sliderAmount.valueProperty().set(Double.parseDouble(newValue));
+                }
+            }
+        });*/
+
         textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            isValid.set(Validator.validate(newValue).isInRange(min.doubleValue(),max.doubleValue()).isValid());
             if(!newValue.isEmpty()) {
                 if (Double.parseDouble(newValue) < min.get()) {
                     sliderAmount.valueProperty().set(min.getValue());
@@ -64,16 +82,15 @@ public class NumericItemView extends InputItemView<Double> {
             }
         });
 
-        min.addListener((observable, oldValue, newValue) -> {
-            if(value.get() < newValue.doubleValue()){
-                value.setValue(newValue.doubleValue());
-            }
-        });
-        max.addListener((observable, oldValue, newValue) -> {
-            if(value.get() > newValue.doubleValue()){
-                value.setValue(newValue.doubleValue());
-            }
-        });
+        // Bind style based on isValid
+        textFieldAmount.styleProperty().bind(Bindings.when(isValid)
+                .then("")
+                .otherwise("-fx-text-fill: red; -fx-focus-color: red;"));
+
+        labelErrorNumeric.visibleProperty().bind(isValid.not());
+
+
+
 
         sliderAmount.minProperty().bind(min);
         sliderAmount.maxProperty().bind(max);
@@ -87,4 +104,5 @@ public class NumericItemView extends InputItemView<Double> {
     public void initialize(){
         super.initialize();
     }
+
 }

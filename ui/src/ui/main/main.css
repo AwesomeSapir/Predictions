@@ -12,6 +12,7 @@
     -seperator-width: 1;
     -error: #FF1744;
     -interact-background: #424242;
+    -button-hover: #377e35;
 }
 
 .root,
@@ -29,6 +30,19 @@ VBox,
     -fx-background-color: -primary-background;
     -fx-text-fill: -primary-text;
     -fx-border-color: transparent;
+}
+
+#labelErrorNumeric{
+    -fx-text-fill: -error;
+}
+
+#labelError {
+    -fx-text-fill: -error;
+}
+
+#labelTitle {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
 }
 
 .tab-pane .tab:selected .focus-indicator {
@@ -66,6 +80,11 @@ VBox,
     -fx-border-width: 2px;
     -fx-background-color: -primary-background;
     -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-border-color: -button-hover;
+    -fx-scale-y: 1.1;
 }
 
 .text-field {
@@ -120,15 +139,6 @@ VBox,
     -fx-max-width: 4px;
     -fx-min-width: 4px;
     -fx-pref-width: 4px;
-}
-
-#labelError {
-    -fx-text-fill: -error;
-}
-
-#labelTitle {
-    -fx-font-weight: bold;
-    -fx-font-size: 18px;
 }
 
 .separator,
@@ -199,3 +209,4 @@ VBox,
     -fx-shape : " ";
     -fx-padding :0.0 0.15em;
 }
+
