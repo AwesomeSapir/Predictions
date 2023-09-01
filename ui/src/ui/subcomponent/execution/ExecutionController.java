@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import ui.customcomponent.view.EntityPopulationView;
 import ui.customcomponent.view.EnvironmentVariableView;
 import ui.customcomponent.view.item.InputItemView;
+import ui.main.MainController;
 
 import java.util.Collection;
 
@@ -34,10 +35,17 @@ public class ExecutionController {
 
     private ObservableList<DTOEnvironmentVariable> environmentVariables;
 
+    private MainController mainController; // Add a reference to MainController
+
     @FXML
     public void initialize() {
         entities = FXCollections.observableArrayList();
         environmentVariables = FXCollections.observableArrayList();
+    }
+
+    // Add a method to set the reference
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     public void setEntities(Collection<DTOEntity> entities) {
@@ -86,7 +94,9 @@ public class ExecutionController {
         if (hasInvalidItem) {
             showErrorAlert("Invalid Items", "There are invalid items on the form.");
         } else {
-            showConfirmationAlert("Success", "Everything is fine.");
+            showConfirmationAlert("Success", "The simulation is loaded.");
+            // Call the method to switch to the Results tab in MainController
+            mainController.switchToResultsTab();
         }
     }
 
@@ -110,14 +120,10 @@ public class ExecutionController {
     }
 
     private void showConfirmationAlert(String title, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(contentText);
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                // User clicked OK, you can perform any desired action here
-            }
-        });
+        alert.showAndWait();
     }
 }
