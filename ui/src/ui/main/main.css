@@ -146,7 +146,6 @@ VBox,
     -fx-background-radius: 8px;
     -fx-background-color: -interact-background;
     -fx-padding: 8px;
-    -fx-text-alignment: center;
 }
 
 .separator,

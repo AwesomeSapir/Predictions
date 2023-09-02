@@ -7,7 +7,7 @@ import org.controlsfx.control.ToggleSwitch;
 public class BooleanItemView extends InputItemView<Boolean> {
 
     @FXML protected ToggleSwitch toggleSwitch;
-    @FXML protected Label labelText;
+    @FXML protected Label labelValue;
 
     public BooleanItemView() {
         super();
@@ -24,7 +24,7 @@ public class BooleanItemView extends InputItemView<Boolean> {
     protected void bind() {
         super.bind();
         value.bindBidirectional(toggleSwitch.selectedProperty());
-        labelText.textProperty().bind(value.asString());
+        labelValue.textProperty().bind(value.asString());
     }
 
     @Override
