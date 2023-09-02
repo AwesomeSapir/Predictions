@@ -1,9 +1,9 @@
 package ui.customcomponent.view;
 
 import dto.detail.DTOEntity;
-import ui.customcomponent.view.item.NumericItemView;
+import ui.customcomponent.view.item.RangedNumericItemView;
 
-public class EntityPopulationView extends NumericItemView {
+public class EntityPopulationView extends RangedNumericItemView {
 
     private DTOEntity entity;
 

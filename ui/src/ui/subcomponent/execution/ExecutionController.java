@@ -2,6 +2,8 @@ package ui.subcomponent.execution;
 
 import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
+import dto.simulation.DTOSimulationResult;
+import engine.EngineInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,17 +11,19 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import ui.customcomponent.view.EntityPopulationView;
 import ui.customcomponent.view.EnvironmentVariableView;
 import ui.customcomponent.view.item.InputItemView;
+import ui.customcomponent.view.item.TextInputItemView;
 import ui.main.MainController;
-import ui.customcomponent.view.item.StringItemView;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ExecutionController {
     @FXML
@@ -37,11 +41,17 @@ public class ExecutionController {
 
     private MainController mainController; // Add a reference to MainController
 
+    private EngineInterface engine;
+
     @FXML
     public void initialize() {
         entities = FXCollections.observableArrayList();
         environmentVariables = FXCollections.observableArrayList();
         buttonClear.setOnMouseClicked(this::clearClicked);
+    }
+
+    public void setEngine(EngineInterface engine) {
+        this.engine = engine;
     }
 
     // Add a method to set the reference
@@ -94,8 +104,23 @@ public class ExecutionController {
             showErrorAlert("Invalid Items", "There are invalid items on the form.");
         } else {
             showConfirmationAlert("Success", "The simulation is loaded.");
-            // Call the method to switch to the Results tab in MainController
+            List<Pair<String, Object>> envValues = new ArrayList<>();
+            for (Node view : vboxEnvVariables.getChildren()) {
+                if (view instanceof InputItemView<?>) {
+                    if (view instanceof TextInputItemView){
+                        if(((TextInputItemView) view).getTextField().getText().isEmpty()){
+
+                        }
+                    }
+                    Pair<String, Object> pair = new Pair<>(((InputItemView<?>) view).getTitle(), ((InputItemView<?>) view).getValue());
+                    envValues.add(pair);
+                }
+            }
+            engine.setEnvironmentValues(envValues);
+            DTOSimulationResult simulationResult = engine.runSimulation();
+            // TODO update simulation with our values
             mainController.switchToResultsTab();
+            mainController.passSimulationResult(simulationResult);
         }
     }
 

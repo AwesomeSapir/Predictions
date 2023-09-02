@@ -47,7 +47,7 @@ public abstract class InputItemView<T> extends GridPane {
         return isValid;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value.get();
     }
 

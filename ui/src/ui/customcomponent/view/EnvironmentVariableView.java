@@ -1,11 +1,7 @@
 package ui.customcomponent.view;
 
 import dto.detail.DTOEnvironmentVariable;
-import ui.customcomponent.view.item.BooleanItemView;
-import ui.customcomponent.view.item.InputItemView;
-import ui.customcomponent.view.item.NumericItemView;
-import ui.customcomponent.view.item.StringItemView;
-import ui.validation.Validator;
+import ui.customcomponent.view.item.*;
 
 public class EnvironmentVariableView  {
 
@@ -18,16 +14,16 @@ public class EnvironmentVariableView  {
             case "DECIMAL":
             case "FLOAT":
                 if(environmentVariable.getRange() != null) {
-                    view = new NumericItemView(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo());
+                    view = new RangedNumericItemView(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo());
                 } else {
-                    view = new StringItemView(Validator.create().isDouble(), "Invalid input. Must be a number.");
+                    view = new NumericItemView();
                 }
                 break;
             case "BOOLEAN":
                 view = new BooleanItemView();
                 break;
             case "STRING":
-                view = new StringItemView(Validator.create().isValidString(), "Invalid input. The possible characters are: A-Z, a-z, 0-9, white space, the following: !?,_-().");
+                view = new StringItemView();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid variable type: " + environmentVariable.getType());

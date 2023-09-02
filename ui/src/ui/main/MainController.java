@@ -1,5 +1,6 @@
 package ui.main;
 
+import dto.simulation.DTOSimulationResult;
 import engine.EngineInterface;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -30,7 +31,7 @@ public class MainController {
     @FXML private DetailsController tabDetailsController;
     @FXML private ExecutionController tabExecutionController;
 
-    @FXML private ResultsController tabResultController;
+    @FXML private ResultsController tabResultsController;
 
     @FXML private Tab tabResultsID;
 
@@ -55,6 +56,7 @@ public class MainController {
     public void setEngine(EngineInterface engine) {
         this.engine = engine;
         tabDetailsController.setEngine(engine);
+        tabExecutionController.setEngine(engine);
 
         //TODO deltetetetetete before submitting
         engine.loadXml("C:\\Users\\melch\\Downloads\\master-ex1.xml");
@@ -63,7 +65,6 @@ public class MainController {
 
         tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
         tabExecutionController.setEnvironmentVariables(engine.getEnvironmentDefinitions());
-
     }
 
     @FXML
@@ -76,5 +77,9 @@ public class MainController {
 
     public void switchToResultsTab() {
         mainTabPane.getSelectionModel().select(tabResultsID); // Switch to tabResultController
+    }
+
+    public void passSimulationResult(DTOSimulationResult simulationResult) {
+        tabResultsController.setSimulationResult(simulationResult);
     }
 }

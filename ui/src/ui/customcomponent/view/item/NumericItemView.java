@@ -1,74 +1,20 @@
 package ui.customcomponent.view.item;
 
-import dto.detail.DTORange;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import ui.validation.Validator;
 
-public class NumericItemView extends InputItemView<Double> {
+public class NumericItemView extends TextInputItemView<Double>{
 
-    @FXML protected Slider sliderAmount;
-    @FXML protected Label labelMin;
-    @FXML protected Label labelMax;
-    @FXML private Label labelValue;
-
-    protected SimpleDoubleProperty min;
-    protected SimpleDoubleProperty max;
-
-    public NumericItemView(double min, double max){
-        super();
-        this.min = new SimpleDoubleProperty(min);
-        this.max = new SimpleDoubleProperty(max);
-        isValid = new SimpleBooleanProperty(true);
-        load(getClass().getResource("/ui/customcomponent/view/item/viewItemNumeric.fxml"));
-    }
-
-    public void setRange(DTORange range){
-        setMin(range.getFrom());
-        setMax(range.getTo());
-    }
-
-    public void setMin(double min) {
-        this.min.set(min);
-    }
-
-    public void setMax(double max) {
-        this.max.set(max);
+    public NumericItemView() {
+        super(Validator.create().isDouble(), "Invalid input. Must be a number.");
     }
 
     @Override
     public void clear() {
-        sliderAmount.valueProperty().setValue(min.getValue());
+        textField.setText("0");
     }
 
     @Override
-    protected void bind() {
-        super.bind();
-        value.bindBidirectional(sliderAmount.valueProperty().asObject());
-        labelValue.textProperty().bind(sliderAmount.valueProperty().asString("%.1f"));
-
-        sliderAmount.minProperty().bind(min);
-        sliderAmount.maxProperty().bind(max);
-        labelMin.textProperty().bind(min.asString());
-        labelMax.textProperty().bind(max.asString());
-
-        min.addListener((observable, oldValue, newValue) -> {
-            if(value.get() < newValue.doubleValue()){
-                value.setValue(newValue.doubleValue());
-            }
-        });
-        max.addListener((observable, oldValue, newValue) -> {
-            if(value.get() > newValue.doubleValue()){
-                value.setValue(newValue.doubleValue());
-            }
-        });
+    public Double getValue() {
+        return Double.parseDouble(textField.textProperty().get());
     }
-
-    @FXML
-    public void initialize(){
-        super.initialize();
-    }
-
 }
