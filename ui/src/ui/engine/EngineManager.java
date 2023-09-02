@@ -18,7 +18,7 @@ import java.util.Collection;
 
 public class EngineManager {
 
-    private final EngineInterface engine;
+    public final EngineInterface engine;
     private final ObservableList<DTOSimulationResult> simulations = FXCollections.observableArrayList();
 
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
@@ -30,6 +30,7 @@ public class EngineManager {
 
     public void loadSimulation(File file){
         engine.loadXml(file.getAbsolutePath());
+        isSimulationLoaded.set(false);
         isSimulationLoaded.set(true);
         simulationPath.set(file.getAbsolutePath());
     }

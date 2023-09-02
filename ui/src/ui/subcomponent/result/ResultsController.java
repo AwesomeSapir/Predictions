@@ -1,5 +1,6 @@
 package ui.subcomponent.result;
 
+import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationResult;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -29,6 +30,12 @@ public class ResultsController {
         }
         if (simulationResult.isByTicks()) {
             result += " by ticks\n";
+        }
+
+        for (DTOEntityPopulation entityPopulation : engineManager.engine.getDetailsByEntityCount(simulationResult.getId())){
+            result +="\nEntity Name: " + entityPopulation.getEntity().getName();
+            result +="\nInitial Quantity: " + entityPopulation.getInitialPopulation();
+            result +="\nFinal Quantity: " + entityPopulation.getFinalPopulation();
         }
         textResult.textProperty().set(result);
     }
