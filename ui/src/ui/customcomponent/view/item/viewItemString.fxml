@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
 <fx:root hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -25,7 +28,7 @@
         </font>
     </Label>
     <TextField fx:id="textField" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-   <Label fx:id="labelError" text="Error" textFill="RED" minWidth="Infinity" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
+   <Label fx:id="labelError" minWidth="100.0" text="Error" textFill="RED" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
       <GridPane.margin>
          <Insets top="8.0" />
       </GridPane.margin>
