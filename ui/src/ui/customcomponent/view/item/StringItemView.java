@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import validator.Validator;
+import ui.validation.Validator;
 
 public class StringItemView extends InputItemView<String> {
 
@@ -14,10 +14,11 @@ public class StringItemView extends InputItemView<String> {
     protected SimpleStringProperty title;
     protected Validator validator;
 
-    public StringItemView() {
+    public StringItemView(Validator validator, String errorMessage) {
         super();
+        this.validator = validator;
         load(getClass().getResource("/ui/customcomponent/view/item/viewItemString.fxml"));
-        labelError.setText("Invalid input. The possible characters are: A-Z, a-z, 0-9, white space, the following: !?,_-().");
+        labelError.setText(errorMessage);
     }
 
     public void setValidator(Validator validator) {
@@ -35,7 +36,7 @@ public class StringItemView extends InputItemView<String> {
         value.bind(textField.textProperty());
         labelError.visibleProperty().bind(isValid.not());
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            isValid.set(Validator.validate(newValue).isValidString().isValid());
+            isValid.set(newValue.isEmpty() || validator.validate(newValue));
         });
     }
 
