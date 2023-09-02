@@ -2,10 +2,6 @@ package ui.subcomponent.execution;
 
 import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
-import dto.simulation.DTOSimulationResult;
-import engine.EngineInterface;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -19,10 +15,10 @@ import ui.customcomponent.view.EntityPopulationView;
 import ui.customcomponent.view.EnvironmentVariableView;
 import ui.customcomponent.view.item.InputItemView;
 import ui.customcomponent.view.item.TextInputItemView;
+import ui.engine.EngineManager;
 import ui.main.MainController;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class ExecutionController {
@@ -35,50 +31,47 @@ public class ExecutionController {
     @FXML
     public Button buttonStart;
 
-    private ObservableList<DTOEntity> entities;
-
-    private ObservableList<DTOEnvironmentVariable> environmentVariables;
-
     private MainController mainController; // Add a reference to MainController
 
-    private EngineInterface engine;
+    private EngineManager engineManager;
 
     @FXML
     public void initialize() {
-        entities = FXCollections.observableArrayList();
-        environmentVariables = FXCollections.observableArrayList();
         buttonClear.setOnMouseClicked(this::clearClicked);
     }
 
-    public void setEngine(EngineInterface engine) {
-        this.engine = engine;
+    public void setEngineManager(EngineManager engineManager) {
+        this.engineManager = engineManager;
+        engineManager.isSimulationLoadedProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("simulation loaded changed to: " + newValue);
+            if (newValue) {
+                populateEntities();
+                populateEnvVariables();
+            }
+        });
     }
 
-    // Add a method to set the reference
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
-    }
-
-    public void setEntities(Collection<DTOEntity> entities) {
-        this.entities.clear();
+    public void populateEntities(){
         vboxEntityPopulation.getChildren().clear();
-        this.entities.addAll(entities);
-        for (DTOEntity entity : entities) {
+        for (DTOEntity entity : engineManager.getSimulationDetails().getEntities()) {
             vboxEntityPopulation.getChildren().addAll(
                     new EntityPopulationView(entity),
                     new Separator(Orientation.HORIZONTAL));
         }
     }
 
-    public void setEnvironmentVariables(Collection<DTOEnvironmentVariable> environmentVariables) {
-        this.environmentVariables.clear();
+    public void populateEnvVariables(){
         vboxEnvVariables.getChildren().clear();
-        this.environmentVariables.addAll(environmentVariables);
-        for (DTOEnvironmentVariable environmentVariable : environmentVariables) {
+        for (DTOEnvironmentVariable environmentVariable : engineManager.getEnvironmentDefinitions()) {
             vboxEnvVariables.getChildren().addAll(
                     new EnvironmentVariableView(environmentVariable).getView(),
                     new Separator(Orientation.HORIZONTAL));
         }
+    }
+
+    // Add a method to set the reference
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     public void clearClicked(MouseEvent mouseEvent) {
@@ -116,11 +109,9 @@ public class ExecutionController {
                     envValues.add(pair);
                 }
             }
-            engine.setEnvironmentValues(envValues);
-            DTOSimulationResult simulationResult = engine.runSimulation();
-            // TODO update simulation with our values
+            engineManager.setEnvironmentValues(envValues);
+            engineManager.runSimulation();
             mainController.switchToResultsTab();
-            mainController.passSimulationResult(simulationResult);
         }
     }
 

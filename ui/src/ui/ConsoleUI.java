@@ -1,19 +1,18 @@
 package ui;
 
-import engine.Engine;
-import engine.EngineInterface;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ui.engine.EngineManager;
 import ui.main.MainController;
 
 import java.util.Objects;
 
 public class ConsoleUI extends Application implements MainUI{
 
-    private EngineInterface engine = new Engine();
+    private EngineManager engineManager = new EngineManager();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -24,11 +23,10 @@ public class ConsoleUI extends Application implements MainUI{
         Parent root = loader.load();
 
         MainController mainController = loader.getController();
-        mainController.setEngine(engine);
+        mainController.setEngineManager(engineManager);
 
         Scene scene = new Scene(root, 600, 400);
-        scene.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("main/main.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("main/main.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
