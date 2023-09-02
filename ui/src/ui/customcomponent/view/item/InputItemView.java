@@ -1,18 +1,27 @@
 package ui.customcomponent.view.item;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Random;
 
 public abstract class InputItemView<T> extends GridPane {
 
     @FXML private Label labelTitle;
 
+    @FXML protected Button buttonRandom;
+
+    protected Random random = new Random();
     protected SimpleStringProperty title;
     protected SimpleBooleanProperty isValid;
     protected ObjectProperty<T> value;
@@ -65,9 +74,12 @@ public abstract class InputItemView<T> extends GridPane {
 
     public abstract void clear();
 
-    protected void bind(){
+    protected void bind() {
         labelTitle.textProperty().bind(title);
+        buttonRandom.setOnMouseClicked(this::clickRandom);
     }
+
+    protected abstract void clickRandom(MouseEvent event);
 
     @FXML
     public void initialize(){

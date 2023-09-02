@@ -2,10 +2,11 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root hgap="8.0" type="javafx.scene.layout.GridPane" vgap="8.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -16,9 +17,9 @@
         <RowConstraints vgrow="SOMETIMES" />
         <RowConstraints vgrow="SOMETIMES" />
     </rowConstraints>
-    <Label fx:id="labelTitle" text="Title">
+    <Label fx:id="labelTitle" alignment="CENTER" text="Title" GridPane.columnSpan="2" GridPane.valignment="CENTER">
         <GridPane.margin>
-            <Insets bottom="8.0" />
+            <Insets />
         </GridPane.margin>
         <font>
             <Font size="14.0" />
@@ -28,6 +29,11 @@
     <Label fx:id="labelMin" text="Min" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
     <Label fx:id="labelMax" text="Max" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
    <Label fx:id="labelValue" alignment="CENTER" contentDisplay="CENTER" prefWidth="100.0" text="Label" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+   <Button fx:id="buttonRandom" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+      <graphic>
+         <ImageView fx:id="imageRandom" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true"/>
+      </graphic>
+   </Button>
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>

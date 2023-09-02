@@ -1,5 +1,6 @@
 package ui.customcomponent.view.item;
 
+import javafx.scene.input.MouseEvent;
 import ui.validation.Validator;
 
 public class StringItemView extends TextInputItemView<String>{
@@ -11,6 +12,20 @@ public class StringItemView extends TextInputItemView<String>{
     @Override
     public void clear() {
         textField.setText("");
+    }
+
+    @Override
+    protected void clickRandom(MouseEvent event) {
+        String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 !?,_-().";
+        int maxStringSize = 50;
+        int size = random.nextInt(maxStringSize + 1); // Random size up to 50
+        StringBuilder randomString = new StringBuilder(size);
+        for (int i = 0; i < size; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            randomString.append(randomChar);
+        }
+        textField.textProperty().set(randomString.toString());
     }
 
     @Override

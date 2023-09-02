@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 
 public class RangedNumericItemView extends InputItemView<Double> {
 
@@ -41,6 +42,11 @@ public class RangedNumericItemView extends InputItemView<Double> {
     @Override
     public void clear() {
         sliderAmount.valueProperty().setValue(min.getValue());
+    }
+
+    @Override
+    protected void clickRandom(MouseEvent event) {
+        sliderAmount.valueProperty().set(min.get() + random.nextDouble() * (max.get() - min.get()));
     }
 
     @Override

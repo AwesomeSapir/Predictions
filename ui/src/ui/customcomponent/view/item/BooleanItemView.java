@@ -2,6 +2,7 @@ package ui.customcomponent.view.item;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import org.controlsfx.control.ToggleSwitch;
 
 public class BooleanItemView extends InputItemView<Boolean> {
@@ -17,7 +18,6 @@ public class BooleanItemView extends InputItemView<Boolean> {
     @Override
     public void clear() {
         toggleSwitch.selectedProperty().set(true);
-
     }
 
     @Override
@@ -25,6 +25,11 @@ public class BooleanItemView extends InputItemView<Boolean> {
         super.bind();
         value.bindBidirectional(toggleSwitch.selectedProperty());
         labelValue.textProperty().bind(value.asString());
+    }
+
+    @Override
+    protected void clickRandom(MouseEvent event) {
+        toggleSwitch.selectedProperty().set(random.nextBoolean());
     }
 
     @Override

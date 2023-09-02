@@ -86,7 +86,6 @@ VBox,
     -fx-border-color: -interact-background;
     -fx-border-radius: 16px;
     -fx-background-radius: 16px;
-    -fx-border-width: 0px;
     -fx-background-color: -interact-background;
     -fx-font-weight: bold;
 }
@@ -146,6 +145,11 @@ VBox,
     -fx-background-radius: 8px;
     -fx-background-color: -interact-background;
     -fx-padding: 8px;
+}
+
+#imageRandom {
+    -fx-fill: -primary-text;
+    -fx-image: url("icon_dice.png");
 }
 
 .separator,

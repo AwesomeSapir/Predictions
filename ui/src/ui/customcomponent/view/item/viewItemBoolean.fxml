@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.ToggleSwitch?>
-
-<fx:root hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root vgap="8.0" hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -29,6 +28,11 @@
     </Label>
     <ToggleSwitch fx:id="toggleSwitch" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" selected="true" />
     <Label fx:id="labelValue" text="Label" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+    <Button fx:id="buttonRandom" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+        <graphic>
+            <ImageView fx:id="imageRandom" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true"/>
+        </graphic>
+    </Button>
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>

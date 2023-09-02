@@ -1,5 +1,6 @@
 package ui.customcomponent.view.item;
 
+import javafx.scene.input.MouseEvent;
 import ui.validation.Validator;
 
 public class NumericItemView extends TextInputItemView<Double>{
@@ -11,6 +12,11 @@ public class NumericItemView extends TextInputItemView<Double>{
     @Override
     public void clear() {
         textField.setText("0");
+    }
+
+    @Override
+    protected void clickRandom(MouseEvent event) {
+        textField.setText(String.valueOf(Double.MIN_VALUE + random.nextDouble() * (Double.MAX_VALUE - Double.MIN_VALUE)));
     }
 
     @Override
