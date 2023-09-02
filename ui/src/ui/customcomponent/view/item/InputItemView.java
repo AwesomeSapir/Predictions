@@ -55,6 +55,14 @@ public abstract class InputItemView<T> extends GridPane {
         return value;
     }
 
+    public String getTitle() {
+        return title.get();
+    }
+
+    public SimpleStringProperty titleProperty() {
+        return title;
+    }
+
     public abstract void clear();
 
     protected void bind(){

@@ -1,6 +1,5 @@
 package ui.customcomponent.view.item;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -17,7 +16,6 @@ public class StringItemView extends InputItemView<String> {
 
     public StringItemView() {
         super();
-        isValid = new SimpleBooleanProperty(true);
         load(getClass().getResource("/ui/customcomponent/view/item/viewItemString.fxml"));
         labelError.setText("Invalid input. The possible characters are: A-Z, a-z, 0-9, white space, the following: !?,_-().");
     }
@@ -28,17 +26,21 @@ public class StringItemView extends InputItemView<String> {
 
     @Override
     public void clear() {
-        textField.textProperty().set("");
+        textField.setText("");
     }
 
     @Override
     protected void bind() {
         super.bind();
-        value.bindBidirectional(textField.textProperty());
+        value.bind(textField.textProperty());
         labelError.visibleProperty().bind(isValid.not());
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             isValid.set(Validator.validate(newValue).isValidString().isValid());
         });
+    }
+
+    public TextField getTextField() {
+        return textField;
     }
 
     @FXML

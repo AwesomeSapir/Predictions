@@ -12,7 +12,6 @@
     -seperator-width: 1;
     -error: #FF1744;
     -interact-background: #424242;
-    -button-hover: #377e35;
 }
 
 .root,
@@ -32,27 +31,14 @@ VBox,
     -fx-border-color: transparent;
 }
 
-#labelErrorNumeric{
-    -fx-text-fill: -error;
-}
-
-#labelError {
-    -fx-text-fill: -error;
-}
-
-#labelTitle {
-    -fx-font-weight: bold;
-    -fx-font-size: 18px;
-}
-
 .tab-pane .tab:selected .focus-indicator {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
 
 .tab-pane .tab:selected {
-    -fx-background-color: transparent;
-    -fx-border-color: -primary-accent;
+    -fx-background-color: -interact-background;
+    -fx-border-color: -interact-background;
     -fx-border-width: 2px;
     -fx-border-radius: 16px;
 }
@@ -76,15 +62,33 @@ VBox,
 .button {
     -fx-text-fill: -primary-text;
     -fx-border-color: -primary-accent;
-    -fx-border-radius: 50%;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
     -fx-border-width: 2px;
     -fx-background-color: -primary-background;
     -fx-font-weight: bold;
 }
 
 .button:hover {
-    -fx-border-color: -button-hover;
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -primary-accent;
+    -fx-border-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-background-color: -primary-accent;
+    -fx-background-radius: 16px;
+    -fx-font-weight: bold;
+    -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
+}
+
+.button:pressed {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -interact-background;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-border-width: 0px;
+    -fx-background-color: -interact-background;
+    -fx-font-weight: bold;
 }
 
 .text-field {
@@ -103,18 +107,6 @@ VBox,
 }
 
 .label, .button {
-    -fx-text-fill: -primary-text;
-}
-
-.table-row-cell{
-    -fx-background-color: -secondary-accent;
-    -fx-background-radius: 16px;
-    -fx-border-width: 2px;
-}
-
-.table-cell{
-    -fx-background-color: transparent;
-    -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
 }
 
@@ -139,6 +131,22 @@ VBox,
     -fx-max-width: 4px;
     -fx-min-width: 4px;
     -fx-pref-width: 4px;
+}
+
+#labelError {
+    -fx-text-fill: -error;
+}
+
+#labelTitle {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+#labelValue {
+    -fx-background-radius: 8px;
+    -fx-background-color: -interact-background;
+    -fx-padding: 8px;
+    -fx-text-alignment: center;
 }
 
 .separator,
@@ -208,5 +216,43 @@ VBox,
 .scroll-bar:vertical .decrement-arrow{
     -fx-shape : " ";
     -fx-padding :0.0 0.15em;
+}
+
+.tree-cell {
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 4px;
+    -fx-border-color: -primary-background;
+    -fx-border-width: 4px;
+    -fx-border-radius: 16px;
+    -fx-padding: 4px;
+}
+
+.tree-cell:selected {
+    -fx-background-color: -secondary-accent;
+}
+
+.tree-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 4px;
+    -fx-border-color: -primary-background;
+    -fx-border-width: 4px;
+    -fx-border-radius: 16px;
+    -fx-padding: 4px;
+    -fx-text-fill: -primary-text;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -secondary-accent;
+}
+
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
 }
 

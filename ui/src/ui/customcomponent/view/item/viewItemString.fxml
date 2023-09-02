@@ -25,7 +25,7 @@
         </font>
     </Label>
     <TextField fx:id="textField" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-   <Label fx:id="labelError" text="Error" textFill="RED" minWidth="Infinity" visible="false" GridPane.rowIndex="2" GridPane.valignment="TOP">
+   <Label fx:id="labelError" text="Error" minWidth="Infinity" GridPane.rowIndex="2" GridPane.valignment="TOP">
       <GridPane.margin>
          <Insets top="8.0" />
       </GridPane.margin>

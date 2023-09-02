@@ -52,9 +52,9 @@ public class MainController {
         tabDetailsController.setEngine(engine);
 
         //TODO deltetetetetete before submitting
-        engine.loadXml("C:\\Users\\micha\\Downloads\\master-ex1.xml");
+        engine.loadXml("C:\\Users\\melch\\Downloads\\master-ex1.xml");
         isFileSelected.set(true);
-        filePath.set("C:\\Users\\micha\\Downloads\\master-ex1.xml");
+        filePath.set("C:\\Users\\melch\\Downloads\\master-ex1.xml");
 
         tabExecutionController.setEntities(engine.getSimulationDetails().getEntities());
         tabExecutionController.setEnvironmentVariables(engine.getEnvironmentDefinitions());

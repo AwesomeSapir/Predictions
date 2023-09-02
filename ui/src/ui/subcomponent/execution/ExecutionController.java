@@ -4,7 +4,6 @@ import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -17,6 +16,7 @@ import javafx.scene.layout.VBox;
 import ui.customcomponent.view.EntityPopulationView;
 import ui.customcomponent.view.EnvironmentVariableView;
 import ui.customcomponent.view.item.InputItemView;
+import ui.customcomponent.view.item.StringItemView;
 
 import java.util.Collection;
 
@@ -38,6 +38,7 @@ public class ExecutionController {
     public void initialize() {
         entities = FXCollections.observableArrayList();
         environmentVariables = FXCollections.observableArrayList();
+        buttonClear.setOnMouseClicked(this::clearClicked);
     }
 
     public void setEntities(Collection<DTOEntity> entities) {
@@ -62,8 +63,6 @@ public class ExecutionController {
         }
     }
 
-
-
     public void clearClicked(MouseEvent mouseEvent) {
         System.out.println("Clear clicked");
         clearInputItems(vboxEntityPopulation);
@@ -74,6 +73,9 @@ public class ExecutionController {
         for (Node view : container.getChildren()) {
             if (view instanceof InputItemView<?>) {
                 ((InputItemView<?>) view).clear();
+                if(view instanceof StringItemView) {
+                    System.out.println("textfield is: " + ((StringItemView) view).getTextField().getText() + " value is " + ((InputItemView<?>) view).getValue());
+                }
             }
         }
     }

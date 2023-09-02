@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <fx:root hgap="8.0" type="javafx.scene.layout.GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
@@ -20,7 +15,6 @@
         <RowConstraints vgrow="SOMETIMES" />
         <RowConstraints vgrow="SOMETIMES" />
         <RowConstraints vgrow="SOMETIMES" />
-      <RowConstraints vgrow="SOMETIMES" />
     </rowConstraints>
     <Label fx:id="labelTitle" text="Title">
         <GridPane.margin>
@@ -31,10 +25,9 @@
         </font>
     </Label>
     <Slider fx:id="sliderAmount" blockIncrement="1.0" majorTickUnit="1.0" minorTickCount="0" prefHeight="14.0" prefWidth="57.0" snapToTicks="true" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-    <TextField fx:id="textFieldAmount" alignment="CENTER" promptText="Value" GridPane.columnIndex="3" GridPane.rowIndex="1" />
     <Label fx:id="labelMin" text="Min" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-    <Label fx:id="labelMax" text="Max" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-   <Label fx:id="labelErrorNumeric" text="Error" minWidth="Infinity" visible="false" GridPane.rowIndex="3" />
+    <Label fx:id="labelMax" text="Max" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
+   <Label fx:id="labelValue" alignment="CENTER" contentDisplay="CENTER" prefWidth="100.0" text="Label" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>
