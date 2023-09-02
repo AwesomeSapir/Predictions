@@ -6,6 +6,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -17,6 +19,7 @@ import java.io.File;
 
 public class MainController {
 
+    public TabPane mainTabPane;
     private EngineInterface engine;
     private SimpleBooleanProperty isFileSelected = new SimpleBooleanProperty(false);
     private SimpleStringProperty filePath = new SimpleStringProperty();
@@ -28,6 +31,8 @@ public class MainController {
     @FXML private ExecutionController tabExecutionController;
 
     @FXML private ResultsController tabResultController;
+
+    @FXML private Tab tabResultsID;
 
     @FXML
     void chooseXMLFile(ActionEvent event){
@@ -63,7 +68,13 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        // Set the reference to MainController in ExecutionController
+        tabExecutionController.setMainController(this);
         tabDetailsController.setIsFileSelected(isFileSelected);
         filePathTextField.textProperty().bind(filePath);
+    }
+
+    public void switchToResultsTab() {
+        mainTabPane.getSelectionModel().select(tabResultsID); // Switch to tabResultController
     }
 }

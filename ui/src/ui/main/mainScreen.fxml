@@ -6,7 +6,7 @@
 
 <BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.main.MainController">
    <center>
-       <TabPane minHeight="16" minWidth="16" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+       <TabPane minHeight="16" fx:id="mainTabPane" minWidth="16" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
            <opaqueInsets>
                <Insets />
            </opaqueInsets>
@@ -16,7 +16,7 @@
            <Tab text="New Execution">
                <fx:include fx:id="tabExecution" source="../subcomponent/execution/tabExecution.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
            </Tab>
-           <Tab text="Results">
+           <Tab fx:id="tabResultsID" text="Results">
                <fx:include fx:id="tabResults" source="../subcomponent/result/tabResults.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
            </Tab>
        </TabPane>
