@@ -5,10 +5,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import validator.Validator;
 
@@ -56,11 +53,8 @@ public class NumericItemView extends InputItemView<Double> {
     protected void bind() {
         super.bind();
 
-        sliderAmount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textFieldAmount.textProperty().set(String.valueOf(newValue.doubleValue()));
-        });
         // Create a custom StringConverter for the TextField
-        StringConverter<Double> converter = new StringConverter<Double>() {
+        StringConverter<Double> doubleConverter = new StringConverter<Double>() {
             @Override
             public String toString(Double object) {
                 return String.format("%.1f", object);
@@ -77,13 +71,39 @@ public class NumericItemView extends InputItemView<Double> {
         };
 
         // Create a TextFormatter using the custom converter
-        TextFormatter<Double> textFormatter = new TextFormatter<>(converter, min.getValue());
+        TextFormatter<Double> textFormatter = new TextFormatter<>(doubleConverter, min.getValue());
 
         // Set the TextFormatter to the TextField
         textFieldAmount.setTextFormatter(textFormatter);
 
+        // Track whether the user is editing in regular text format
+        SimpleBooleanProperty isTextFormatEditing = new SimpleBooleanProperty(false);
+
+        // Listener to detect regular text format editing
         textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
-            isValid.set(Validator.validate(newValue).isInRange(min.doubleValue(), max.doubleValue()).isValid());
+            if (!isTextFormatEditing.get()) {
+                // Update the sliderAmount when the text in textFieldAmount changes
+                try {
+                    double parsedValue = Double.parseDouble(newValue);
+                    if (parsedValue >= min.get() && parsedValue <= max.get()) {
+                        sliderAmount.setValue(parsedValue);
+                    }
+                } catch (NumberFormatException e) {
+                    // Handle invalid input here if needed
+                }
+            }
+        });
+
+        // Add focus listener to toggle between double and regular text format editing
+        textFieldAmount.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Gain focus, switch to regular text format editing
+                isTextFormatEditing.set(true);
+            } else {
+                // Lose focus, switch back to double format
+                isTextFormatEditing.set(false);
+                textFieldAmount.setText(doubleConverter.toString(textFormatter.getValue()));
+            }
         });
 
         // Bind style based on isValid
@@ -93,12 +113,34 @@ public class NumericItemView extends InputItemView<Double> {
 
         labelErrorNumeric.visibleProperty().bind(isValid.not());
 
+        // Add a listener to update textFieldAmount when sliderAmount changes
+        sliderAmount.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isTextFormatEditing.get()) {
+                textFieldAmount.setText(doubleConverter.toString((Double) newValue));
+            }
+        });
+
+        // Listener to detect changes in textFieldAmount for validation
+        textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
+            try {
+                double parsedValue = Double.parseDouble(newValue);
+                if (parsedValue >= min.get() && parsedValue <= max.get()) {
+                    isValid.set(true);
+                    sliderAmount.setValue(parsedValue); // Update slider when text is valid
+                } else {
+                    isValid.set(false);
+                }
+            } catch (NumberFormatException e) {
+                isValid.set(false);
+            }
+        });
+
         sliderAmount.minProperty().bind(min);
         sliderAmount.maxProperty().bind(max);
         labelMin.textProperty().bind(min.asString());
         labelMax.textProperty().bind(max.asString());
 
-        //value.bind(textFormatter.valueProperty());
+        value.bind(textFormatter.valueProperty());
     }
 
 
