@@ -157,9 +157,9 @@ VBox,
 #viewDetails {
     -fx-background-radius: 16px;
     -fx-background-color: -interact-background;
-    -fx-alignment: center;
 }
 
+#separator,
 .separator,
 .separator .line{
     -fx-border-color: -seperator-color;
@@ -232,22 +232,24 @@ VBox,
 .list-cell,
 .tree-cell {
     -fx-background-color: -secondary-background;
-    -fx-background-radius: 16px;
-    -fx-background-insets: 4px;
-    -fx-border-color: -primary-background;
-    -fx-border-width: 4px;
-    -fx-border-radius: 16px;
-    -fx-padding: 4px 16px;
 }
 
 .list-cell:selected,
 .tree-cell:selected {
     -fx-background-color: -secondary-accent;
+    -fx-background-radius: 16px;
 }
 
 .list-cell:empty,
 .tree-cell:empty {
     -fx-background-color: transparent;
+}
+
+.list-view,
+.tree-view {
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-padding: 8px;
 }
 
 /*

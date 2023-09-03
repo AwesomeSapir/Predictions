@@ -8,12 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
-import ui.component.custom.detail.entity.EntityDetailView;
-import ui.component.custom.detail.property.PropertyDetailView;
+import ui.component.custom.detail.DetailView;
 import ui.engine.EngineManager;
 
 import java.io.IOException;
@@ -28,26 +26,15 @@ public class DetailsController {
 
     private EngineManager engineManager;
 
-    private Node viewEntityDetails;
-    private EntityDetailView entityViewController;
-    private Node viewPropertyDetails;
-    private PropertyDetailView propertyViewController;
-    private Node viewRuleDetails;
+    private DetailView viewDetailController;
 
     @FXML
     public void initialize() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Objects.requireNonNull(getClass().getResource("/ui/component/custom/detail/entity/viewDetailEntity.fxml")));
-            viewEntityDetails = loader.load();
-            entityViewController = loader.getController();
-
-            loader = new FXMLLoader();
-            loader.setLocation(Objects.requireNonNull(getClass().getResource("/ui/component/custom/detail/property/viewDetailProperty.fxml")));
-            viewPropertyDetails = loader.load();
-            propertyViewController = loader.getController();
-
-
+            loader.setLocation(Objects.requireNonNull(getClass().getResource("/ui/component/custom/detail/viewDetail.fxml")));
+            paneRight.getChildren().add(loader.load());
+            viewDetailController = loader.getController();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -124,21 +111,11 @@ public class DetailsController {
 
     private void displayObject(DTOObject object){
         if(object instanceof DTOEntity){
-            entityViewController.setObject((DTOEntity) object);
-            setDetailView(viewEntityDetails);
+            viewDetailController.setEntity((DTOEntity) object);
         } else if (object instanceof DTOProperty){
-            propertyViewController.setObject((DTOProperty) object);
-            setDetailView(viewPropertyDetails);
-        } else {
-
-            setDetailView(viewRuleDetails);
-        }
-    }
-
-    private void setDetailView(Node view){
-        if(!paneRight.getChildren().isEmpty() && !paneRight.getChildren().get(0).equals(view)){
-            paneRight.getChildren().clear();
-            paneRight.getChildren().add(view);
+            viewDetailController.setProperty((DTOProperty) object);
+        } else if (object instanceof DTORule){
+            viewDetailController.setRule((DTORule) object);
         }
     }
 
