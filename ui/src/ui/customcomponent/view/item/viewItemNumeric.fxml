@@ -33,7 +33,7 @@
     <TextField fx:id="textFieldAmount" alignment="CENTER" promptText="Value" GridPane.columnIndex="2" GridPane.rowIndex="1" />
     <Label fx:id="labelMin" text="Min" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
     <Label fx:id="labelMax" text="Max" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-   <Label fx:id="labelErrorNumeric" prefHeight="18.0" minWidth="102.0" text="Error" visible="false" GridPane.rowIndex="3" />
+   <Label fx:id="labelErrorNumeric" minWidth="102.0" prefHeight="18.0" text="Error" visible="false" GridPane.rowIndex="3" />
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>

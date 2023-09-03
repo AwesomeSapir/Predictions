@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.util.StringConverter;
 import validator.Validator;
 
 public class NumericItemView extends InputItemView<Double> {
@@ -47,7 +49,7 @@ public class NumericItemView extends InputItemView<Double> {
     @Override
     public void clear() {
         sliderAmount.valueProperty().setValue(min.getValue());
-        textFieldAmount.textProperty().set(String.format("%.1f", min.getValue()));
+        textFieldAmount.setText(String.format("%.1f", min.getValue()));
     }
 
     @Override
@@ -55,31 +57,33 @@ public class NumericItemView extends InputItemView<Double> {
         super.bind();
 
         sliderAmount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            textFieldAmount.textProperty().set(String.format("%.1f", newValue.doubleValue()));
+            textFieldAmount.textProperty().set(String.valueOf(newValue.doubleValue()));
         });
-       /* textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty()) {
-                if (Double.parseDouble(newValue) < min.get()) {
-                    sliderAmount.valueProperty().set(min.getValue());
-                } else if (Double.parseDouble(newValue) > max.get()) {
-                    sliderAmount.valueProperty().set(max.getValue());
-                } else {
-                    sliderAmount.valueProperty().set(Double.parseDouble(newValue));
+        // Create a custom StringConverter for the TextField
+        StringConverter<Double> converter = new StringConverter<Double>() {
+            @Override
+            public String toString(Double object) {
+                return String.format("%.1f", object);
+            }
+
+            @Override
+            public Double fromString(String string) {
+                try {
+                    return Double.parseDouble(string);
+                } catch (NumberFormatException e) {
+                    return min.getValue(); // Default to min value if parsing fails
                 }
             }
-        });*/
+        };
+
+        // Create a TextFormatter using the custom converter
+        TextFormatter<Double> textFormatter = new TextFormatter<>(converter, min.getValue());
+
+        // Set the TextFormatter to the TextField
+        textFieldAmount.setTextFormatter(textFormatter);
 
         textFieldAmount.textProperty().addListener((observable, oldValue, newValue) -> {
-            isValid.set(Validator.validate(newValue).isInRange(min.doubleValue(),max.doubleValue()).isValid());
-            if(!newValue.isEmpty()) {
-                if (Double.parseDouble(newValue) < min.get()) {
-                    sliderAmount.valueProperty().set(min.getValue());
-                } else if (Double.parseDouble(newValue) > max.get()) {
-                    sliderAmount.valueProperty().set(max.getValue());
-                } else {
-                    sliderAmount.valueProperty().set(Double.parseDouble(newValue));
-                }
-            }
+            isValid.set(Validator.validate(newValue).isInRange(min.doubleValue(), max.doubleValue()).isValid());
         });
 
         // Bind style based on isValid
@@ -89,16 +93,15 @@ public class NumericItemView extends InputItemView<Double> {
 
         labelErrorNumeric.visibleProperty().bind(isValid.not());
 
-
-
-
         sliderAmount.minProperty().bind(min);
         sliderAmount.maxProperty().bind(max);
         labelMin.textProperty().bind(min.asString());
         labelMax.textProperty().bind(max.asString());
 
-        value.bindBidirectional(sliderAmount.valueProperty().asObject());
+        //value.bind(textFormatter.valueProperty());
     }
+
+
 
     @FXML
     public void initialize(){

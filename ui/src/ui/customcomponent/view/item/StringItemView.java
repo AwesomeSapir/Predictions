@@ -1,5 +1,6 @@
 package ui.customcomponent.view.item;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -39,6 +40,11 @@ public class StringItemView extends InputItemView<String> {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             isValid.set(Validator.validate(newValue).isValidString().isValid());
         });
+
+        // Bind style based on isValid
+        textField.styleProperty().bind(Bindings.when(isValid)
+                .then("")
+                .otherwise("-fx-text-fill: red; -fx-focus-color: red;"));
     }
 
     @FXML
