@@ -5,8 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ui.component.main.MainController;
 import ui.engine.EngineManager;
-import ui.main.MainController;
 
 import java.util.Objects;
 
@@ -19,14 +19,14 @@ public class ConsoleUI extends Application implements MainUI{
         primaryStage.setTitle("Predictions");
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("main/mainScreen.fxml"));
+        loader.setLocation(getClass().getResource("/ui/component/main/mainScreen.fxml"));
         Parent root = loader.load();
 
         MainController mainController = loader.getController();
         mainController.setEngineManager(engineManager);
 
         Scene scene = new Scene(root, 600, 400);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("main/main.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/component/main/main.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

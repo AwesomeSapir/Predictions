@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -18,7 +19,7 @@ import java.util.Collection;
 
 public class EngineManager {
 
-    public final EngineInterface engine;
+    public final EngineInterface engine; //TODO make private
     private final ObservableList<DTOSimulationResult> simulations = FXCollections.observableArrayList();
 
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
@@ -40,8 +41,18 @@ public class EngineManager {
     }
 
     public void runSimulation(){
-        DTOSimulationResult result = engine.runSimulation();
-        simulations.add(result);
+        Task<DTOSimulationResult> task = new Task<DTOSimulationResult>() {
+            @Override
+            protected DTOSimulationResult call() throws Exception {
+                return engine.runSimulation();
+            }
+        };
+        task.stateProperty().addListener((observable, oldValue, newValue) -> {
+            //TODO
+        });
+
+        //new Thread(task).start();
+        simulations.add(engine.runSimulation());
     }
 
     /*

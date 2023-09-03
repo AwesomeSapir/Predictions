@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.execution.ExecutionController">
+
+    <bottom>
+        <AnchorPane minHeight="-Infinity" prefHeight="64.0" prefWidth="599.0" BorderPane.alignment="CENTER">
+            <Button fx:id="buttonClear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="CLEAR" AnchorPane.leftAnchor="14.0" />
+            <Button fx:id="buttonStart" layoutX="544.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#startClicked" text="START" AnchorPane.rightAnchor="14.400000000000091" />
+        </AnchorPane>
+    </bottom>
+    <center>
+        <SplitPane dividerPositions="0.5" prefHeight="194.0" prefWidth="599.0" BorderPane.alignment="CENTER">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="127.0">
+                <VBox fx:id="vboxEntityPopulation" prefHeight="334.4" prefWidth="298.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="364.0">
+                <VBox fx:id="vboxEnvVariables" prefHeight="334.4" prefWidth="298.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            </AnchorPane>
+        </SplitPane>
+    </center>
+
+</BorderPane>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.main.MainController">
+   <center>
+       <TabPane fx:id="mainTabPane" minHeight="16" minWidth="16" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+           <opaqueInsets>
+               <Insets />
+           </opaqueInsets>
+           <Tab text="Details">
+               <fx:include fx:id="tabDetails" source="/ui/component/subcomponent/detail/tabDetails.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+           <Tab text="New Execution">
+               <fx:include fx:id="tabExecution" source="/ui/component/subcomponent/execution/tabExecution.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+           <Tab fx:id="tabResultsID" text="Results">
+               <fx:include fx:id="tabResults" source="/ui/component/subcomponent/result/tabResults.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+       </TabPane>
+   </center>
+   <top>
+      <BorderPane BorderPane.alignment="CENTER">
+         <left>
+            <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseXMLFile" text="LOAD FILE" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="8.0" />
+               </BorderPane.margin>
+            </Button>
+         </left>
+         <right>
+            <Button fx:id="queueManagementButton" mnemonicParsing="false" text="QUEUE" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="8.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
+         <center>
+            <TextField fx:id="filePathTextField" editable="false" prefHeight="26.0" prefWidth="153.0" promptText="Current Loaded File Path" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="8.0" right="8.0" />
+               </BorderPane.margin>
+            </TextField>
+         </center>
+         <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+         </padding>
+      </BorderPane>
+   </top>
+</BorderPane>

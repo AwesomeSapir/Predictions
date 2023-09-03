@@ -1,0 +1,274 @@
+* {
+    -primary-background: #212121;
+    -secondary-background: #424242;
+    -secondary-accent: #01579B;
+    -secondary-light: #B3E5FC;
+    -primary-fill: #607D8B;
+    -primary-text: #FAFAFA;
+    -secondary-text: #9E9E9E;
+    -primary-accent: #0091EA;
+    -border-color: #40C4FF;
+    -seperator-color: #424242;
+    -seperator-width: 1;
+    -error: #FF1744;
+    -interact-background: #424242;
+}
+
+.root,
+AnchorPane,
+VBox,
+.list-view,
+.list-cell,
+.tab-pane,
+.tab-pane > .tab-header-area,
+.tab-pane > .tab-content-area,
+.tab-pane > .tab-header-area > .tab-header-background,
+.tab-pane > .tab-header-area > .headers-region,
+.tab,
+.scroll-pane,
+.tree-view,
+.tree-cell {
+    -fx-background-color: -primary-background;
+    -fx-text-fill: -primary-text;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected .focus-indicator {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: -interact-background;
+    -fx-border-color: -interact-background;
+    -fx-border-width: 2px;
+    -fx-border-radius: 16px;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-text;
+    -fx-border-color: transparent;
+}
+
+.tab {
+    -fx-background-color: -secondary-accent;
+    -fx-background-radius: 16px;
+}
+
+.button {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -primary-accent;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-background-color: -primary-background;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -primary-accent;
+    -fx-border-radius: 16px;
+    -fx-border-width: 2px;
+    -fx-background-color: -primary-accent;
+    -fx-background-radius: 16px;
+    -fx-font-weight: bold;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.button:pressed {
+    -fx-text-fill: -primary-text;
+    -fx-border-color: -interact-background;
+    -fx-border-radius: 16px;
+    -fx-background-radius: 16px;
+    -fx-background-color: -interact-background;
+    -fx-font-weight: bold;
+}
+
+.text-field {
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 8px;
+    -fx-border-color: -primary-accent;
+    -fx-border-width: 2px;
+    -fx-text-fill: -primary-text;
+    -fx-prompt-text-fill: -secondary-text;
+}
+
+.tree-cell:expanded > .tree-disclosure-node .arrow,
+.tree-cell > .tree-disclosure-node .arrow {
+    -fx-background-color: -primary-accent;
+}
+
+.label, .button {
+    -fx-text-fill: -primary-text;
+}
+
+.table-view,
+.column-header,
+.filler {
+    -fx-background-color: -primary-background;
+    -fx-border-color: -seperator-color;
+    -fx-border-width: 1px;
+    -fx-text-fill: -primary-text;
+}
+
+.split-pane{
+    -fx-background-color: -primary-background;
+    -fx-border-color: -secondary-background;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-padding: 4px;
+}
+.split-pane .split-pane-divider{
+    -fx-background-color: -secondary-accent;
+    -fx-max-width: 4px;
+    -fx-min-width: 4px;
+    -fx-pref-width: 4px;
+}
+
+#labelError {
+    -fx-text-fill: -error;
+}
+
+#labelTitle {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+#labelValue {
+    -fx-background-radius: 8px;
+    -fx-background-color: -interact-background;
+    -fx-padding: 8px;
+}
+
+#imageRandom {
+    -fx-fill: -primary-text;
+    -fx-image: url("icon_light_refresh.png");
+}
+
+#viewDetails {
+    -fx-background-radius: 16px;
+    -fx-background-color: -interact-background;
+    -fx-alignment: center;
+}
+
+.separator,
+.separator .line{
+    -fx-border-color: -seperator-color;
+    -fx-border-width: 0.5;
+}
+
+.slider .track{
+    -fx-background-color: -interact-background;
+}
+.slider .thumb{
+    -fx-background-color: -primary-accent;
+}
+
+.toggle-switch:selected .thumb-area {
+    -fx-background-color: -secondary-accent;
+}
+
+.toggle-switch .thumb-area {
+    -fx-background-color: -interact-background;
+}
+
+.toggle-switch .thumb ,
+.toggle-switch:selected .thumb{
+    -fx-background-color: -primary-accent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -secondary-accent;
+    -fx-background-radius: 16px;
+}
+
+.scroll-bar,
+.scroll-bar .track {
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 16px;
+}
+
+.corner{
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 0.0 10.0 0.0;
+
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 10.0 0.0 0.0;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.15em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.0 0.15em;
+}
+
+.list-cell,
+.tree-cell {
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 4px;
+    -fx-border-color: -primary-background;
+    -fx-border-width: 4px;
+    -fx-border-radius: 16px;
+    -fx-padding: 4px 16px;
+}
+
+.list-cell:selected,
+.tree-cell:selected {
+    -fx-background-color: -secondary-accent;
+}
+
+.list-cell:empty,
+.tree-cell:empty {
+    -fx-background-color: transparent;
+}
+
+/*
+.table-row-cell {
+    -fx-background-color: -secondary-background;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 4px;
+    -fx-border-color: -primary-background;
+    -fx-border-width: 4px;
+    -fx-border-radius: 16px;
+    -fx-padding: 4px;
+    -fx-text-fill: -primary-text;
+}*/
+
+.table-row-cell:selected {
+    -fx-background-color: -secondary-accent;
+}
+
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+
