@@ -18,8 +18,12 @@ public class DetailView {
 
     public GridPane gridProperty;
     public Label labelPropertyType;
-    public Label labelPropertyRange;
-    public Label labelPropertyRandom;
+
+    public GridPane gridRange;
+    public Label labelRange;
+
+    public GridPane gridRandom;
+    public Label labelRandom;
 
     public GridPane gridRule;
     public Label labelRuleTicks;
@@ -53,7 +57,7 @@ public class DetailView {
 
     public void setProperty(DTOProperty object) {
         resetVisibility();
-        updateVisibility(gridName, gridProperty);
+        updateVisibility(gridName, gridProperty, gridRange, gridRandom);
 
         this.loadedObject = object;
         labelTitle.setText("Property");
@@ -61,6 +65,17 @@ public class DetailView {
         type.set(object.getType());
         range.set(object.getRange()==null ? "none" : object.getRange().getFrom() + " " + object.getRange().getTo());
         random.set(object.isRandomInit());
+    }
+
+    public void setEnvVariable(DTOEnvironmentVariable object){
+        resetVisibility();
+        updateVisibility(gridName, gridProperty, gridRange);
+
+        this.loadedObject = object;
+        labelTitle.setText("Environment Variable");
+        name.set(object.getName());
+        type.set(object.getType());
+        range.set(object.getRange()==null ? "none" : object.getRange().getFrom() + " " + object.getRange().getTo());
     }
 
     public void setRule(DTORule object) {
@@ -90,6 +105,8 @@ public class DetailView {
         gridName.setVisible(false);
         gridEntity.setVisible(false);
         gridProperty.setVisible(false);
+        gridRange.setVisible(false);
+        gridRandom.setVisible(false);
         gridRule.setVisible(false);
         gridTermination.setVisible(false);
     }
@@ -100,14 +117,15 @@ public class DetailView {
         }
     }
 
+    private void bindVisibility(GridPane... grids){
+        for (GridPane grid : grids) {
+            Bindings.bindBidirectional(grid.visibleProperty(), grid.managedProperty());
+        }
+    }
+
     @FXML
     public void initialize(){
-        Bindings.bindBidirectional(gridName.visibleProperty(), gridName.managedProperty());
-        Bindings.bindBidirectional(gridEntity.visibleProperty(), gridEntity.managedProperty());
-        Bindings.bindBidirectional(gridProperty.visibleProperty(), gridProperty.managedProperty());
-        Bindings.bindBidirectional(gridRule.visibleProperty(), gridRule.managedProperty());
-        Bindings.bindBidirectional(gridTermination.visibleProperty(), gridTermination.managedProperty());
-
+        bindVisibility(gridName, gridEntity, gridProperty, gridRange, gridRandom, gridRule, gridTermination);
         resetVisibility();
 
         labelName.textProperty().bind(name);
@@ -115,8 +133,8 @@ public class DetailView {
         labelEntityProperties.textProperty().bind(properties);
 
         labelPropertyType.textProperty().bind(type);
-        labelPropertyRange.textProperty().bind(range);
-        labelPropertyRandom.textProperty().bind(random.asString());
+        labelRange.textProperty().bind(range);
+        labelRandom.textProperty().bind(random.asString());
 
         labelRuleTicks.textProperty().bind(ticks.asString());
         labelRuleProbability.textProperty().bind(probability.asString());

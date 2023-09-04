@@ -4,8 +4,6 @@ import dto.detail.*;
 import dto.detail.action.DTOAction;
 import dto.detail.action.DTOActionCondition;
 import dto.simulation.DTOSimulationDetails;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TreeItem;
@@ -17,7 +15,6 @@ import ui.engine.EngineManager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class DetailsController {
@@ -100,12 +97,9 @@ public class DetailsController {
 
     public void selectItem() {
         TreeItem<Object> item = (TreeItem<Object>) treeViewDetails.getSelectionModel().getSelectedItem();
-        //tableViewDetails.getItems().clear();
         if (item != null && item.getValue() instanceof DTOObject) {
             DTOObject dtoObject = (DTOObject) item.getValue();
             displayObject(dtoObject);
-            ObservableList<Map.Entry<String, String>> tableData = FXCollections.observableArrayList(dtoObject.getFieldValueMap().entrySet());
-            //tableViewDetails.setItems(tableData);
         }
     }
 
@@ -116,6 +110,8 @@ public class DetailsController {
             viewDetailController.setProperty((DTOProperty) object);
         } else if (object instanceof DTORule){
             viewDetailController.setRule((DTORule) object);
+        } else if (object instanceof DTOEnvironmentVariable){
+            viewDetailController.setEnvVariable((DTOEnvironmentVariable) object);
         }
     }
 
