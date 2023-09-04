@@ -16,6 +16,8 @@ import java.util.List;
 public class Simulation implements SimulationInterface, Serializable {
     private final World world;
     private int id;
+    private int tick = 0;
+    private long duration;
     private LocalDateTime date;
 
     public Simulation(World world) {
@@ -27,9 +29,8 @@ public class Simulation implements SimulationInterface, Serializable {
         this.id = id;
         LocalDateTime begin = LocalDateTime.now();
         this.date = begin;
-        int tick = 0;
 
-        while (!world.getTermination().isMet(tick, Duration.between(begin, LocalDateTime.now()).getSeconds())){
+        while (!world.getTermination().isMet(tick, duration)){
             tick++;
             List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
             for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
@@ -41,6 +42,7 @@ public class Simulation implements SimulationInterface, Serializable {
                     }
                 }
             }
+            duration = Duration.between(begin, LocalDateTime.now()).getSeconds();
         }
 
     }
@@ -78,5 +80,15 @@ public class Simulation implements SimulationInterface, Serializable {
     @Override
     public World getWorld() {
         return world;
+    }
+
+    @Override
+    public int getTick() {
+        return tick;
+    }
+
+    @Override
+    public long getDuration(){
+        return duration;
     }
 }

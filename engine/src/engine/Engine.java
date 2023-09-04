@@ -15,6 +15,8 @@ import engine.world.rule.action.Action;
 import engine.world.rule.action.type.calculation.ActionCalc;
 import engine.world.rule.action.type.condition.ActionCondition;
 import engine.world.rule.action.type.value.ActionValue;
+import engine.world.termination.BySecond;
+import engine.world.termination.ByTicks;
 import engine.world.termination.Termination;
 import javafx.util.Pair;
 import translation.xml.Translator;
@@ -138,11 +140,11 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public DTOSimulationResult runSimulation() throws NullPointerException {
         isSimulationLoaded();
-        simulation.run(idCounter);
         int id = idCounter;
-        Termination termination = simulation.getTermination();
         archiveSimulation();
+        pastSimulations.get(id).run(id);
 
+        Termination termination = pastSimulations.get(id).getTermination();
         return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }
 
@@ -165,8 +167,8 @@ public class Engine implements EngineInterface, Serializable {
         }
 
         DTOTermination termination = new DTOTermination(
-                Optional.ofNullable(simulation.getTermination().getBySecond()).map(o -> o.getCount()).orElse(null),
-                Optional.ofNullable(simulation.getTermination().getByTicks()).map(o -> (int) o.getCount()).orElse(null));
+                Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
+                Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
         return new DTOSimulationDetails(getEntities(simulation), rules, termination);
     }
 
@@ -192,13 +194,12 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private void archiveSimulation() {
-        pastSimulations.put(simulation.getId(), simulation);
+        pastSimulations.put(idCounter++, simulation);
         try {
             simulation = new Simulation(getWorldFromFile(filepath));
         } catch (FileNotFoundException | JAXBException | InvalidClassException e) {
             throw new RuntimeException(e);
         }
-        idCounter++;
     }
 
     private void isSimulationLoaded() throws NullPointerException {
@@ -227,5 +228,22 @@ public class Engine implements EngineInterface, Serializable {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Error loading from file: " + e.getMessage());
         }
+    }
+
+    @Override
+    public int getNextId() {
+        return idCounter;
+    }
+
+    @Override
+    public DTOStatus getSimulationStatus(int id){
+        return new DTOStatus(pastSimulations.get(id).getTick(), pastSimulations.get(id).getDuration());
+    }
+
+    @Override
+    public DTOTermination getSimulationTermination() {
+        return new DTOTermination(
+                Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
+                Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
     }
 }

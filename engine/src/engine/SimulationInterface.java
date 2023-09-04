@@ -23,4 +23,8 @@ public interface SimulationInterface {
     EntityDefinition getPrimaryEntityDefinition();
 
     World getWorld();
+
+    int getTick();
+
+    long getDuration();
 }

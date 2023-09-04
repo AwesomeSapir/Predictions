@@ -4,38 +4,62 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
-   <BorderPane>
-      <center>
-          <ListView fx:id="listExecution" prefHeight="200.0" prefWidth="200.0" />
-      </center>
-      <padding>
-         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-      </padding>
-   </BorderPane>
-   <BorderPane>
-      <center>
-          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-            <BorderPane>
-               <center>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-               </center>
-               <padding>
-                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-               </padding>
-            </BorderPane>
-            <BorderPane>
-               <center>
-                     <TextArea fx:id="textResult" prefHeight="200.0" prefWidth="297.0" />
-               </center>
-               <padding>
-                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-               </padding>
-            </BorderPane>
-          </SplitPane>
-      </center>
-      <padding>
-         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-      </padding>
-   </BorderPane>
+<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
+    <BorderPane>
+        <center>
+            <ListView fx:id="listExecution" prefHeight="200.0" prefWidth="200.0"/>
+        </center>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        </padding>
+    </BorderPane>
+    <BorderPane>
+        <center>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                <VBox spacing="8.0">
+                    <children>
+                        <GridPane fx:id="gridSeconds">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <Label text="Seconds"/>
+                            <ProgressBar fx:id="progressBarSeconds" prefWidth="200.0" progress="0.0"
+                                         GridPane.columnIndex="1"/>
+                        </GridPane>
+                        <GridPane fx:id="gridTicks">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <Label text="Ticks"/>
+                            <ProgressBar fx:id="progressBarTicks" prefWidth="200.0" progress="0.0"
+                                         GridPane.columnIndex="1"/>
+                        </GridPane>
+                    </children>
+                    <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                    </padding>
+                </VBox>
+                <BorderPane>
+                    <center>
+                        <TextArea fx:id="textResult" prefHeight="200.0" prefWidth="297.0"/>
+                    </center>
+                    <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                    </padding>
+                </BorderPane>
+            </SplitPane>
+        </center>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        </padding>
+    </BorderPane>
 </SplitPane>

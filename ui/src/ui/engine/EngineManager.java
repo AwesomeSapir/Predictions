@@ -16,11 +16,13 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class EngineManager {
 
     public final EngineInterface engine; //TODO make private
-    private final ObservableList<DTOSimulationResult> simulations = FXCollections.observableArrayList();
+    private final ObservableList<Simulation> simulations = FXCollections.observableArrayList();
 
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
@@ -28,6 +30,8 @@ public class EngineManager {
     public EngineManager() {
         engine = new Engine();
     }
+
+    private final ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
     public void loadSimulation(File file){
         engine.loadXml(file.getAbsolutePath());
@@ -47,12 +51,9 @@ public class EngineManager {
                 return engine.runSimulation();
             }
         };
-        task.stateProperty().addListener((observable, oldValue, newValue) -> {
-            //TODO
-        });
-
-        //new Thread(task).start();
-        simulations.add(engine.runSimulation());
+        task.setOnSucceeded(event -> simulations.get(task.getValue().getId()-1).setResult(task.getValue()));
+        simulations.add(new Simulation(engine.getNextId(), engine.getSimulationTermination()));
+        threadPool.execute(task);
     }
 
     /*
@@ -75,7 +76,7 @@ public class EngineManager {
         return simulationPath;
     }
 
-    public ObservableList<DTOSimulationResult> getSimulations() {
+    public ObservableList<Simulation> getSimulations() {
         return simulations;
     }
 

@@ -3,6 +3,7 @@ package engine;
 import dto.detail.DTOEntity;
 import dto.detail.DTOProperty;
 import dto.detail.DTOEnvironmentVariable;
+import dto.detail.DTOTermination;
 import dto.simulation.*;
 import javafx.util.Pair;
 
@@ -23,5 +24,8 @@ public interface EngineInterface {
     DTOSimulationDetails getSimulationDetails() throws NullPointerException;
     void saveToFile(String filepath);
     void loadFromFile(String filepath);
+    int getNextId();
+    DTOStatus getSimulationStatus(int id);
+    DTOTermination getSimulationTermination();
 
 }
