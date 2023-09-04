@@ -10,7 +10,10 @@
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>
     <Label fx:id="labelTitle" text="Object" />
-    <Separator fx:id="separator" VBox.vgrow="ALWAYS" />
+    <Separator fx:id="separator" VBox.vgrow="ALWAYS">
+      <VBox.margin>
+         <Insets left="-16.0" right="-16.0" />
+      </VBox.margin></Separator>
 
     <GridPane fx:id="gridName" hgap="8.0" vgap="8.0">
         <columnConstraints>
