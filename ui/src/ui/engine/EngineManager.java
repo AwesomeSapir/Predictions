@@ -56,6 +56,17 @@ public class EngineManager {
         threadPool.execute(task);
     }
 
+    public void resumeSimulation(int id){
+        Task<DTOSimulationResult> task = new Task<DTOSimulationResult>() {
+            @Override
+            protected DTOSimulationResult call() throws Exception {
+                return engine.resumeSimulation(id);
+            }
+        };
+        task.setOnSucceeded(event -> simulations.get(task.getValue().getId()-1).setResult(task.getValue()));
+        threadPool.execute(task);
+    }
+
     /*
      * Getters
      */

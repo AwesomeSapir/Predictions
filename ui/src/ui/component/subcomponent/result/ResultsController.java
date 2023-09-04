@@ -12,10 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -29,6 +26,9 @@ public class ResultsController {
     @FXML public GridPane gridSeconds;
     @FXML public ProgressBar progressBarSeconds;
     @FXML public ProgressBar progressBarTicks;
+    @FXML public Button buttonResume;
+    @FXML public Button buttonPause;
+    @FXML public Button buttonStop;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
 
@@ -59,6 +59,16 @@ public class ResultsController {
             progressBarTicks.progressProperty().bind(newValue.getProgressTicks().percentageProperty());
             gridSeconds.setVisible(newValue.getProgressSeconds().isEnabled());
             gridTicks.setVisible(newValue.getProgressTicks().isEnabled());
+
+            buttonPause.setOnAction(event -> {
+                engineManager.engine.pauseSimulation(newValue.getId());
+                timeline.stop();
+            });
+
+            buttonResume.setOnAction(event -> {
+                engineManager.resumeSimulation(newValue.getId());
+                timeline.play();
+            });
 
             setSimulationResult(newValue.getResult());
 

@@ -4,14 +4,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
+<SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
     <BorderPane>
         <center>
-            <ListView fx:id="listExecution" prefHeight="200.0" prefWidth="200.0"/>
+            <ListView fx:id="listExecution" prefHeight="200.0" prefWidth="200.0" />
         </center>
         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
         </padding>
     </BorderPane>
     <BorderPane>
@@ -21,45 +20,60 @@
                     <children>
                         <GridPane fx:id="gridSeconds">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES"/>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints vgrow="SOMETIMES"/>
+                                <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
-                            <Label text="Seconds"/>
-                            <ProgressBar fx:id="progressBarSeconds" prefWidth="200.0" progress="0.0"
-                                         GridPane.columnIndex="1"/>
+                            <Label text="Seconds" />
+                            <ProgressBar fx:id="progressBarSeconds" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" />
                         </GridPane>
                         <GridPane fx:id="gridTicks">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0"/>
-                                <ColumnConstraints hgrow="SOMETIMES"/>
+                                <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints vgrow="SOMETIMES"/>
+                                <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
-                            <Label text="Ticks"/>
-                            <ProgressBar fx:id="progressBarTicks" prefWidth="200.0" progress="0.0"
-                                         GridPane.columnIndex="1"/>
+                            <Label text="Ticks" />
+                            <ProgressBar fx:id="progressBarTicks" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" />
                         </GridPane>
+                  <GridPane hgap="8.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="25.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Controls:" />
+                        <Button fx:id="buttonResume" mnemonicParsing="false" text="RESUME" GridPane.columnIndex="1" />
+                        <Button fx:id="buttonPause" mnemonicParsing="false" text="PAUSE" GridPane.columnIndex="2" />
+                        <Button fx:id="buttonStop" mnemonicParsing="false" text="STOP" GridPane.columnIndex="3" />
+                     </children>
+                  </GridPane>
                     </children>
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
                 </VBox>
                 <BorderPane>
                     <center>
-                        <TextArea fx:id="textResult" prefHeight="200.0" prefWidth="297.0"/>
+                        <TextArea fx:id="textResult" prefHeight="200.0" prefWidth="297.0" />
                     </center>
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
                 </BorderPane>
             </SplitPane>
         </center>
         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
         </padding>
     </BorderPane>
 </SplitPane>

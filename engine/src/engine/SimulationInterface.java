@@ -27,4 +27,8 @@ public interface SimulationInterface {
     int getTick();
 
     long getDuration();
+
+    void pause();
+
+    void resume();
 }

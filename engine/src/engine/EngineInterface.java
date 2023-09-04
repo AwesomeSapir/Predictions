@@ -27,5 +27,8 @@ public interface EngineInterface {
     int getNextId();
     DTOStatus getSimulationStatus(int id);
     DTOTermination getSimulationTermination();
+    void pauseSimulation(int id);
+    DTOSimulationResult resumeSimulation(int id);
+
 
 }

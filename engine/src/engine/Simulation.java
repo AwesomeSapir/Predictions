@@ -17,8 +17,11 @@ public class Simulation implements SimulationInterface, Serializable {
     private final World world;
     private int id;
     private int tick = 0;
-    private long duration;
+    private long currentDuration = 0;
+    private long totalDuration = 0;
     private LocalDateTime date;
+
+    private boolean paused = false;
 
     public Simulation(World world) {
         this.world = world;
@@ -27,10 +30,13 @@ public class Simulation implements SimulationInterface, Serializable {
     @Override
     public void run(int id) {
         this.id = id;
-        LocalDateTime begin = LocalDateTime.now();
-        this.date = begin;
+        this.date = LocalDateTime.now();
+        loop();
+    }
 
-        while (!world.getTermination().isMet(tick, duration)){
+    private void loop(){
+        LocalDateTime begin = LocalDateTime.now();
+        while (!paused && !world.getTermination().isMet(tick, currentDuration + totalDuration)){
             tick++;
             List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
             for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
@@ -42,9 +48,10 @@ public class Simulation implements SimulationInterface, Serializable {
                     }
                 }
             }
-            duration = Duration.between(begin, LocalDateTime.now()).getSeconds();
+            currentDuration = Duration.between(begin, LocalDateTime.now()).getSeconds();
         }
-
+        totalDuration += currentDuration;
+        currentDuration = 0;
     }
 
     @Override
@@ -89,6 +96,25 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public long getDuration(){
-        return duration;
+        return totalDuration + currentDuration;
+    }
+
+    @Override
+    public void pause() {
+        if(!paused) {
+            paused = true;
+        } else {
+            throw new RuntimeException("Simulation isn't running.");
+        }
+    }
+
+    @Override
+    public void resume() {
+        if(paused) {
+            paused = false;
+            loop();
+        } else {
+            throw new RuntimeException("Simulation isn't paused.");
+        }
     }
 }

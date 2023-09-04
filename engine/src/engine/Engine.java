@@ -237,6 +237,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOStatus getSimulationStatus(int id){
+        System.out.println("duration: " + pastSimulations.get(id).getDuration());
         return new DTOStatus(pastSimulations.get(id).getTick(), pastSimulations.get(id).getDuration());
     }
 
@@ -245,5 +246,17 @@ public class Engine implements EngineInterface, Serializable {
         return new DTOTermination(
                 Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
                 Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
+    }
+
+    @Override
+    public void pauseSimulation(int id) {
+        pastSimulations.get(id).pause();
+    }
+
+    @Override
+    public DTOSimulationResult resumeSimulation(int id) {
+        pastSimulations.get(id).resume();
+        Termination termination = pastSimulations.get(id).getTermination();
+        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }
 }
