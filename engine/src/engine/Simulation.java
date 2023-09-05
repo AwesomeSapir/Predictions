@@ -4,7 +4,6 @@ import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.instance.entity.EntityInstance;
 import engine.world.rule.Rule;
-import engine.world.rule.action.Action;
 import engine.world.termination.Termination;
 
 import java.io.Serializable;
@@ -39,15 +38,21 @@ public class Simulation implements SimulationInterface, Serializable {
         while (!paused && !world.getTermination().isMet(tick, (currentDuration + totalDuration)/1000)){
             tick++;
             List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
-            for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
-                for (Rule rule : world.getRules().values()){
-                    if(rule.getActivation().canBeActivated(tick)){
-                        for (Action action : rule.getActions()){
-                            action.execute(entityInstances.get(i), world);
-                        }
-                    }
+            List<Rule> validRules = new ArrayList<>();
+
+            for (EntityInstance entityInstance : world.getPrimaryEntityInstances()) {
+                world.getSpaceManager().moveEntity(entityInstance);
+            }
+
+            for (Rule rule : world.getRules().values()){
+                if(rule.getActivation().canBeActivated(tick)){
+                    validRules.add(rule);
                 }
             }
+
+            //TODO add actions to list and activate on entities
+
+
             currentDuration = Duration.between(begin, LocalDateTime.now()).toMillis();
         }
         totalDuration += currentDuration;

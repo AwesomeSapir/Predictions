@@ -6,6 +6,7 @@ import engine.world.instance.environment.ActiveEnvironment;
 import engine.world.instance.environment.EnvironmentManager;
 import engine.world.instance.property.PropertyInstance;
 import engine.world.rule.Rule;
+import engine.world.space.SpaceManager;
 import engine.world.termination.Termination;
 
 import java.io.Serializable;
@@ -22,14 +23,16 @@ public class World implements Context, Serializable {
     protected final List<EntityInstance> entityInstances = new ArrayList<>();
     protected final Map<String, Rule> rules;
     protected final Termination termination;
+    protected final SpaceManager spaceManager;
 
-    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityDefinition primaryEntityDefinition, Collection<EntityInstance> entityInstances, Map<String, Rule> rules, Termination termination) {
+    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityDefinition primaryEntityDefinition, Collection<EntityInstance> entityInstances, Map<String, Rule> rules, Termination termination, SpaceManager spaceManager) {
         this.environmentManager = environmentManager;
         this.activeEnvironment = activeEnvironment;
         this.primaryEntityDefinition = primaryEntityDefinition;
         this.entityInstances.addAll(entityInstances);
         this.rules = rules;
         this.termination = termination;
+        this.spaceManager = spaceManager;
     }
 
     public Map<String, Rule> getRules() {
@@ -47,6 +50,7 @@ public class World implements Context, Serializable {
 
     @Override
     public void removeEntity(EntityInstance entityInstance) {
+        spaceManager.removeEntity(entityInstance);
         entityInstances.remove(entityInstance);
     }
 
@@ -62,5 +66,10 @@ public class World implements Context, Serializable {
 
     public EnvironmentManager getEnvironmentManager() {
         return environmentManager;
+    }
+
+    @Override
+    public SpaceManager getSpaceManager() {
+        return spaceManager;
     }
 }

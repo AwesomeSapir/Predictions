@@ -5,6 +5,7 @@ import engine.prd.*;
 import engine.world.definition.property.*;
 import engine.world.expression.*;
 import engine.world.rule.action.type.condition.*;
+import engine.world.space.SpaceManager;
 import validator.Validator;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
@@ -57,6 +58,7 @@ public class XmlTranslator implements Translator{
 
     @Override
     public World getWorld() throws InvalidClassException {
+        SpaceManager spaceManager = new SpaceManager(15, 15);
         environmentManager = getEnvironmentManager(prdWorld.getPRDEvironment());
 
         activeEnvironment = environmentManager.createActiveEnvironment();
@@ -69,6 +71,7 @@ public class XmlTranslator implements Translator{
             EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition);
             entityInstance.initProperties();
             entityInstances.add(entityInstance);
+            spaceManager.putEntity(entityInstance);
         }
 
         termination = getTermination(prdWorld.getPRDTermination());
@@ -78,7 +81,7 @@ public class XmlTranslator implements Translator{
             rules.put(rule.getName(), getRule(rule));
         }
 
-        world = new World(environmentManager, activeEnvironment, primaryEntityDefinition, entityInstances, rules, termination);
+        world = new World(environmentManager, activeEnvironment, primaryEntityDefinition, entityInstances, rules, termination, spaceManager); //TODO read from file
         return world;
     }
 
