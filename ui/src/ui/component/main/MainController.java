@@ -3,16 +3,14 @@ package ui.component.main;
 import dto.simulation.DTOSimulationResult;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import ui.engine.EngineManager;
 import ui.component.subcomponent.detail.DetailsController;
 import ui.component.subcomponent.execution.ExecutionController;
 import ui.component.subcomponent.result.ResultsController;
+import ui.engine.Simulation;
 
 import java.io.File;
 
@@ -73,6 +71,8 @@ public class MainController {
 
     public void switchToResultsTab() {
         mainTabPane.getSelectionModel().select(tabResultsID); // Switch to tabResultController
+        ListView<Simulation> listView = tabResultsController.listExecution;
+        listView.selectionModelProperty().get().select(listView.getItems().size()-1);
     }
 
     public void passSimulationResult(DTOSimulationResult simulationResult) {

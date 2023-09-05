@@ -28,9 +28,9 @@
          <Insets top="8.0" />
       </GridPane.margin>
    </Label>
-    <Button fx:id="buttonRandom" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+    <Button fx:id="buttonRandom" styleClass="button-circle" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
         <graphic>
-            <ImageView fx:id="imageRandom" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView styleClass="icon-random" pickOnBounds="true" preserveRatio="true" />
         </graphic>
     </Button>
     <padding>

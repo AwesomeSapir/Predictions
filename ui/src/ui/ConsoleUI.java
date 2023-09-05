@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
@@ -26,9 +27,14 @@ public class ConsoleUI extends Application implements MainUI{
         mainController.setEngineManager(engineManager);
 
         Scene scene = new Scene(root, 600, 400);
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/ui/resources/font/Roboto-Regular.ttf")).toExternalForm(), 24);
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/ui/resources/font/Poppins-Medium.ttf")).toExternalForm(), 24);
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/ui/resources/font/MaterialIcons-Regular.ttf")).toExternalForm(), 24);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/resources/style/main.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setMinHeight(300);
+        primaryStage.setMinWidth(400);
     }
 
     /*

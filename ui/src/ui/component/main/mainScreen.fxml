@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.main.MainController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.main.MainController">
    <center>
-       <TabPane fx:id="mainTabPane" minHeight="16" minWidth="16" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+       <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
            <opaqueInsets>
                <Insets />
            </opaqueInsets>

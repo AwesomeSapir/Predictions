@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import ui.engine.EngineManager;
+import ui.engine.Progress;
 import ui.engine.Simulation;
 import ui.engine.Status;
 
@@ -36,6 +37,7 @@ public class ResultsController {
     @FXML public Label labelMaxTicks;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
+    @FXML public ScrollPane paneDetails;
     private EngineManager engineManager;
 
     private final ChangeListener<Boolean> simulationResultListener = new ChangeListener<Boolean>() {
@@ -102,6 +104,14 @@ public class ResultsController {
         });
     }
 
+    private void bindProgress(GridPane grid, Label labelMax, Label labelValue, ProgressBar progressBar, Progress progress){
+
+    }
+
+    private void bindSimulationProgress(Simulation simulation){
+
+    }
+
     public void setButtonsDisable(Status status){
         switch (status){
             case RUNNING:
@@ -164,6 +174,7 @@ public class ResultsController {
         bindVisibility(gridSeconds, gridTicks);
 
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
+        paneDetails.visibleProperty().bind(Bindings.isEmpty(listExecution.getItems()).not());
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override

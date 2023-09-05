@@ -7,6 +7,8 @@
     -primary-text: #FAFAFA;
     -secondary-text: #9E9E9E;
     -primary-accent: #0091EA;
+    -primary-gradient-accent: #E040FB;
+    -primary-accent-gradient: linear-gradient(to right, -primary-accent, -primary-gradient-accent);
     -border-color: #40C4FF;
     -seperator-color: #313131;
     -seperator-width: 1;
@@ -14,17 +16,32 @@
     -interact-background: #424242;
 }
 
-@font-face {
-    font-family: Roboto;
-    src: url('../font/Roboto-Regular.ttf');
+.icon-random {
+    -fx-image: url("/ui/resources/icon/white/refresh/baseline.png");
 }
 
+.icon-play {
+    -fx-image: url("/ui/resources/icon/white/play_arrow/baseline.png");
+}
+
+.icon-stop {
+    -fx-image: url("/ui/resources/icon/white/stop/baseline.png");
+}
+
+.icon-pause {
+    -fx-image: url("/ui/resources/icon/white/pause/baseline.png");
+}
+
+.all,
 .root,
+.list-view,
 AnchorPane,
 VBox,
-.list-view,
+.scroll-pane,
+.scroll-pane .viewport,
 .list-cell,
 .tab-pane,
+.text-area,
 .tab-pane > .tab-header-area,
 .tab-pane > .tab-content-area,
 .tab-pane > .tab-header-area > .tab-header-background,
@@ -34,9 +51,31 @@ VBox,
 .tree-view,
 .tree-cell {
     -fx-background-color: -primary-background;
-    -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
     -fx-border-color: transparent;
+}
+
+SVGPath {
+    -fx-scale-x: 0.1;
+    -fx-scale-y: 0.1;
+    -fx-scale-z: 0.1;
+}
+
+.text {
+    -fx-text-fill: -primary-text;
+    -fx-font-family: 'Poppins Medium';
+    -fx-font-weight: 700;
+    -fx-font-smoothing-type: gray;
+    -fx-font-style: normal;
+}
+
+.text-area .content{
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 16px;
+}
+
+.text-area{
+    -fx-text-fill: -primary-text;
+    -fx-background-color: transparent;
 }
 
 .tab-pane .tab:selected .focus-indicator {
@@ -53,40 +92,36 @@ VBox,
 
 .tab-pane .tab:selected .tab-label {
     -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
     -fx-border-color: transparent;
 }
 
 .tab-pane .tab-label {
     -fx-font-weight: bold;
     -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
     -fx-border-color: transparent;
 }
 
 .tab {
     -fx-background-color: -secondary-accent;
+    -fx-background-insets: 0 4 0 4;
+    -fx-border-insets: 0 4 0 4;
     -fx-background-radius: 16px;
 }
 
 .button {
-    -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
-    -fx-border-color: -primary-accent;
+    -fx-border-color: -primary-accent-gradient;
     -fx-border-radius: 16px;
     -fx-background-radius: 16px;
     -fx-border-width: 2px;
-    -fx-background-color: -primary-background;
+    -fx-background-color: -interact-background;
     -fx-font-weight: bold;
 }
 
 .button:hover {
-    -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
-    -fx-border-color: -primary-accent;
+    -fx-border-color: -primary-accent-gradient;
     -fx-border-radius: 16px;
     -fx-border-width: 2px;
-    -fx-background-color: -primary-accent;
+    -fx-background-color: -primary-accent-gradient;
     -fx-background-radius: 16px;
     -fx-font-weight: bold;
     -fx-scale-x: 1.1;
@@ -94,8 +129,6 @@ VBox,
 }
 
 .button:pressed {
-    -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
     -fx-border-color: -interact-background;
     -fx-border-radius: 16px;
     -fx-background-radius: 16px;
@@ -110,7 +143,6 @@ VBox,
     -fx-border-color: -primary-accent;
     -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
     -fx-prompt-text-fill: -secondary-text;
 }
 
@@ -120,16 +152,6 @@ VBox,
 }
 
 .label, .button {
-    -fx-text-fill: -primary-text;
-    -fx-font-family: Roboto;
-}
-
-.table-view,
-.column-header,
-.filler {
-    -fx-background-color: -primary-background;
-    -fx-border-color: -seperator-color;
-    -fx-border-width: 1px;
     -fx-text-fill: -primary-text;
 }
 
@@ -160,11 +182,6 @@ VBox,
     -fx-background-radius: 8px;
     -fx-background-color: -interact-background;
     -fx-padding: 8px;
-}
-
-#imageRandom {
-    -fx-fill: -primary-text;
-    -fx-image: url("../icon/icon_light_refresh.png");
 }
 
 #viewDetails {
@@ -245,6 +262,7 @@ VBox,
 .list-cell,
 .tree-cell {
     -fx-background-color: -secondary-background;
+    -fx-text-fill: -primary-text;
 }
 
 .list-cell:selected,
@@ -286,4 +304,24 @@ VBox,
     -fx-background-color: transparent;
 }
 
+.progress-bar .track{
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 16px;
+}
 
+.progress-bar .bar{
+    -fx-background-color: -primary-accent-gradient;
+    -fx-background-radius: 16px;
+}
+
+
+.button-circle {
+    -fx-border-radius: 100%;
+    -fx-background-radius: 100%;
+    -fx-max-width: 36px;
+    -fx-max-height: 36px;
+    -fx-pref-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+}

@@ -13,12 +13,16 @@
     </bottom>
     <center>
         <SplitPane dividerPositions="0.5" prefHeight="194.0" prefWidth="599.0" BorderPane.alignment="CENTER">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="127.0">
-                <VBox fx:id="vboxEntityPopulation" prefHeight="334.4" prefWidth="298.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            </AnchorPane>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="230.0" prefWidth="364.0">
-                <VBox fx:id="vboxEnvVariables" prefHeight="334.4" prefWidth="298.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            </AnchorPane>
+         <ScrollPane fitToHeight="true" fitToWidth="true">
+            <content>
+                   <VBox fx:id="vboxEntityPopulation" />
+            </content>
+         </ScrollPane>
+         <ScrollPane fitToHeight="true" fitToWidth="true">
+            <content>
+                   <VBox fx:id="vboxEnvVariables" />
+            </content>
+         </ScrollPane>
         </SplitPane>
     </center>
 
