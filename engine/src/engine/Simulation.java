@@ -36,7 +36,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
     private void loop(){
         LocalDateTime begin = LocalDateTime.now();
-        while (!paused && !world.getTermination().isMet(tick, currentDuration + totalDuration)){
+        while (!paused && !world.getTermination().isMet(tick, (currentDuration + totalDuration)/1000)){
             tick++;
             List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
             for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
@@ -48,7 +48,7 @@ public class Simulation implements SimulationInterface, Serializable {
                     }
                 }
             }
-            currentDuration = Duration.between(begin, LocalDateTime.now()).getSeconds();
+            currentDuration = Duration.between(begin, LocalDateTime.now()).toMillis();
         }
         totalDuration += currentDuration;
         currentDuration = 0;
@@ -96,7 +96,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public long getDuration(){
-        return totalDuration + currentDuration;
+        return (totalDuration + currentDuration)/1000;
     }
 
     @Override

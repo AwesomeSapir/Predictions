@@ -11,6 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.concurrent.Task;
 import javafx.util.Pair;
 
@@ -22,8 +23,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class EngineManager {
 
     public final EngineInterface engine; //TODO make private
-    private final ObservableList<Simulation> simulations = FXCollections.observableArrayList();
-
+    private final ObservableMap<Integer, Simulation> simulations = FXCollections.observableHashMap();
+    private final ObservableList<Simulation> simulationsList = FXCollections.observableArrayList();
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
 
@@ -51,8 +52,16 @@ public class EngineManager {
                 return engine.runSimulation();
             }
         };
-        task.setOnSucceeded(event -> simulations.get(task.getValue().getId()-1).setResult(task.getValue()));
-        simulations.add(new Simulation(engine.getNextId(), engine.getSimulationTermination()));
+        task.setOnSucceeded(event -> {
+            simulations.get(task.getValue().getId()).setResult(task.getValue());
+            if(simulations.get(task.getValue().getId()).getStatus() == Status.RUNNING) {
+                simulations.get(task.getValue().getId()).setStatus(Status.STOPPED);
+            }
+        });
+        Simulation simulation =  new Simulation(engine.getNextId(), engine.getSimulationTermination());
+        simulations.put(simulation.getId(), simulation);
+        simulationsList.add(simulation);
+
         threadPool.execute(task);
     }
 
@@ -63,8 +72,28 @@ public class EngineManager {
                 return engine.resumeSimulation(id);
             }
         };
-        task.setOnSucceeded(event -> simulations.get(task.getValue().getId()-1).setResult(task.getValue()));
+        task.setOnSucceeded(event -> {
+            simulations.get(task.getValue().getId()).setResult(task.getValue());
+            if(simulations.get(task.getValue().getId()).getStatus() == Status.RUNNING) {
+                simulations.get(task.getValue().getId()).setStatus(Status.STOPPED);
+            }
+        });
         threadPool.execute(task);
+        simulations.get(id).setStatus(Status.RUNNING);
+    }
+
+    public void pauseSimulation(int id){
+        engine.pauseSimulation(id);
+        simulations.get(id).setStatus(Status.PAUSED);
+    }
+
+    public void stopSimulation(int id){
+        try {
+            engine.pauseSimulation(id);
+        } catch (RuntimeException ignored){
+
+        }
+        simulations.get(id).setStatus(Status.STOPPED);
     }
 
     /*
@@ -87,8 +116,12 @@ public class EngineManager {
         return simulationPath;
     }
 
-    public ObservableList<Simulation> getSimulations() {
+    public ObservableMap<Integer, Simulation> getSimulations() {
         return simulations;
+    }
+
+    public ObservableList<Simulation> getSimulationsList() {
+        return simulationsList;
     }
 
     public DTOSimulationDetails getSimulationDetails(){

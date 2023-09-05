@@ -26,7 +26,7 @@ public class ConsoleUI extends Application implements MainUI{
         mainController.setEngineManager(engineManager);
 
         Scene scene = new Scene(root, 600, 400);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/component/main/main.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/resources/style/main.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

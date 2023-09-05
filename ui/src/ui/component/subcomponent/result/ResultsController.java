@@ -18,6 +18,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
+import ui.engine.Status;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -29,9 +30,12 @@ public class ResultsController {
     @FXML public Button buttonResume;
     @FXML public Button buttonPause;
     @FXML public Button buttonStop;
+    @FXML public Label labelSeconds;
+    @FXML public Label labelMaxSeconds;
+    @FXML public Label labelTicks;
+    @FXML public Label labelMaxTicks;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
-
     private EngineManager engineManager;
 
     private final ChangeListener<Boolean> simulationResultListener = new ChangeListener<Boolean>() {
@@ -53,21 +57,33 @@ public class ResultsController {
 
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
-        listExecution.setItems(engineManager.getSimulations());
+        listExecution.setItems(engineManager.getSimulationsList());
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             progressBarSeconds.progressProperty().bind(newValue.getProgressSeconds().percentageProperty());
             progressBarTicks.progressProperty().bind(newValue.getProgressTicks().percentageProperty());
+            labelMaxSeconds.textProperty().bind(newValue.getProgressSeconds().maxProperty().asString());
+            labelMaxTicks.textProperty().bind(newValue.getProgressTicks().maxProperty().asString());
+            labelSeconds.textProperty().bind(newValue.getProgressSeconds().valueProperty().asString());
+            labelTicks.textProperty().bind(newValue.getProgressTicks().valueProperty().asString());
             gridSeconds.setVisible(newValue.getProgressSeconds().isEnabled());
             gridTicks.setVisible(newValue.getProgressTicks().isEnabled());
+            setButtonsDisable(newValue.getStatus());
+
+            newValue.statusProperty().addListener((observable1, oldValue1, newValue1) -> {
+                System.out.println("Status changed from " + oldValue1 + " to " + newValue1);
+                setButtonsDisable(newValue1);
+            });
 
             buttonPause.setOnAction(event -> {
-                engineManager.engine.pauseSimulation(newValue.getId());
-                timeline.stop();
+                engineManager.pauseSimulation(newValue.getId());
             });
 
             buttonResume.setOnAction(event -> {
                 engineManager.resumeSimulation(newValue.getId());
-                timeline.play();
+            });
+
+            buttonStop.setOnAction(event -> {
+                engineManager.stopSimulation(newValue.getId());
             });
 
             setSimulationResult(newValue.getResult());
@@ -84,6 +100,29 @@ public class ResultsController {
                 timeline.stop();
             }
         });
+    }
+
+    public void setButtonsDisable(Status status){
+        switch (status){
+            case RUNNING:
+                buttonPause.setDisable(false);
+                buttonResume.setDisable(true);
+                buttonStop.setDisable(false);
+                timeline.play();
+                break;
+            case STOPPED:
+                buttonPause.setDisable(true);
+                buttonResume.setDisable(true);
+                buttonStop.setDisable(true);
+                timeline.stop();
+                break;
+            case PAUSED:
+                buttonPause.setDisable(true);
+                buttonResume.setDisable(false);
+                buttonStop.setDisable(false);
+                timeline.stop();
+                break;
+        }
     }
 
     public void updateSimulation(Simulation simulation){

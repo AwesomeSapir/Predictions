@@ -14,6 +14,11 @@
     -interact-background: #424242;
 }
 
+@font-face {
+    font-family: Roboto;
+    src: url('../font/Roboto-Regular.ttf');
+}
+
 .root,
 AnchorPane,
 VBox,
@@ -30,6 +35,7 @@ VBox,
 .tree-cell {
     -fx-background-color: -primary-background;
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: transparent;
 }
 
@@ -47,12 +53,14 @@ VBox,
 
 .tab-pane .tab:selected .tab-label {
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: transparent;
 }
 
 .tab-pane .tab-label {
     -fx-font-weight: bold;
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: transparent;
 }
 
@@ -63,6 +71,7 @@ VBox,
 
 .button {
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: -primary-accent;
     -fx-border-radius: 16px;
     -fx-background-radius: 16px;
@@ -73,6 +82,7 @@ VBox,
 
 .button:hover {
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: -primary-accent;
     -fx-border-radius: 16px;
     -fx-border-width: 2px;
@@ -85,6 +95,7 @@ VBox,
 
 .button:pressed {
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-border-color: -interact-background;
     -fx-border-radius: 16px;
     -fx-background-radius: 16px;
@@ -99,6 +110,7 @@ VBox,
     -fx-border-color: -primary-accent;
     -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
     -fx-prompt-text-fill: -secondary-text;
 }
 
@@ -109,6 +121,7 @@ VBox,
 
 .label, .button {
     -fx-text-fill: -primary-text;
+    -fx-font-family: Roboto;
 }
 
 .table-view,
@@ -151,7 +164,7 @@ VBox,
 
 #imageRandom {
     -fx-fill: -primary-text;
-    -fx-image: url("icon_light_refresh.png");
+    -fx-image: url("../icon/icon_light_refresh.png");
 }
 
 #viewDetails {
