@@ -57,6 +57,7 @@ public class SimulationProgressView extends GridPane {
         labelTitle.textProperty().bind(title.concat(":"));
         Bindings.bindBidirectional(visibleProperty(), managedProperty());
         setVisible(false);
+
         progress.addListener((observable, oldValue, newValue) -> {
             if(newValue != null){
                 progressBar.progressProperty().bind(progress.get().percentageProperty());
