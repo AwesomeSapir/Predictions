@@ -29,6 +29,7 @@ public abstract class TextInputItemView<T> extends InputItemView<T> {
     protected void bind() {
         super.bind();
         labelError.visibleProperty().bind(isValid.not());
+        labelError.managedProperty().bind(labelError.visibleProperty());
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             isValid.set(newValue.isEmpty() || validator.validate(newValue));
         });

@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.execution.ExecutionController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.execution.ExecutionController">
 
     <bottom>
         <AnchorPane minHeight="-Infinity" prefHeight="64.0" prefWidth="599.0" BorderPane.alignment="CENTER">
-            <Button fx:id="buttonClear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="CLEAR" AnchorPane.leftAnchor="14.0" />
-            <Button fx:id="buttonStart" layoutX="544.0" layoutY="19.0" mnemonicParsing="false" onMouseClicked="#startClicked" text="START" AnchorPane.rightAnchor="14.400000000000091" />
+            <Button fx:id="buttonClear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="CLEAR"
+                    AnchorPane.leftAnchor="14.0"/>
+            <Button fx:id="buttonStart" styleClass="button-full" layoutX="544.0" layoutY="19.0" mnemonicParsing="false"
+                    onMouseClicked="#startClicked" text="START" AnchorPane.rightAnchor="14.400000000000091"/>
         </AnchorPane>
     </bottom>
     <center>
         <SplitPane dividerPositions="0.5" prefHeight="194.0" prefWidth="599.0" BorderPane.alignment="CENTER">
-         <ScrollPane fitToHeight="true" fitToWidth="true">
-            <content>
-                   <VBox fx:id="vboxEntityPopulation" />
-            </content>
-         </ScrollPane>
-         <ScrollPane fitToHeight="true" fitToWidth="true">
-            <content>
-                   <VBox fx:id="vboxEnvVariables" />
-            </content>
-         </ScrollPane>
+            <ScrollPane fitToWidth="true">
+                <VBox>
+                    <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                    </padding>
+                    <VBox fx:id="vboxEntityPopulation" spacing="16.0" styleClass="view-box"/>
+                </VBox>
+            </ScrollPane>
+            <ScrollPane fitToWidth="true">
+                <VBox>
+                    <padding>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                    </padding>
+                    <VBox fx:id="vboxEnvVariables" spacing="16.0" styleClass="view-box"/>
+                </VBox>
+            </ScrollPane>
         </SplitPane>
     </center>
 

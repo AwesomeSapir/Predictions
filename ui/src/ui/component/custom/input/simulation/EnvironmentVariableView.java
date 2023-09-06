@@ -3,13 +3,12 @@ package ui.component.custom.input.simulation;
 import dto.detail.DTOEnvironmentVariable;
 import ui.component.custom.input.generic.*;
 
-public class EnvironmentVariableView  {
+public class EnvironmentVariableView {
 
-    private final InputItemView view;
-    private DTOEnvironmentVariable environmentVariable;
+    private EnvironmentVariableView(){}
 
-    public EnvironmentVariableView(DTOEnvironmentVariable environmentVariable) {
-        this.environmentVariable = environmentVariable;
+    public static InputItemView<?> create(DTOEnvironmentVariable environmentVariable){
+        InputItemView<?> view;
         switch (environmentVariable.getType()){
             case "DECIMAL":
             case "FLOAT":
@@ -29,9 +28,6 @@ public class EnvironmentVariableView  {
                 throw new IllegalArgumentException("Invalid variable type: " + environmentVariable.getType());
         }
         view.setTitle(environmentVariable.getName());
-    }
-
-    public InputItemView getView() {
         return view;
     }
 }

@@ -4,18 +4,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.detail.DetailsController">
-   <AnchorPane>
-      <children>
-           <TreeView fx:id="treeViewDetails" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      </children>
-      <padding>
-         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-      </padding>
-   </AnchorPane>
-    <VBox fx:id="paneRight">
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.component.subcomponent.detail.DetailsController">
+    <AnchorPane>
         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
         </padding>
-    </VBox>
+        <TreeView fx:id="treeViewDetails" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem"
+                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                  AnchorPane.topAnchor="0.0"/>
+    </AnchorPane>
+    <ScrollPane fitToWidth="true">
+        <VBox fx:id="paneRight">
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            </padding>
+        </VBox>
+    </ScrollPane>
 </SplitPane>

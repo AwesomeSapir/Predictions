@@ -2,7 +2,9 @@ package ui.component.subcomponent.execution;
 
 import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
+import dto.detail.DTOObject;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -19,6 +21,7 @@ import ui.engine.EngineManager;
 import ui.component.main.MainController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ExecutionController {
@@ -37,6 +40,7 @@ public class ExecutionController {
 
     @FXML
     public void initialize() {
+
         buttonClear.setOnMouseClicked(this::clearClicked);
     }
 
@@ -45,28 +49,30 @@ public class ExecutionController {
         engineManager.isSimulationLoadedProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println("simulation loaded changed to: " + newValue);
             if (newValue) {
-                populateEntities();
-                populateEnvVariables();
+                populateVBox(vboxEntityPopulation, engineManager.getSimulationDetails().getEntities());
+                populateVBox(vboxEnvVariables, engineManager.getEnvironmentDefinitions());
             }
         });
     }
 
-    public void populateEntities() {
-        vboxEntityPopulation.getChildren().clear();
-        for (DTOEntity entity : engineManager.getSimulationDetails().getEntities()) {
-            vboxEntityPopulation.getChildren().addAll(
-                    new EntityPopulationView(entity),
-                    new Separator(Orientation.HORIZONTAL));
+    public void populateVBox(VBox vBox, Collection<? extends DTOObject> collection){
+        vBox.getChildren().clear();
+        for (DTOObject dtoObject : collection) {
+            Separator separator = new Separator(Orientation.HORIZONTAL);
+            VBox.setMargin(separator, new Insets(0, -16, 0, -16));
+            InputItemView<?> inputItemView;
+            if(dtoObject instanceof DTOEntity){
+                inputItemView = new EntityPopulationView((DTOEntity) dtoObject);
+            } else if (dtoObject instanceof DTOEnvironmentVariable){
+                inputItemView = EnvironmentVariableView.create((DTOEnvironmentVariable) dtoObject);
+            } else {
+                throw new RuntimeException("Invalid DTOObject " + dtoObject.getClass().getName());
+            }
+            vBox.getChildren().addAll(
+                    inputItemView,
+                    separator);
         }
-    }
-
-    public void populateEnvVariables() {
-        vboxEnvVariables.getChildren().clear();
-        for (DTOEnvironmentVariable environmentVariable : engineManager.getEnvironmentDefinitions()) {
-            vboxEnvVariables.getChildren().addAll(
-                    new EnvironmentVariableView(environmentVariable).getView(),
-                    new Separator(Orientation.HORIZONTAL));
-        }
+        vBox.getChildren().remove(vBox.getChildren().size()-1);
     }
 
     // Add a method to set the reference
@@ -75,7 +81,6 @@ public class ExecutionController {
     }
 
     public void clearClicked(MouseEvent mouseEvent) {
-        System.out.println("Clear clicked");
         clearInputItems(vboxEntityPopulation);
         clearInputItems(vboxEnvVariables);
     }
