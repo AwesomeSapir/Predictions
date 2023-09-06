@@ -1,0 +1,28 @@
+* {
+    /* Colors for backgrounds */
+    -primary-background: #F5F5F5;       /* 900/100  */
+    -secondary-background: #E5E5E5;     /* special  */
+
+    -interact-background: #EEEEEE;      /* 800/200  */
+
+    /* Colors for text */
+    -primary-text: #212121;             /* 100/900  */
+    -secondary-text: #9E9E9E;           /* 500      */
+
+    /* Colors for separators */
+    -seperator-color: #F5F5F5;          /* 900/100  */
+    -seperator-width: 1;
+}
+
+.icon-random {
+    -fx-image: url("/ui/resources/icon/black/refresh/baseline.png");
+}
+.icon-play {
+    -fx-image: url("/ui/resources/icon/black/play_arrow/baseline.png");
+}
+.icon-stop {
+    -fx-image: url("/ui/resources/icon/black/stop/baseline.png");
+}
+.icon-pause {
+    -fx-image: url("/ui/resources/icon/black/pause/baseline.png");
+}

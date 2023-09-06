@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root hgap="8.0" type="GridPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+        <columnConstraints>
+            <ColumnConstraints fillWidth="false" hgrow="NEVER" percentWidth="25.0" />
+            <ColumnConstraints fillWidth="false" hgrow="NEVER" percentWidth="15.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+            <ColumnConstraints fillWidth="false" hgrow="NEVER" percentWidth="15.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+        <Label fx:id="labelTitle" text="Title:" />
+        <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" prefWidth="100.0" progress="0.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" />
+        <Label fx:id="labelValue" text="Label" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
+        <Label fx:id="labelMax" text="Label" GridPane.columnIndex="3" GridPane.halignment="LEFT" />
+
+</fx:root>

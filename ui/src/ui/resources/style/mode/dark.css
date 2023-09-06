@@ -1,0 +1,29 @@
+* {
+    /* Colors for backgrounds */
+    -primary-background: #212121;       /* 900/100  */
+    -secondary-background: #313131;     /* special  */
+
+    -interact-background: #424242;      /* 800/200  */
+    -primary-accent-gradient: linear-gradient(to right, -primary-accent, -primary-gradient-accent);
+
+    /* Colors for text */
+    -primary-text: #FAFAFA;             /* 100/900  */
+    -secondary-text: #9E9E9E;           /* 500      */
+
+    /* Colors for separators */
+    -seperator-color: #212121;          /* 900/100  */
+    -seperator-width: 1;
+}
+
+.icon-random {
+    -fx-image: url("/ui/resources/icon/white/refresh/baseline.png");
+}
+.icon-play {
+    -fx-image: url("/ui/resources/icon/white/play_arrow/baseline.png");
+}
+.icon-stop {
+    -fx-image: url("/ui/resources/icon/white/stop/baseline.png");
+}
+.icon-pause {
+    -fx-image: url("/ui/resources/icon/white/pause/baseline.png");
+}

@@ -5,17 +5,16 @@ import dto.simulation.DTOSimulationResult;
 import dto.simulation.DTOStatus;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.Progress;
 import ui.engine.Simulation;
@@ -24,17 +23,11 @@ import ui.engine.Status;
 public class ResultsController {
     @FXML public TextArea textResult;
     @FXML public ListView<Simulation> listExecution;
-    @FXML public GridPane gridTicks;
-    @FXML public GridPane gridSeconds;
-    @FXML public ProgressBar progressBarSeconds;
-    @FXML public ProgressBar progressBarTicks;
+    @FXML public SimulationProgressView gridSeconds;
+    @FXML public SimulationProgressView gridTicks;
     @FXML public Button buttonResume;
     @FXML public Button buttonPause;
     @FXML public Button buttonStop;
-    @FXML public Label labelSeconds;
-    @FXML public Label labelMaxSeconds;
-    @FXML public Label labelTicks;
-    @FXML public Label labelMaxTicks;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
     @FXML public ScrollPane paneDetails;
@@ -61,14 +54,8 @@ public class ResultsController {
         this.engineManager = engineManager;
         listExecution.setItems(engineManager.getSimulationsList());
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
-            progressBarSeconds.progressProperty().bind(newValue.getProgressSeconds().percentageProperty());
-            progressBarTicks.progressProperty().bind(newValue.getProgressTicks().percentageProperty());
-            labelMaxSeconds.textProperty().bind(newValue.getProgressSeconds().maxProperty().asString());
-            labelMaxTicks.textProperty().bind(newValue.getProgressTicks().maxProperty().asString());
-            labelSeconds.textProperty().bind(newValue.getProgressSeconds().valueProperty().asString());
-            labelTicks.textProperty().bind(newValue.getProgressTicks().valueProperty().asString());
-            gridSeconds.setVisible(newValue.getProgressSeconds().isEnabled());
-            gridTicks.setVisible(newValue.getProgressTicks().isEnabled());
+            gridSeconds.setProgress(newValue.getProgressSeconds());
+            gridTicks.setProgress(newValue.getProgressTicks());
             setButtonsDisable(newValue.getStatus());
 
             newValue.statusProperty().addListener((observable1, oldValue1, newValue1) -> {
@@ -163,18 +150,10 @@ public class ResultsController {
         textResult.textProperty().set(result);
     }
 
-    private void bindVisibility(Node... nodes){
-        for (Node node : nodes){
-            Bindings.bindBidirectional(node.visibleProperty(), node.managedProperty());
-        }
-    }
-
     @FXML
     public void initialize(){
-        bindVisibility(gridSeconds, gridTicks);
-
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
-        paneDetails.visibleProperty().bind(Bindings.isEmpty(listExecution.getItems()).not());
+        //paneDetails.visibleProperty().bind(Bindings.isEmpty(listExecution.getItems()).not());
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override
