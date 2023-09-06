@@ -75,7 +75,4 @@ public class MainController {
         listView.selectionModelProperty().get().select(listView.getItems().size()-1);
     }
 
-    public void passSimulationResult(DTOSimulationResult simulationResult) {
-        tabResultsController.setSimulationResult(simulationResult);
-    }
 }
