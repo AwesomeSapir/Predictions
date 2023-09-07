@@ -16,13 +16,13 @@
         </AnchorPane>
     </bottom>
     <center>
-        <SplitPane dividerPositions="0.5" prefHeight="194.0" prefWidth="599.0" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <ScrollPane fitToWidth="true">
                 <VBox>
                     <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
                     </padding>
-                    <VBox fx:id="vboxEntityPopulation" spacing="16.0" styleClass="view-box"/>
+                    <VBox fx:id="vboxEntityPopulation" minWidth="200" spacing="16.0" styleClass="view-box"/>
                 </VBox>
             </ScrollPane>
             <ScrollPane fitToWidth="true">
@@ -30,7 +30,7 @@
                     <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
                     </padding>
-                    <VBox fx:id="vboxEnvVariables" spacing="16.0" styleClass="view-box"/>
+                    <VBox fx:id="vboxEnvVariables" minWidth="200" spacing="16.0" styleClass="view-box"/>
                 </VBox>
             </ScrollPane>
         </SplitPane>

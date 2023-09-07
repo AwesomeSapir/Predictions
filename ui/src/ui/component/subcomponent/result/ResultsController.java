@@ -9,6 +9,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -21,30 +23,49 @@ import ui.engine.Simulation;
 import ui.engine.Status;
 
 public class ResultsController {
-    @FXML public TextArea textResult;
-    @FXML public ListView<Simulation> listExecution;
-    @FXML public SimulationProgressView gridSeconds;
-    @FXML public SimulationProgressView gridTicks;
-    @FXML public Button buttonResume;
-    @FXML public Button buttonPause;
-    @FXML public Button buttonStop;
+    @FXML
+    public TextArea textResult;
+    @FXML
+    public ListView<Simulation> listExecution;
+    @FXML
+    public SimulationProgressView gridSeconds;
+    @FXML
+    public SimulationProgressView gridTicks;
+    @FXML
+    public Button buttonResume;
+    @FXML
+    public Button buttonPause;
+    @FXML
+    public Button buttonStop;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
-    @FXML public ScrollPane paneDetails;
+    private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
+    @FXML
+    public ScrollPane paneDetails;
     private EngineManager engineManager;
 
-    private final ChangeListener<Boolean> simulationResultListener = new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if(newValue){
-                setSimulationResult(selectedSimulation.get().getResult());
-                updateSimulation(selectedSimulation.get());
-                timeline.stop();
-            }
+    private final Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), event -> {
+        updateSimulation(selectedSimulation.get());
+        System.out.println("timeline is running");
+    }));
+
+    private final ChangeListener<Boolean> simulationResultListener = (observable, oldValue, newValue) -> {
+        if (newValue) {
+            setSimulationResult(selectedSimulation.get().getResult());
+            updateSimulation(selectedSimulation.get());
+            timeline.stop();
         }
     };
 
-    private final Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), event -> updateSimulation(selectedSimulation.get())));
+    private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
+        bindSimulationControls(newValue);
+        if (newValue != Status.RUNNING) {
+            timeline.stop();
+            setSimulationResult(selectedSimulation.get().getResult());
+        } else {
+            timeline.play();
+        }
+    };
 
     public ResultsController() {
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -56,28 +77,9 @@ public class ResultsController {
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             gridSeconds.setProgress(newValue.getProgressSeconds());
             gridTicks.setProgress(newValue.getProgressTicks());
-            setButtonsDisable(newValue.getStatus());
-
-            newValue.statusProperty().addListener((observable1, oldValue1, newValue1) -> {
-                System.out.println("Status changed from " + oldValue1 + " to " + newValue1);
-                setButtonsDisable(newValue1);
-            });
-
-            buttonPause.setOnAction(event -> {
-                engineManager.pauseSimulation(newValue.getId());
-            });
-
-            buttonResume.setOnAction(event -> {
-                engineManager.resumeSimulation(newValue.getId());
-            });
-
-            buttonStop.setOnAction(event -> {
-                engineManager.stopSimulation(newValue.getId());
-            });
-
-            setSimulationResult(newValue.getResult());
-
-            updateSimulation(newValue);
+            selectedStatus.unbind();
+            selectedStatus.bind(newValue.statusProperty());
+            /*updateSimulation(newValue);
 
             if (!newValue.isResultReady()) {
                 if (oldValue != null) {
@@ -87,20 +89,12 @@ public class ResultsController {
                 timeline.play();
             } else {
                 timeline.stop();
-            }
+            }*/
         });
     }
 
-    private void bindProgress(GridPane grid, Label labelMax, Label labelValue, ProgressBar progressBar, Progress progress){
-
-    }
-
-    private void bindSimulationProgress(Simulation simulation){
-
-    }
-
-    public void setButtonsDisable(Status status){
-        switch (status){
+    public void bindSimulationControls(Status status) {
+        switch (status) {
             case RUNNING:
                 buttonPause.setDisable(false);
                 buttonResume.setDisable(true);
@@ -122,7 +116,7 @@ public class ResultsController {
         }
     }
 
-    public void updateSimulation(Simulation simulation){
+    public void updateSimulation(Simulation simulation) {
         DTOStatus status = engineManager.engine.getSimulationStatus(simulation.getId());
         simulation.getProgressSeconds().setValue(status.getSeconds());
         simulation.getProgressTicks().setValue(status.getTicks());
@@ -130,7 +124,7 @@ public class ResultsController {
 
     public void setSimulationResult(DTOSimulationResult simulationResult) {
         String result;
-        if(simulationResult == null){
+        if (simulationResult == null) {
             result = "Simulation is still running...";
         } else {
             result = "Simulation result:\n" + "Id: " + simulationResult.getId() + "\nTermination reason:";
@@ -151,9 +145,12 @@ public class ResultsController {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
-        //paneDetails.visibleProperty().bind(Bindings.isEmpty(listExecution.getItems()).not());
+        selectedStatus.addListener(simulationStatusListener);
+        buttonPause.setOnAction(this::actionSimulationPause);
+        buttonResume.setOnAction(this::actionSimulationResume);
+        buttonStop.setOnAction(this::actionSimulationStop);
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override
@@ -171,5 +168,17 @@ public class ResultsController {
                 };
             }
         });
+    }
+
+    private void actionSimulationPause(ActionEvent actionEvent) {
+        engineManager.pauseSimulation(selectedSimulation.get().getId());
+    }
+
+    private void actionSimulationStop(ActionEvent actionEvent) {
+        engineManager.stopSimulation(selectedSimulation.get().getId());
+    }
+
+    private void actionSimulationResume(ActionEvent actionEvent) {
+        engineManager.resumeSimulation(selectedSimulation.get().getId());
     }
 }

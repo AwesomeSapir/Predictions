@@ -1,10 +1,7 @@
 package ui.component.custom.progress;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -21,6 +18,7 @@ public class SimulationProgressView extends GridPane {
     @FXML private Label labelMax;
     @FXML private ProgressBar progressBar;
 
+    private final BooleanProperty limited = new SimpleBooleanProperty(false);
     private final StringProperty title = new SimpleStringProperty();
     private final ObjectProperty<Progress> progress = new SimpleObjectProperty<>();
 
@@ -55,15 +53,15 @@ public class SimulationProgressView extends GridPane {
     @FXML
     public void initialize(){
         labelTitle.textProperty().bind(title.concat(":"));
-        Bindings.bindBidirectional(visibleProperty(), managedProperty());
-        setVisible(false);
+        Bindings.bindBidirectional(labelMax.visibleProperty(), progressBar.visibleProperty());
+        labelMax.visibleProperty().bind(limited);
 
         progress.addListener((observable, oldValue, newValue) -> {
             if(newValue != null){
                 progressBar.progressProperty().bind(progress.get().percentageProperty());
                 labelMax.textProperty().bind(progress.get().maxProperty().asString());
                 labelValue.textProperty().bind(progress.get().valueProperty().asString());
-                setVisible(progress.get().isEnabled());
+                limited.bind(progress.get().limitedProperty());
             }
         });
     }

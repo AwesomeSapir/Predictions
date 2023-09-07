@@ -4,12 +4,12 @@ import javafx.beans.property.*;
 
 public class Progress {
 
-    private final BooleanProperty enabled;
+    private final BooleanProperty limited;
     private final DoubleProperty percentage;
     private final LongProperty value;
     private final LongProperty max = new SimpleLongProperty();
     public Progress(Long max) {
-        this.enabled = new SimpleBooleanProperty(max != null);
+        this.limited = new SimpleBooleanProperty(max != null);
         this.value = new SimpleLongProperty(0);
         this.percentage = new SimpleDoubleProperty();
         this.max.setValue(max);
@@ -28,12 +28,12 @@ public class Progress {
         return percentage;
     }
 
-    public boolean isEnabled() {
-        return enabled.get();
+    public boolean isLimited() {
+        return limited.get();
     }
 
-    public BooleanProperty enabledProperty() {
-        return enabled;
+    public BooleanProperty limitedProperty() {
+        return limited;
     }
 
     public long getValue() {
