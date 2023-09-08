@@ -70,7 +70,7 @@ public class XmlTranslator implements Translator{
         for (PRDEntity prdEntity : prdWorld.getPRDEntities().getPRDEntity()){
             entityDefinitions.add(getEntityDefinition(prdEntity));
         }
-        entityManager = new EntityManager(entityDefinitions); //TODO change to secondary
+        entityManager = new EntityManager(entityDefinitions);
         for(EntityInstance entityInstance : entityManager.getEntityInstances(primaryEntityDefinition)){
             spaceManager.putEntity(entityInstance);
         }

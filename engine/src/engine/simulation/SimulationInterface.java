@@ -5,6 +5,7 @@ import engine.world.definition.entity.EntityDefinition;
 import engine.world.termination.Termination;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 public interface SimulationInterface {
 
@@ -31,4 +32,6 @@ public interface SimulationInterface {
     void pause();
 
     void resume();
+
+    public Collection<EntityDefinition> getAllEntityDefinitions();
 }

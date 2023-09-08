@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Simulation implements SimulationInterface, Serializable {
@@ -153,5 +154,10 @@ public class Simulation implements SimulationInterface, Serializable {
         } else {
             throw new RuntimeException("Simulation isn't running.");
         }
+    }
+
+    @Override
+    public Collection<EntityDefinition> getAllEntityDefinitions(){
+        return world.getEntityDefinitions();
     }
 }

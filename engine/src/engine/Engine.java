@@ -74,10 +74,12 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private Collection<DTOEntity> getEntities(SimulationInterface simulation) {
-        List<DTOEntity> entities = new ArrayList<>();
-        EntityDefinition entityDefinition = simulation.getPrimaryEntityDefinition();
-        entities.add(getEntity(entityDefinition));
-        return entities;
+        List<DTOEntity> result = new ArrayList<>();
+        List<EntityDefinition> entityDefinitions = new ArrayList<>(simulation.getAllEntityDefinitions());
+        for (EntityDefinition entityDefinition : entityDefinitions){
+            result.add(getEntity(entityDefinition));
+        }
+        return result;
     }
 
     @Override
