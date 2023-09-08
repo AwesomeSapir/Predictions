@@ -4,6 +4,7 @@ import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationResult;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -18,25 +19,18 @@ import ui.engine.Simulation;
 import ui.engine.Status;
 
 public class ResultsController {
-    @FXML
-    public TextArea textResult;
-    @FXML
-    public ListView<Simulation> listExecution;
-    @FXML
-    public SimulationProgressView gridSeconds;
-    @FXML
-    public SimulationProgressView gridTicks;
-    @FXML
-    public Button buttonResume;
-    @FXML
-    public Button buttonPause;
-    @FXML
-    public Button buttonStop;
+    @FXML public TextArea textResult;
+    @FXML public ListView<Simulation> listExecution;
+    @FXML public SimulationProgressView gridSeconds;
+    @FXML public SimulationProgressView gridTicks;
+    @FXML public Button buttonResume;
+    @FXML public Button buttonPause;
+    @FXML public Button buttonStop;
+    @FXML public Button buttonRerun;
+    @FXML public ScrollPane paneDetails;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
-    @FXML
-    public ScrollPane paneDetails;
     private EngineManager engineManager;
 
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(200), event -> {
@@ -44,7 +38,6 @@ public class ResultsController {
     }));
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
-        bindSimulationControls(newValue);
         if (newValue != Status.RUNNING) {
             updater.stop();
             showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
@@ -68,31 +61,6 @@ public class ResultsController {
             selectedStatus.bind(newValue.statusProperty());
         });
     }
-
-    public void bindSimulationControls(Status status) {
-        switch (status) {
-            case RUNNING:
-                buttonPause.setDisable(false);
-                buttonResume.setDisable(true);
-                buttonStop.setDisable(false);
-                updater.play();
-                break;
-            case STOPPED:
-                buttonPause.setDisable(true);
-                buttonResume.setDisable(true);
-                buttonStop.setDisable(true);
-                updater.stop();
-                break;
-            case PAUSED:
-                buttonPause.setDisable(true);
-                buttonResume.setDisable(false);
-                buttonStop.setDisable(false);
-                updater.stop();
-                break;
-        }
-    }
-
-
 
     public void showSimulationResult(DTOSimulationResult simulationResult) {
         String result;
@@ -123,6 +91,14 @@ public class ResultsController {
         buttonPause.setOnAction(this::actionSimulationPause);
         buttonResume.setOnAction(this::actionSimulationResume);
         buttonStop.setOnAction(this::actionSimulationStop);
+        buttonStop.setOnAction(this::actionSimulationRerun);
+
+        buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
+        buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
+        buttonStop.disableProperty().bind(Bindings.and(
+                selectedStatus.isNotEqualTo(Status.RUNNING).not(),
+                selectedStatus.isNotEqualTo(Status.PAUSED).not()));
+        buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override
@@ -154,5 +130,9 @@ public class ResultsController {
 
     private void actionSimulationResume(ActionEvent actionEvent) {
         engineManager.resumeSimulation(selectedSimulation.get().getId());
+    }
+
+    private void actionSimulationRerun(ActionEvent actionEvent){
+
     }
 }

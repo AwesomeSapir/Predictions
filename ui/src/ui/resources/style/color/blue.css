@@ -3,7 +3,7 @@
     -primary-accent: #00B0FF;           /* A400     */
     -secondary-accent: #01579B;         /* 900      */
     -primary-gradient-accent: #651FFF;  /* A400     */
-    -primary-accent-gradient: linear-gradient(to right, -primary-accent, -primary-gradient-accent);
+    -primary-accent-gradient: linear-gradient(to bottom right, -primary-accent, -primary-gradient-accent);
 
     /* Colors for errors */
     -error: #D50000;                    /* A700     */

@@ -27,3 +27,6 @@
 .icon-pause {
     -fx-image: url("/ui/resources/icon/white/pause/baseline.png");
 }
+.icon-replay {
+    -fx-image: url("/ui/resources/icon/white/replay/baseline.png");
+}

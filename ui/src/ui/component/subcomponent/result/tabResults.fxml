@@ -38,6 +38,7 @@
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints vgrow="SOMETIMES"/>
@@ -57,6 +58,12 @@
                                     GridPane.columnIndex="2">
                                 <graphic>
                                     <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop"/>
+                                </graphic>
+                            </Button>
+                            <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle"
+                                    GridPane.columnIndex="3">
+                                <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay"/>
                                 </graphic>
                             </Button>
                         </GridPane>
