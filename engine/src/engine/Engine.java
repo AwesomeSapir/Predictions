@@ -138,12 +138,17 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulationResult runSimulation() throws NullPointerException {
+    public DTOSimulation runSimulation() throws NullPointerException {
         isSimulationLoaded();
         int id = idCounter;
         archiveSimulation();
-        pastSimulations.get(id).run(id);
+        SimulationInterface simulation = pastSimulations.get(id);
+        simulation.run(id);
+        return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
+    }
 
+    @Override
+    public DTOSimulationResult getSimulationResult(int id){
         Termination termination = pastSimulations.get(id).getTermination();
         return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }
@@ -152,7 +157,7 @@ public class Engine implements EngineInterface, Serializable {
     public Collection<DTOSimulation> getPastSimulations() {
         List<DTOSimulation> simulations = new ArrayList<>();
         for (SimulationInterface simulation : pastSimulations.values()) {
-            simulations.add(new DTOSimulation(simulation.getDate(), simulation.getId()));
+            simulations.add(new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString()));
         }
         return simulations;
     }
@@ -237,7 +242,6 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOStatus getSimulationStatus(int id){
-        System.out.println("duration: " + pastSimulations.get(id).getDuration());
         return new DTOStatus(pastSimulations.get(id).getTick(), pastSimulations.get(id).getDuration());
     }
 
@@ -254,9 +258,9 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulationResult resumeSimulation(int id) {
-        pastSimulations.get(id).resume();
-        Termination termination = pastSimulations.get(id).getTermination();
-        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
+    public DTOSimulation resumeSimulation(int id) {
+        SimulationInterface simulation = pastSimulations.get(id);
+        simulation.resume();
+        return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
 }

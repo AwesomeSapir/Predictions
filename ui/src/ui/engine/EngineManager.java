@@ -1,8 +1,9 @@
 package ui.engine;
 
 import dto.detail.DTOEnvironmentVariable;
+import dto.simulation.DTOSimulation;
 import dto.simulation.DTOSimulationDetails;
-import dto.simulation.DTOSimulationResult;
+import dto.simulation.DTOStatus;
 import engine.Engine;
 import engine.EngineInterface;
 import javafx.beans.property.BooleanProperty;
@@ -46,17 +47,14 @@ public class EngineManager {
     }
 
     public void runSimulation(){
-        Task<DTOSimulationResult> task = new Task<DTOSimulationResult>() {
+        Task<DTOSimulation> task = new Task<DTOSimulation>() {
             @Override
-            protected DTOSimulationResult call() throws Exception {
+            protected DTOSimulation call() throws Exception {
                 return engine.runSimulation();
             }
         };
         task.setOnSucceeded(event -> {
-            simulations.get(task.getValue().getId()).setResult(task.getValue());
-            if(simulations.get(task.getValue().getId()).getStatus() == Status.RUNNING) {
-                simulations.get(task.getValue().getId()).setStatus(Status.STOPPED);
-            }
+            simulations.get(task.getValue().getId()).setStatus(Status.valueOf(task.getValue().getStatus()));
         });
         Simulation simulation =  new Simulation(engine.getNextId(), engine.getSimulationTermination());
         simulations.put(simulation.getId(), simulation);
@@ -66,17 +64,14 @@ public class EngineManager {
     }
 
     public void resumeSimulation(int id){
-        Task<DTOSimulationResult> task = new Task<DTOSimulationResult>() {
+        Task<DTOSimulation> task = new Task<DTOSimulation>() {
             @Override
-            protected DTOSimulationResult call() throws Exception {
+            protected DTOSimulation call() throws Exception {
                 return engine.resumeSimulation(id);
             }
         };
         task.setOnSucceeded(event -> {
-            simulations.get(task.getValue().getId()).setResult(task.getValue());
-            if(simulations.get(task.getValue().getId()).getStatus() == Status.RUNNING) {
-                simulations.get(task.getValue().getId()).setStatus(Status.STOPPED);
-            }
+            simulations.get(task.getValue().getId()).setStatus(Status.valueOf(task.getValue().getStatus()));
         });
         threadPool.execute(task);
         simulations.get(id).setStatus(Status.RUNNING);
@@ -94,6 +89,12 @@ public class EngineManager {
 
         }
         simulations.get(id).setStatus(Status.STOPPED);
+    }
+
+    public void updateSimulationProgress(Simulation simulation) {
+        DTOStatus status = engine.getSimulationStatus(simulation.getId());
+        simulation.getProgressSeconds().setValue(status.getSeconds());
+        simulation.getProgressTicks().setValue(status.getTicks());
     }
 
     /*

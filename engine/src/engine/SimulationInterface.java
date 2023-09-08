@@ -1,5 +1,6 @@
 package engine;
 
+import engine.simulation.Status;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.termination.Termination;
@@ -27,6 +28,8 @@ public interface SimulationInterface {
     int getTick();
 
     long getDuration();
+
+    Status getStatus();
 
     void pause();
 

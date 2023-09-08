@@ -6,10 +6,12 @@ public class DTOSimulation {
 
     private final LocalDateTime beginTime;
     private final int id;
+    private final String status;
 
-    public DTOSimulation(LocalDateTime beginTime, int id) {
+    public DTOSimulation(LocalDateTime beginTime, int id, String status) {
         this.beginTime = beginTime;
         this.id = id;
+        this.status = status;
     }
 
     public LocalDateTime getBeginTime() {
@@ -18,5 +20,9 @@ public class DTOSimulation {
 
     public int getId() {
         return id;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

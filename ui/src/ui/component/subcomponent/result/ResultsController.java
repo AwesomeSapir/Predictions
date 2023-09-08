@@ -2,23 +2,18 @@ package ui.component.subcomponent.result;
 
 import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationResult;
-import dto.simulation.DTOStatus;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
-import ui.engine.Progress;
 import ui.engine.Simulation;
 import ui.engine.Status;
 
@@ -44,31 +39,23 @@ public class ResultsController {
     public ScrollPane paneDetails;
     private EngineManager engineManager;
 
-    private final Timeline timeline = new Timeline(new KeyFrame(Duration.millis(200), event -> {
-        updateSimulation(selectedSimulation.get());
-        System.out.println("timeline is running");
+    private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(200), event -> {
+        engineManager.updateSimulationProgress(selectedSimulation.get());
     }));
-
-    private final ChangeListener<Boolean> simulationResultListener = (observable, oldValue, newValue) -> {
-        if (newValue) {
-            setSimulationResult(selectedSimulation.get().getResult());
-            updateSimulation(selectedSimulation.get());
-            timeline.stop();
-        }
-    };
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         bindSimulationControls(newValue);
         if (newValue != Status.RUNNING) {
-            timeline.stop();
-            setSimulationResult(selectedSimulation.get().getResult());
+            updater.stop();
+            showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
+            engineManager.updateSimulationProgress(selectedSimulation.get());
         } else {
-            timeline.play();
+            updater.play();
         }
     };
 
     public ResultsController() {
-        timeline.setCycleCount(Timeline.INDEFINITE);
+        updater.setCycleCount(Timeline.INDEFINITE);
     }
 
     public void setEngineManager(EngineManager engineManager) {
@@ -79,17 +66,6 @@ public class ResultsController {
             gridTicks.setProgress(newValue.getProgressTicks());
             selectedStatus.unbind();
             selectedStatus.bind(newValue.statusProperty());
-            /*updateSimulation(newValue);
-
-            if (!newValue.isResultReady()) {
-                if (oldValue != null) {
-                    oldValue.resultReadyProperty().removeListener(simulationResultListener);
-                }
-                newValue.resultReadyProperty().addListener(simulationResultListener);
-                timeline.play();
-            } else {
-                timeline.stop();
-            }*/
         });
     }
 
@@ -99,30 +75,26 @@ public class ResultsController {
                 buttonPause.setDisable(false);
                 buttonResume.setDisable(true);
                 buttonStop.setDisable(false);
-                timeline.play();
+                updater.play();
                 break;
             case STOPPED:
                 buttonPause.setDisable(true);
                 buttonResume.setDisable(true);
                 buttonStop.setDisable(true);
-                timeline.stop();
+                updater.stop();
                 break;
             case PAUSED:
                 buttonPause.setDisable(true);
                 buttonResume.setDisable(false);
                 buttonStop.setDisable(false);
-                timeline.stop();
+                updater.stop();
                 break;
         }
     }
 
-    public void updateSimulation(Simulation simulation) {
-        DTOStatus status = engineManager.engine.getSimulationStatus(simulation.getId());
-        simulation.getProgressSeconds().setValue(status.getSeconds());
-        simulation.getProgressTicks().setValue(status.getTicks());
-    }
 
-    public void setSimulationResult(DTOSimulationResult simulationResult) {
+
+    public void showSimulationResult(DTOSimulationResult simulationResult) {
         String result;
         if (simulationResult == null) {
             result = "Simulation is still running...";
@@ -168,6 +140,8 @@ public class ResultsController {
                 };
             }
         });
+
+        updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
     }
 
     private void actionSimulationPause(ActionEvent actionEvent) {

@@ -1,5 +1,6 @@
 package engine;
 
+import engine.simulation.Status;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.instance.entity.EntityInstance;
@@ -20,6 +21,7 @@ public class Simulation implements SimulationInterface, Serializable {
     private long currentDuration = 0;
     private long totalDuration = 0;
     private LocalDateTime date;
+    private Status status;
 
     private boolean paused = false;
 
@@ -31,12 +33,18 @@ public class Simulation implements SimulationInterface, Serializable {
     public void run(int id) {
         this.id = id;
         this.date = LocalDateTime.now();
+        status = Status.RUNNING;
         loop();
     }
 
     private void loop(){
         LocalDateTime begin = LocalDateTime.now();
-        while (!paused && !world.getTermination().isMet(tick, (currentDuration + totalDuration)/1000)){
+
+        while (status == Status.RUNNING){
+            if(world.getTermination().isMet(tick, (currentDuration + totalDuration)/1000)){
+                status = Status.STOPPED;
+                break;
+            }
             tick++;
             List<EntityInstance> entityInstances = new ArrayList<>(world.getPrimaryEntityInstances());
             for (int i = 0; i < world.getPrimaryEntityInstances().size(); i++) {
@@ -100,9 +108,15 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
     public void pause() {
         if(!paused) {
             paused = true;
+            status = Status.PAUSED;
         } else {
             throw new RuntimeException("Simulation isn't running.");
         }
@@ -112,6 +126,7 @@ public class Simulation implements SimulationInterface, Serializable {
     public void resume() {
         if(paused) {
             paused = false;
+            status = Status.RUNNING;
             loop();
         } else {
             throw new RuntimeException("Simulation isn't paused.");

@@ -19,7 +19,10 @@ public interface EngineInterface {
     Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException;
     Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException;
     void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException;
-    DTOSimulationResult runSimulation() throws NullPointerException;
+    DTOSimulation runSimulation() throws NullPointerException;
+
+    DTOSimulationResult getSimulationResult(int id);
+
     Collection<DTOSimulation> getPastSimulations();
     DTOSimulationDetails getSimulationDetails() throws NullPointerException;
     void saveToFile(String filepath);
@@ -28,7 +31,7 @@ public interface EngineInterface {
     DTOStatus getSimulationStatus(int id);
     DTOTermination getSimulationTermination();
     void pauseSimulation(int id);
-    DTOSimulationResult resumeSimulation(int id);
+    DTOSimulation resumeSimulation(int id);
 
 
 }
