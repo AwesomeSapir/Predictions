@@ -9,13 +9,15 @@ import java.util.Collection;
 
 public interface Context {
 
-    Collection<EntityInstance> getPrimaryEntityInstances();
-
     void removeEntity(EntityInstance entityInstance);
 
-    EntityDefinition getPrimaryEntityDefinition();
+    public EntityDefinition getEntityDefinition(String name);
+
+    public Collection<EntityInstance> getEntityInstances(EntityDefinition entityDefinition);
 
     PropertyInstance getEnvironmentPropertyInstance(String name);
+
+    Collection<EntityInstance> getEntityInstances(EntityDefinition entityDefinition, int count);
 
     SpaceManager getSpaceManager();
 

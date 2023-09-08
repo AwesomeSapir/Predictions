@@ -1,0 +1,157 @@
+package engine.simulation;
+
+import engine.world.World;
+import engine.world.definition.entity.EntityDefinition;
+import engine.world.instance.entity.EntityInstance;
+import engine.world.rule.Rule;
+import engine.world.rule.action.Action;
+import engine.world.termination.Termination;
+
+import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Simulation implements SimulationInterface, Serializable {
+    private final World world;
+    private int id;
+    private int tick = 0;
+    private long currentDuration = 0;
+    private long totalDuration = 0;
+    private LocalDateTime date;
+
+    private Status status;
+
+    public Simulation(World world) {
+        this.world = world;
+    }
+
+    @Override
+    public void run(int id) {
+        this.id = id;
+        this.date = LocalDateTime.now();
+        this.status = Status.RUNNING;
+        loop();
+    }
+
+    private void loop() {
+        LocalDateTime begin = LocalDateTime.now();
+        while (status == Status.RUNNING) {
+            tick();
+            currentDuration = Duration.between(begin, LocalDateTime.now()).toMillis();
+        }
+        totalDuration += currentDuration;
+        currentDuration = 0;
+    }
+
+    private void tick() {
+        if (world.getTermination().isMet(tick, (currentDuration + totalDuration) / 1000)) {
+            status = Status.STOPPED;
+        }
+        tick++;
+
+        List<EntityInstance> entityInstances = new ArrayList<>(world.getAllInstances());
+        List<Action> validActions = new ArrayList<>();
+
+        for (EntityInstance entityInstance : entityInstances) {
+            world.getSpaceManager().moveEntity(entityInstance);
+        }
+
+        for (Rule rule : world.getRules().values()) {
+            if (rule.getActivation().canBeActivated(tick)) {
+                validActions.addAll(rule.getActions());
+            }
+        }
+
+        for (EntityDefinition entityDefinition : world.getEntityDefinitions()) {
+            for (Action action : validActions) {
+                if (action.getPrimaryEntity().equals(entityDefinition)) {
+                    for (EntityInstance entityInstance : world.getEntityInstances(entityDefinition)) {
+                        if (action.getSecondaryEntity() != null) {
+                            for (EntityInstance secondaryEntity :
+                                    world.getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
+                                action.execute(entityInstance, secondaryEntity, world);
+                            }
+                        } else {
+                            action.execute(entityInstance, world);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    @Override
+    public Termination getTermination() {
+        return world.getTermination();
+    }
+
+    @Override
+    public void setEnvironmentValue(String name, Object value) {
+        world.getEnvironmentPropertyInstance(name).setValue(value);
+    }
+
+    @Override
+    public Object getEnvironmentValue(String name) {
+        return world.getEnvironmentPropertyInstance(name).getValue();
+    }
+
+    @Override
+    public EntityDefinition getEntityDefinition(String name) {
+        return world.getEntityDefinition(name);
+    }
+
+    @Override
+    public World getWorld() {
+        return world;
+    }
+
+    @Override
+    public int getTick() {
+        return tick;
+    }
+
+    @Override
+    public long getDuration() {
+        return totalDuration + currentDuration;
+    }
+
+    @Override
+    public void pause() {
+        if (status == Status.RUNNING) {
+            status = Status.PAUSED;
+        } else {
+            throw new RuntimeException("Simulation isn't running.");
+        }
+    }
+
+    @Override
+    public void resume() {
+        if (status == Status.PAUSED) {
+            status = Status.RUNNING;
+            loop();
+        } else {
+            throw new RuntimeException("Simulation isn't paused.");
+        }
+    }
+
+    public void stop() {
+        if (status == Status.RUNNING || status == Status.PAUSED) {
+            status = Status.STOPPED;
+        } else {
+            throw new RuntimeException("Simulation isn't running.");
+        }
+    }
+}

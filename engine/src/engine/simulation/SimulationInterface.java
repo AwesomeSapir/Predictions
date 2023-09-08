@@ -1,4 +1,4 @@
-package engine;
+package engine.simulation;
 
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
@@ -20,7 +20,7 @@ public interface SimulationInterface {
 
     Object getEnvironmentValue(String name);
 
-    EntityDefinition getPrimaryEntityDefinition();
+    EntityDefinition getEntityDefinition(String name);
 
     World getWorld();
 

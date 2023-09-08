@@ -6,6 +6,8 @@ import dto.detail.action.DTOActionCalc;
 import dto.detail.action.DTOActionCondition;
 import dto.detail.action.DTOActionValue;
 import dto.simulation.*;
+import engine.simulation.Simulation;
+import engine.simulation.SimulationInterface;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.definition.property.PropertyDefinition;
@@ -57,7 +59,13 @@ public class Engine implements EngineInterface, Serializable {
         World world = pastSimulations.get(id).getWorld();
         List<DTOEntityPopulation> entityPopulations = new ArrayList<>();
 
-        entityPopulations.add(new DTOEntityPopulation(world.getPrimaryEntityDefinition().getPopulation(), world.getPrimaryEntityInstances().size(), getEntity(world.getPrimaryEntityDefinition())));
+        for (EntityDefinition entityDefinition : world.getEntityDefinitions()){
+            entityPopulations.add(new DTOEntityPopulation(
+                    entityDefinition.getPopulation(),
+                    world.getEntityInstances(entityDefinition).size(),
+                    getEntity(entityDefinition)));
+        }
+
         return entityPopulations;
     }
 
@@ -91,16 +99,17 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public Collection<DTOProperty> getPastEntityProperties(int id, String name) {
-        return getProperties(pastSimulations.get(id).getPrimaryEntityDefinition());
+        return getProperties(pastSimulations.get(id).getEntityDefinition(name));
     }
 
     @Override
-    public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String name) {
+    public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) {
         List<Object> values = new ArrayList<>();
-        for (EntityInstance entityInstance : pastSimulations.get(id).getWorld().getPrimaryEntityInstances()) {
-            values.add(entityInstance.getPropertyByName(name).getValue());
+        World world = pastSimulations.get(id).getWorld();
+        for (EntityInstance entityInstance : world.getEntityInstances(world.getEntityDefinition(entityName))) {
+            values.add(entityInstance.getPropertyByName(propertyName).getValue());
         }
-        return new DTOSimulationHistogram(values, name);
+        return new DTOSimulationHistogram(values, propertyName);
     }
 
     @Override
@@ -178,15 +187,15 @@ public class Engine implements EngineInterface, Serializable {
             DTOAction dtoAction;
             if(action instanceof ActionValue){
                 ActionValue actionValue = (ActionValue) action;
-                dtoAction = new DTOActionValue(actionValue.getType().toString(), actionValue.getEntity(), actionValue.getPropertyName(), actionValue.getValue().toString());
+                dtoAction = new DTOActionValue(actionValue.getType().toString(), actionValue.getPrimaryEntity().getName(), actionValue.getPropertyName(), actionValue.getValue().toString());
             } else if(action instanceof ActionCalc){
                 ActionCalc actionCalc = (ActionCalc) action;
-                dtoAction = new DTOActionCalc(actionCalc.getType().toString(), actionCalc.getEntity(), actionCalc.getResultPropertyName(), actionCalc.getArg1().toString(), actionCalc.getArg2().toString());
+                dtoAction = new DTOActionCalc(actionCalc.getType().toString(), actionCalc.getPrimaryEntity().getName(), actionCalc.getResultPropertyName(), actionCalc.getArg1().toString(), actionCalc.getArg2().toString());
             } else if(action instanceof ActionCondition){
                 ActionCondition actionCondition = (ActionCondition) action;
-                dtoAction = new DTOActionCondition(actionCondition.getType().toString(), actionCondition.getEntity(), actionCondition.getConditions().toString(), getActions(actionCondition.getActionsThen()), getActions(actionCondition.getActionsElse()));
+                dtoAction = new DTOActionCondition(actionCondition.getType().toString(), actionCondition.getPrimaryEntity().getName(), actionCondition.getConditions().toString(), getActions(actionCondition.getActionsThen()), getActions(actionCondition.getActionsElse()));
             } else {
-                dtoAction = new DTOAction(action.getType().toString(), action.getEntity());
+                dtoAction = new DTOAction(action.getType().toString(), action.getPrimaryEntity().getName());
             }
             result.add(dtoAction);
         }

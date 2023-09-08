@@ -36,6 +36,10 @@ public class EntityInstance implements Serializable {
         properties.put(propertyInstance.getPropertyDefinition().getName(), propertyInstance);
     }
 
+    public EntityDefinition getEntityDefinition() {
+        return entityDefinition;
+    }
+
     public void setXY(int x, int y){
         this.x = x;
         this.y = y;

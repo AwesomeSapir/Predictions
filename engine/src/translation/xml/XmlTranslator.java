@@ -4,6 +4,7 @@ import com.sun.istack.internal.NotNull;
 import engine.prd.*;
 import engine.world.definition.property.*;
 import engine.world.expression.*;
+import engine.world.instance.entity.EntityManager;
 import engine.world.rule.action.type.condition.*;
 import engine.world.space.SpaceManager;
 import validator.Validator;
@@ -45,6 +46,7 @@ public class XmlTranslator implements Translator{
     private EnvironmentManager environmentManager;
     private ActiveEnvironment activeEnvironment;
     private EntityDefinition primaryEntityDefinition;
+    private EntityManager entityManager;
     private final List<EntityInstance> entityInstances = new ArrayList<>();
     private Termination termination;
 
@@ -64,13 +66,12 @@ public class XmlTranslator implements Translator{
         activeEnvironment = environmentManager.createActiveEnvironment();
         activeEnvironment.initProperties(environmentManager.getVariables());
 
-        primaryEntityDefinition = getEntityDefinition(prdWorld.getPRDEntities().getPRDEntity().get(0));
-
-        // Entity instances initialization
-        for (int i = 0; i < primaryEntityDefinition.getPopulation(); i++) {
-            EntityInstance entityInstance = new EntityInstance(primaryEntityDefinition);
-            entityInstance.initProperties();
-            entityInstances.add(entityInstance);
+        List<EntityDefinition> entityDefinitions = new ArrayList<>();
+        for (PRDEntity prdEntity : prdWorld.getPRDEntities().getPRDEntity()){
+            entityDefinitions.add(getEntityDefinition(prdEntity));
+        }
+        entityManager = new EntityManager(entityDefinitions); //TODO change to secondary
+        for(EntityInstance entityInstance : entityManager.getEntityInstances(primaryEntityDefinition)){
             spaceManager.putEntity(entityInstance);
         }
 
@@ -81,7 +82,7 @@ public class XmlTranslator implements Translator{
             rules.put(rule.getName(), getRule(rule));
         }
 
-        world = new World(environmentManager, activeEnvironment, primaryEntityDefinition, entityInstances, rules, termination, spaceManager); //TODO read from file
+        world = new World(environmentManager, activeEnvironment, entityManager, rules, termination, spaceManager); //TODO read from file
         return world;
     }
 
@@ -108,7 +109,7 @@ public class XmlTranslator implements Translator{
     }
 
     public ActionCondition getActionCondition(PRDAction prdObject) throws InvalidClassException {
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         MultiCondition conditions = getMultiCondition(prdObject.getPRDCondition());
         List<Action> actionsThen = new ArrayList<>();
@@ -121,7 +122,7 @@ public class XmlTranslator implements Translator{
                 actionsElse.add(getAction(prdElseAction));
             }
         }
-        return new ActionCondition(actionType, entityName, conditions, actionsThen, actionsElse);
+        return new ActionCondition(actionType, entity, conditions, actionsThen, actionsElse);
     }
 
     public MultiCondition getMultiCondition(PRDCondition prdObject) throws InvalidClassException {
@@ -162,30 +163,30 @@ public class XmlTranslator implements Translator{
     }
 
     public ActionIncrease getActionIncrease(PRDAction prdObject) throws InvalidClassException {
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
         Expression value = getExpression(prdObject.getBy(), primaryEntityDefinition.getProperties().get(propertyName));
-        return new ActionIncrease(actionType, entityName, propertyName, value);
+        return new ActionIncrease(actionType, entity, propertyName, value);
     }
 
     public ActionDecrease getActionDecrease(PRDAction prdObject) throws InvalidClassException {
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
         Expression value = getExpression(prdObject.getBy(), primaryEntityDefinition.getProperties().get(propertyName));
-        return new ActionDecrease(actionType, entityName, propertyName, value);
+        return new ActionDecrease(actionType, entity, propertyName, value);
     }
 
     public ActionKill getActionKill(PRDAction prdObject){
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
-        return new ActionKill(actionType, entityName);
+        return new ActionKill(actionType, entity);
     }
 
     public ActionCalc getActionCalc(PRDAction prdObject) throws InvalidClassException {
         ActionCalc action;
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String resultPropertyName = prdObject.getResultProp();
         PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(resultPropertyName);
@@ -193,11 +194,11 @@ public class XmlTranslator implements Translator{
         if (prdObject.getPRDMultiply() != null) {
             Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), propertyDefinition);
             Expression arg2 = getExpression(prdObject.getPRDMultiply().getArg2(), propertyDefinition);
-            action = new ActionMultiply(actionType, entityName, resultPropertyName, arg1, arg2);
+            action = new ActionMultiply(actionType, entity, resultPropertyName, arg1, arg2);
         } else if (prdObject.getPRDDivide() != null) {
             Expression arg1 = getExpression(prdObject.getPRDDivide().getArg1(), propertyDefinition);
             Expression arg2 = getExpression(prdObject.getPRDDivide().getArg2(), propertyDefinition);
-            action = new ActionDivide(actionType, entityName, resultPropertyName, arg1, arg2);
+            action = new ActionDivide(actionType, entity, resultPropertyName, arg1, arg2);
         } else {
             throw new IllegalArgumentException("CalculationAction has no multiply or divide objects");
         }
@@ -206,11 +207,11 @@ public class XmlTranslator implements Translator{
     }
 
     public ActionSet getActionSet(PRDAction prdObject) throws InvalidClassException {
-        String entityName = prdObject.getEntity();
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
         Expression value = getExpression(prdObject.getValue(), primaryEntityDefinition.getProperties().get(propertyName));
-        return new ActionSet(actionType, entityName, propertyName, value);
+        return new ActionSet(actionType, entity, propertyName, value);
     }
 
     public Expression getExpression(String expressionString, PropertyDefinition propertyDefinition) throws InvalidClassException {

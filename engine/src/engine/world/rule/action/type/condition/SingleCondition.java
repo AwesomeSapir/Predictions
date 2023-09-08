@@ -21,7 +21,7 @@ public class SingleCondition implements Condition, Serializable {
     public boolean evaluate(EntityInstance entityInstance, Context context){
         Object entityValue = entityInstance.getPropertyByName(propertyName).getValue();
         Object expValue = value.getValue(entityInstance);
-        if(context.getPrimaryEntityDefinition().getProperties().get(propertyName).isNumeric()){
+        if(entityInstance.getEntityDefinition().getProperties().get(propertyName).isNumeric()){
             double numEntityValue = Double.parseDouble(entityValue.toString());
             double numExpValue = Double.parseDouble(expValue.toString());
             switch (operator){
