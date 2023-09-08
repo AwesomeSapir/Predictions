@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class EntityInstance implements Serializable {
 
+    private int x,y;
     private final EntityDefinition entityDefinition;
     private final Map<String, PropertyInstance> properties;
 
@@ -33,5 +34,30 @@ public class EntityInstance implements Serializable {
 
     public void addPropertyInstance(PropertyInstance propertyInstance){
         properties.put(propertyInstance.getPropertyDefinition().getName(), propertyInstance);
+    }
+
+    public EntityDefinition getEntityDefinition() {
+        return entityDefinition;
+    }
+
+    public void setXY(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 }

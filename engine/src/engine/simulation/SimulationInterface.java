@@ -1,4 +1,4 @@
-package engine;
+package engine.simulation;
 
 import engine.simulation.Status;
 import engine.world.World;
@@ -6,6 +6,7 @@ import engine.world.definition.entity.EntityDefinition;
 import engine.world.termination.Termination;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 public interface SimulationInterface {
 
@@ -21,7 +22,7 @@ public interface SimulationInterface {
 
     Object getEnvironmentValue(String name);
 
-    EntityDefinition getPrimaryEntityDefinition();
+    EntityDefinition getEntityDefinition(String name);
 
     World getWorld();
 
@@ -34,4 +35,6 @@ public interface SimulationInterface {
     void pause();
 
     void resume();
+
+    public Collection<EntityDefinition> getAllEntityDefinitions();
 }

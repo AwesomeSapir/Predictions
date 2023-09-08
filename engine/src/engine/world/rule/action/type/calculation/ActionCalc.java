@@ -1,5 +1,6 @@
 package engine.world.rule.action.type.calculation;
 
+import engine.world.definition.entity.EntityDefinition;
 import engine.world.expression.Expression;
 import engine.world.rule.action.Action;
 import engine.world.rule.action.ActionType;
@@ -10,8 +11,8 @@ public abstract class ActionCalc extends Action {
     protected final Expression arg1;
     protected final Expression arg2;
 
-    public ActionCalc(ActionType type, String entityName, String resultPropertyName, Expression arg1, Expression arg2) {
-        super(type, entityName);
+    public ActionCalc(ActionType type, EntityDefinition entity, String resultPropertyName, Expression arg1, Expression arg2) {
+        super(type, entity);
         this.resultPropertyName = resultPropertyName;
         this.arg1 = arg1;
         this.arg2 = arg2;

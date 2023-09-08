@@ -1,5 +1,6 @@
 package engine.world.rule.action.type.value;
 
+import engine.world.definition.entity.EntityDefinition;
 import engine.world.expression.Expression;
 import engine.world.Context;
 import engine.world.instance.entity.EntityInstance;
@@ -8,8 +9,8 @@ import engine.world.rule.action.ActionType;
 
 public class ActionIncrease extends ActionValue {
 
-    public ActionIncrease(ActionType type, String entityName, String propertyName, Expression value) {
-        super(type, entityName, propertyName, value);
+    public ActionIncrease(ActionType type, EntityDefinition entity, String propertyName, Expression value) {
+        super(type, entity, propertyName, value);
     }
 
     @Override

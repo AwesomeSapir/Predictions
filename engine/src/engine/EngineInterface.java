@@ -15,7 +15,7 @@ public interface EngineInterface {
     Collection<DTOEntityPopulation> getDetailsByEntityCount(int id);
     Collection<DTOEntity> getPastEntities(int id);
     Collection<DTOProperty> getPastEntityProperties(int id, String name);
-    DTOSimulationHistogram getValuesForPropertyHistogram(int id, String name);
+    DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName);
     Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException;
     Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException;
     void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException;

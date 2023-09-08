@@ -1,14 +1,15 @@
 package engine.world.rule.action.type.calculation;
 
 import engine.world.Context;
+import engine.world.definition.entity.EntityDefinition;
 import engine.world.expression.Expression;
 import engine.world.instance.entity.EntityInstance;
 import engine.world.rule.action.ActionType;
 
 public class ActionDivide extends ActionCalc {
 
-    public ActionDivide(ActionType type, String entityName, String resultPropertyName, Expression arg1, Expression arg2) {
-        super(type, entityName, resultPropertyName, arg1, arg2);
+    public ActionDivide(ActionType type, EntityDefinition entity, String resultPropertyName, Expression arg1, Expression arg2) {
+        super(type, entity, resultPropertyName, arg1, arg2);
     }
 
     @Override
