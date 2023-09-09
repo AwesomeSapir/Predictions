@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
 
+<fx:root alignment="TOP_CENTER" spacing="16.0" type="VBox" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
 
-<GridPane fx:id="gridBoard" gridLinesVisible="true" hgap="8.0" prefHeight="600.0" prefWidth="600.0" vgap="8.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <GridPane fx:id="gridBoard" hgap="1.0" vgap="1.0" />
+    <HBox fx:id="hboxLegend" alignment="TOP_CENTER" spacing="8.0" />
+   <padding>
+      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+   </padding>
 
-</GridPane>
+</fx:root>

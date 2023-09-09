@@ -21,6 +21,7 @@ import ui.component.custom.input.simulation.EntityPopulationView;
 import ui.component.custom.input.simulation.EnvironmentVariableView;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
+import ui.style.StyleManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +115,7 @@ public class ExecutionController {
         }
 
         if (isPopulationValid && isEnvVariablesValid) {
-            showConfirmationAlert("Success", "The simulation is loaded.");
+            showAlert("Success", "The simulation is loaded.", Alert.AlertType.CONFIRMATION);
 
             engineManager.setEntityPopulations(getEntityPopulations());
             engineManager.setEnvironmentValues(getEnvironmentValues());
@@ -123,7 +124,7 @@ public class ExecutionController {
 
             mainController.switchToResultsTab();
         } else {
-            showErrorAlert("Invalid input!", errorMessage);
+            showAlert("Invalid input!", errorMessage, Alert.AlertType.ERROR);
         }
     }
 
@@ -173,19 +174,13 @@ public class ExecutionController {
         return true;
     }
 
-    private void showErrorAlert(String title, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(String title, String contentText, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(contentText);
-        alert.showAndWait();
-    }
-
-    private void showConfirmationAlert(String title, String contentText) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(contentText);
+        StyleManager.register(alert.getDialogPane().getScene());
+        alert.setOnCloseRequest(event -> StyleManager.unregister(alert.getDialogPane().getScene()));
         alert.showAndWait();
     }
 }

@@ -20,6 +20,7 @@ import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
 import ui.engine.Status;
+import ui.style.StyleManager;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -150,12 +151,17 @@ public class ResultsController {
         BoardView boardView = new BoardView(engineManager, selectedSimulation.get());
         boardView.setSize(100, 100);
         Scene scene = new Scene(boardView);
+        StyleManager.register(scene);
         stage.setScene(scene);
-        stage.setOnCloseRequest(event -> boardView.stop());
+        stage.setOnCloseRequest(event -> {
+            boardView.stop();
+            StyleManager.unregister(scene);
+        });
         stage.show();
     }
 
     private void actionSimulationNext(ActionEvent actionEvent){
         engineManager.tickSimulation(selectedSimulation.get().getId());
+        engineManager.updateSimulationProgress(selectedSimulation.get());
     }
 }

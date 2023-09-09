@@ -311,3 +311,24 @@ VBox,
     -fx-background-color: -primary-accent-gradient;
     -fx-text-fill: -text-light;
 }
+
+.color-red {
+    -color: #FF1744;
+    -fx-background-color: -color;
+    -fx-fill: -color;
+}
+.color-blue {
+    -color: #00B0FF;
+    -fx-background-color: -color;
+    -fx-fill: -color;
+}
+.color-yellow {
+    -color: #FFEA00;
+    -fx-background-color: -color;
+    -fx-fill: -color;
+}
+.color-green {
+    -color: #00E676;
+    -fx-background-color: -color;
+    -fx-fill: -color;
+}

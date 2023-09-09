@@ -8,6 +8,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
+import ui.style.StyleManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +31,11 @@ public class ConsoleUI extends Application implements MainUI{
 
         Scene scene = new Scene(root, 600, 400);
         loadFonts();
-        loadStyle(scene);
+        StyleManager.register(scene);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
-    }
-
-    private void loadStyle(Scene scene){
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/resources/style/main.css")).toExternalForm());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/resources/style/mode/dark.css")).toExternalForm());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/ui/resources/style/color/blue.css")).toExternalForm());
     }
 
     private void loadFonts(){

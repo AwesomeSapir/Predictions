@@ -11,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
@@ -26,8 +25,8 @@ public class BoardView extends VBox {
     @FXML private HBox hboxLegend;
 
     private EntityTile[][] board;
-    private Map<String, Color> entityColors = new HashMap<>();
-    private final List<Color> availableColors = new ArrayList<>(Arrays.asList(Color.valueOf("#3D5AFE"), Color.valueOf("#FF1744"), Color.valueOf("#00E676"), Color.valueOf("#FFEA00")));
+    private final Map<String, String> entityColors = new HashMap<>();
+    private final List<String> availableColors = new ArrayList<>(Arrays.asList("blue", "red", "yellow", "green"));
 
     private final IntegerProperty rows = new SimpleIntegerProperty();
     private final IntegerProperty cols = new SimpleIntegerProperty();
@@ -71,8 +70,6 @@ public class BoardView extends VBox {
         for (int row = 0; row < rows.get(); row++) {
             for (int col = 0; col < cols.get(); col++) {
                 EntityTile tile = new EntityTile();
-                tile.setWidth(10);
-                tile.setHeight(10);
                 gridBoard.add(tile, col, row);
                 board[row][col] = tile;
             }
@@ -83,9 +80,9 @@ public class BoardView extends VBox {
         for (int row = 0; row < rows.get(); row++) {
             for (int col = 0; col < cols.get(); col++) {
                 if(space[row][col] == null){
-                    board[row][col].setEntity(null);
+                    board[row][col].setEmpty();
                 } else {
-                    board[row][col].setEntity(space[row][col], entityColors.get(space[row][col]));
+                    board[row][col].setEntity(entityColors.get(space[row][col]));
                 }
             }
         }
@@ -101,7 +98,8 @@ public class BoardView extends VBox {
         for (DTOEntity entity : engineManager.getSimulationDetails().getEntities()){
             entityColors.put(entity.getName(), availableColors.get(0));
             Label legend = new Label(entity.getName());
-            legend.setTextFill(availableColors.get(0));
+            legend.getStyleClass().add("label-box");
+            legend.getStyleClass().add("color-" + entityColors.get(entity.getName()));
             hboxLegend.getChildren().add(legend);
             availableColors.remove(0);
         }
