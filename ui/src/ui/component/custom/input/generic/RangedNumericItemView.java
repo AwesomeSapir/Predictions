@@ -51,7 +51,8 @@ public class RangedNumericItemView extends InputItemView<Double> {
     @Override
     protected void bind() {
         super.bind();
-        value.bindBidirectional(sliderAmount.valueProperty().asObject());
+        value.setValue(0.0);
+        value.bind(sliderAmount.valueProperty().asObject());
         labelValue.textProperty().bind(sliderAmount.valueProperty().asString("%.1f"));
 
         sliderAmount.minProperty().bind(min);

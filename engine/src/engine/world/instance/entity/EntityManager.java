@@ -6,8 +6,8 @@ import java.util.*;
 
 public class EntityManager {
 
-    protected final Map<String, EntityDefinition> entityDefinitions = new HashMap<>();
-    protected final Map<EntityDefinition, List<EntityInstance>> entityInstances = new HashMap<>();
+    protected final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
+    protected final Map<EntityDefinition, List<EntityInstance>> entityInstances = new LinkedHashMap<>();
     protected final List<EntityInstance> killableEntities = new ArrayList<>();
 
     public EntityManager(Collection<EntityDefinition> entityDefinitions) {
@@ -18,6 +18,7 @@ public class EntityManager {
     }
 
     public void setPopulation(EntityDefinition entityDefinition, int population){
+        entityDefinition.setPopulation(population);
         for (int i = 0; i < population; i++) {
             EntityInstance entityInstance = new EntityInstance(entityDefinition);
             entityInstance.initProperties();

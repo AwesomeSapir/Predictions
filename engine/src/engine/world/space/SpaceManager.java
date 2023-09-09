@@ -32,4 +32,11 @@ public class SpaceManager {
         space.removeEntity(entity);
     }
 
+    public int getAvailableSize(){
+        return space.getAvailableSize();
+    }
+    public int getTotalSize(){
+        return space.getTotalSize();
+    }
+
 }

@@ -33,4 +33,6 @@ public interface EngineInterface {
     void pauseSimulation(int id);
     void resumeSimulation(int id);
     void stopSimulation(int id);
+
+    void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);
 }

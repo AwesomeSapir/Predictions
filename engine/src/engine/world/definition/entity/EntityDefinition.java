@@ -8,12 +8,11 @@ import java.util.Map;
 public class EntityDefinition implements Serializable {
 
     private final String name;
-    private final int population;
+    private int population;
     private final Map<String, PropertyDefinition> properties;
 
-    public EntityDefinition(String name, int population, Map<String, PropertyDefinition> properties) {
+    public EntityDefinition(String name, Map<String, PropertyDefinition> properties) {
         this.name = name;
-        this.population = population;
         this.properties = properties;
     }
 
@@ -23,6 +22,10 @@ public class EntityDefinition implements Serializable {
 
     public int getPopulation() {
         return population;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
     }
 
     public Map<String, PropertyDefinition> getProperties() {

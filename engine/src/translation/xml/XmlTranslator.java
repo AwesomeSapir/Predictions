@@ -57,7 +57,7 @@ public class XmlTranslator implements Translator{
 
     @Override
     public World getWorld() throws InvalidClassException {
-        SpaceManager spaceManager = new SpaceManager(15, 15);
+        SpaceManager spaceManager = new SpaceManager(100, 100);
         environmentManager = getEnvironmentManager(prdWorld.getPRDEvironment());
 
         activeEnvironment = environmentManager.createActiveEnvironment();
@@ -307,7 +307,6 @@ public class XmlTranslator implements Translator{
 
     public EntityDefinition getEntityDefinition(PRDEntity prdObject){
         String name = prdObject.getName();
-        int population = prdObject.getPRDPopulation();
         Map<String, PropertyDefinition> properties = new HashMap<>();
         for (PRDProperty prdProperty : prdObject.getPRDProperties().getPRDProperty()) {
             PropertyDefinition propertyDefinition = getPropertyDefinition(prdProperty);
@@ -317,7 +316,7 @@ public class XmlTranslator implements Translator{
             }
             properties.put(propertyDefinition.getName(), propertyDefinition);
         }
-        return new EntityDefinition(name, population, properties);
+        return new EntityDefinition(name, properties);
     }
 
     public EnvironmentManager getEnvironmentManager(PRDEvironment prdObject){

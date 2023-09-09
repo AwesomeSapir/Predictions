@@ -131,4 +131,8 @@ public class EngineManager {
     public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions(){
         return engine.getEnvironmentDefinitions();
     }
+
+    public void setEntityPopulations(Collection<Pair<String, Integer>> values) {
+        engine.setEntityPopulations(values);
+    }
 }

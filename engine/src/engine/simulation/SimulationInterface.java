@@ -38,4 +38,6 @@ public interface SimulationInterface {
     void resume();
 
     Collection<EntityDefinition> getAllEntityDefinitions();
+
+    void setEntityPopulation(String name, int population);
 }

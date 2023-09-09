@@ -84,4 +84,12 @@ public class Space {
         int index = random.nextInt(availableTiles.size());
         return tiles.get(index).getPoint();
     }
+
+    public int getAvailableSize(){
+        return availableTiles.size();
+    }
+
+    public int getTotalSize(){
+        return rows*cols;
+    }
 }

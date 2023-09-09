@@ -3,6 +3,9 @@ package ui.component.subcomponent.execution;
 import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
 import dto.detail.DTOObject;
+import dto.simulation.DTOSimulationDetails;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -13,12 +16,11 @@ import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import ui.component.custom.input.generic.InputItemView;
 import ui.component.custom.input.simulation.EntityPopulationView;
 import ui.component.custom.input.simulation.EnvironmentVariableView;
-import ui.component.custom.input.generic.InputItemView;
-import ui.component.custom.input.generic.TextInputItemView;
-import ui.engine.EngineManager;
 import ui.component.main.MainController;
+import ui.engine.EngineManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +40,9 @@ public class ExecutionController {
 
     private EngineManager engineManager;
 
+    private final IntegerProperty populationMax = new SimpleIntegerProperty(0);
+    private final IntegerProperty populationCurrent = new SimpleIntegerProperty(0);
+
     @FXML
     public void initialize() {
 
@@ -49,21 +54,24 @@ public class ExecutionController {
         engineManager.isSimulationLoadedProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println("simulation loaded changed to: " + newValue);
             if (newValue) {
-                populateVBox(vboxEntityPopulation, engineManager.getSimulationDetails().getEntities());
+                DTOSimulationDetails simulationDetails = engineManager.getSimulationDetails();
+                populationMax.setValue(simulationDetails.getSpaceSize());
+                populateVBox(vboxEntityPopulation, simulationDetails.getEntities());
                 populateVBox(vboxEnvVariables, engineManager.getEnvironmentDefinitions());
             }
         });
     }
 
-    public void populateVBox(VBox vBox, Collection<? extends DTOObject> collection){
+    public void populateVBox(VBox vBox, Collection<? extends DTOObject> collection) {
         vBox.getChildren().clear();
         for (DTOObject dtoObject : collection) {
             Separator separator = new Separator(Orientation.HORIZONTAL);
             VBox.setMargin(separator, new Insets(0, -16, 0, -16));
             InputItemView<?> inputItemView;
-            if(dtoObject instanceof DTOEntity){
-                inputItemView = new EntityPopulationView((DTOEntity) dtoObject);
-            } else if (dtoObject instanceof DTOEnvironmentVariable){
+            if (dtoObject instanceof DTOEntity) {
+                EntityPopulationView populationView = new EntityPopulationView((DTOEntity) dtoObject, populationMax.get());
+                inputItemView = populationView;
+            } else if (dtoObject instanceof DTOEnvironmentVariable) {
                 inputItemView = EnvironmentVariableView.create((DTOEnvironmentVariable) dtoObject);
             } else {
                 throw new RuntimeException("Invalid DTOObject " + dtoObject.getClass().getName());
@@ -72,7 +80,7 @@ public class ExecutionController {
                     inputItemView,
                     separator);
         }
-        vBox.getChildren().remove(vBox.getChildren().size()-1);
+        vBox.getChildren().remove(vBox.getChildren().size() - 1);
     }
 
     // Add a method to set the reference
@@ -94,43 +102,75 @@ public class ExecutionController {
     }
 
     public void startClicked(MouseEvent mouseEvent) {
-        System.out.println("Start clicked");
+        String errorMessage = "";
+        boolean isPopulationValid = checkEntityPopulation(vboxEntityPopulation);
+        boolean isEnvVariablesValid = checkForValidItems(vboxEnvVariables);
 
-        boolean hasInvalidItem = checkForInvalidItems(vboxEntityPopulation) || checkForInvalidItems(vboxEnvVariables);
+        if (!isPopulationValid) {
+            errorMessage += "The population exceeds the maximum amount " + populationMax + ".";
+        }
+        if (!isEnvVariablesValid) {
+            errorMessage += "There are invalid items on the form.";
+        }
 
-        if (hasInvalidItem) {
-            showErrorAlert("Invalid Items", "There are invalid items on the form.");
-        } else {
+        if (isPopulationValid && isEnvVariablesValid) {
             showConfirmationAlert("Success", "The simulation is loaded.");
-            List<Pair<String, Object>> envValues = new ArrayList<>();
-            for (Node view : vboxEnvVariables.getChildren()) {
-                if (view instanceof InputItemView<?>) {
-                    if (view instanceof TextInputItemView) {
-                        if (((TextInputItemView) view).getTextField().getText().isEmpty()) {
 
-                        }
-                    }
-                    Pair<String, Object> pair = new Pair<>(((InputItemView<?>) view).getTitle(), ((InputItemView<?>) view).getValue());
-                    envValues.add(pair);
-                }
-            }
-            engineManager.setEnvironmentValues(envValues);
+            engineManager.setEntityPopulations(getEntityPopulations());
+            engineManager.setEnvironmentValues(getEnvironmentValues());
 
             engineManager.runSimulation();
 
             mainController.switchToResultsTab();
+        } else {
+            showErrorAlert("Invalid input!", errorMessage);
         }
     }
 
-    private boolean checkForInvalidItems(VBox container) {
+    private Collection<Pair<String, Integer>> getEntityPopulations() {
+        List<Pair<String, Integer>> result = new ArrayList<>();
+        for (Node view : vboxEntityPopulation.getChildren()) {
+            if (view instanceof InputItemView<?>) {
+                Pair<String, Object> pair = getValue(view);
+                result.add(new Pair<>(pair.getKey(),  ((Double)pair.getValue()).intValue()));
+            }
+        }
+        return result;
+    }
+
+    private Collection<Pair<String, Object>> getEnvironmentValues() {
+        List<Pair<String, Object>> result = new ArrayList<>();
+        for (Node view : vboxEnvVariables.getChildren()) {
+            if (view instanceof InputItemView<?>) {
+                result.add(getValue(view));
+            }
+        }
+        return result;
+    }
+
+    private Pair<String, Object> getValue(Node view) {
+        return new Pair<>(((InputItemView<?>) view).getTitle(), ((InputItemView<?>) view).getValue());
+    }
+
+    private boolean checkEntityPopulation(VBox container) {
+        int currentPopulation = 0;
+        for (Node view : container.getChildren()) {
+            if (view instanceof EntityPopulationView) {
+                currentPopulation += ((EntityPopulationView) view).getValue();
+            }
+        }
+        return currentPopulation <= populationMax.get();
+    }
+
+    private boolean checkForValidItems(VBox container) {
         for (Node view : container.getChildren()) {
             if (view instanceof InputItemView<?>) {
                 if (!((InputItemView<?>) view).isValid()) {
-                    return true; // Found an invalid item
+                    return false;
                 }
             }
         }
-        return false; // No invalid items found
+        return true;
     }
 
     private void showErrorAlert(String title, String contentText) {

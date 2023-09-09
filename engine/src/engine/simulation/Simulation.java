@@ -108,6 +108,12 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
+    public void setEntityPopulation(String name, int population) {
+        EntityDefinition entityDefinition = world.getEntityManager().getEntityDefinition(name);
+        world.getEntityManager().setPopulation(entityDefinition, population);
+    }
+
+    @Override
     public Object getEnvironmentValue(String name) {
         return world.getEnvironmentPropertyInstance(name).getValue();
     }

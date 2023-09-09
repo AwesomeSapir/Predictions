@@ -11,11 +11,13 @@ public class DTOSimulationDetails {
     private final Collection<DTOEntity> entities;
     private final Collection<DTORule> rules;
     private final DTOTermination termination;
+    private final int spaceSize;
 
-    public DTOSimulationDetails(Collection<DTOEntity> entities, Collection<DTORule> rules, DTOTermination termination) {
+    public DTOSimulationDetails(Collection<DTOEntity> entities, Collection<DTORule> rules, DTOTermination termination, int spaceSize) {
         this.entities = entities;
         this.rules = rules;
         this.termination = termination;
+        this.spaceSize = spaceSize;
     }
 
     public Collection<DTOEntity> getEntities() {
@@ -28,5 +30,9 @@ public class DTOSimulationDetails {
 
     public DTOTermination getTermination() {
         return termination;
+    }
+
+    public int getSpaceSize() {
+        return spaceSize;
     }
 }

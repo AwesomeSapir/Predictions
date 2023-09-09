@@ -7,8 +7,8 @@ public class EntityPopulationView extends RangedNumericItemView {
 
     private DTOEntity entity;
 
-    public EntityPopulationView(DTOEntity entity) {
-        super(0, 1000); //TODO
+    public EntityPopulationView(DTOEntity entity, int max) {
+        super(0, max);
         this.entity = entity;
         title.set(entity.getName());
     }

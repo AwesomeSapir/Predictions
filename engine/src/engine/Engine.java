@@ -143,9 +143,16 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException{
         isSimulationLoaded();
-        List<Pair<String, Object>> values = new ArrayList<>(envValues);
-        for (Pair<String, Object> envVar : values) {
+        for (Pair<String, Object> envVar : envValues) {
             simulation.setEnvironmentValue(envVar.getKey(), envVar.getValue());
+        }
+    }
+
+    @Override
+    public void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) {
+        isSimulationLoaded();
+        for (Pair<String, Integer> entity : entityPopulations) {
+            simulation.setEntityPopulation(entity.getKey(), entity.getValue());
         }
     }
 
@@ -155,9 +162,6 @@ public class Engine implements EngineInterface, Serializable {
         int id = idCounter;
         archiveSimulation();
         SimulationInterface simulation = pastSimulations.get(id);
-        for (EntityDefinition entityDefinition : simulation.getWorld().getEntityManager().getAllEntityDefinitions()){ //delete after setting population from ui
-            simulation.getWorld().getEntityManager().setPopulation(entityDefinition, 100);
-        }
         simulation.run(id);
         return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
@@ -192,7 +196,7 @@ public class Engine implements EngineInterface, Serializable {
         DTOTermination termination = new DTOTermination(
                 Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
                 Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
-        return new DTOSimulationDetails(getEntities(simulation), rules, termination);
+        return new DTOSimulationDetails(getEntities(simulation), rules, termination, simulation.getWorld().getSpaceManager().getTotalSize());
     }
 
     private Collection<DTOAction> getActions(Collection<Action> actions){
