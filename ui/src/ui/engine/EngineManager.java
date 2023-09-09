@@ -3,6 +3,7 @@ package ui.engine;
 import dto.detail.DTOEnvironmentVariable;
 import dto.simulation.DTOSimulation;
 import dto.simulation.DTOSimulationDetails;
+import dto.simulation.DTOSpace;
 import dto.simulation.DTOStatus;
 import engine.Engine;
 import engine.EngineInterface;
@@ -71,6 +72,10 @@ public class EngineManager {
         simulation.setStatus(Status.valueOf(status.getStatus()));
     }
 
+    public DTOSpace getSimulationSpace(Simulation simulation){
+        return engine.getSimulationSpace(simulation.getId());
+    }
+
     /*
      * Getters
      */
@@ -109,5 +114,10 @@ public class EngineManager {
 
     public void setEntityPopulations(Collection<Pair<String, Integer>> values) {
         engine.setEntityPopulations(values);
+    }
+
+    public void tickSimulation(int id) {
+        engine.tickSimulation(id);
+        simulations.get(id).setStatus(Status.PAUSED);
     }
 }

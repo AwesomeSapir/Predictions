@@ -30,3 +30,9 @@
 .icon-replay {
     -fx-image: url("/ui/resources/icon/white/replay/baseline.png");
 }
+.icon-next {
+    -fx-image: url("/ui/resources/icon/white/skip_next/baseline.png");
+}
+.icon-prev {
+    -fx-image: url("/ui/resources/icon/white/skip_previous/baseline.png");
+}

@@ -18,6 +18,7 @@ import engine.world.rule.action.Action;
 import engine.world.rule.action.type.calculation.ActionCalc;
 import engine.world.rule.action.type.condition.ActionCondition;
 import engine.world.rule.action.type.value.ActionValue;
+import engine.world.space.SpaceManager;
 import engine.world.termination.BySecond;
 import engine.world.termination.ByTicks;
 import engine.world.termination.Termination;
@@ -280,6 +281,12 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
+    public void tickSimulation(int id){
+        SimulationInterface simulation = pastSimulations.get(id);
+        simulation.next();
+    }
+
+    @Override
     public void resumeSimulation(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.resume();
@@ -289,6 +296,20 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public void pauseSimulation(int id) {
         pastSimulations.get(id).pause();
+    }
+
+    @Override
+    public DTOSpace getSimulationSpace(int id) {
+        SimulationInterface simulation = pastSimulations.get(id);
+        SpaceManager spaceManager = simulation.getWorld().getSpaceManager();
+        DTOSpace result = new DTOSpace(spaceManager.getRows(), spaceManager.getCols());
+        for (EntityInstance entityInstance : simulation.getWorld().getEntityManager().getAllEntityInstances()){
+            result.setTile(
+                    entityInstance.getEntityDefinition().getName(),
+                    entityInstance.getX(),
+                    entityInstance.getY());
+        }
+        return result;
     }
 
     @Override

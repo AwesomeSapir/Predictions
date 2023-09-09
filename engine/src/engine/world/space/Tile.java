@@ -27,7 +27,7 @@ public class Tile {
 
     public void setEntity(EntityInstance entity) {
         this.entity = entity;
-        entity.setXY(point.x(), point.y());
+        entity.setPoint(point);
         taken = true;
     }
 

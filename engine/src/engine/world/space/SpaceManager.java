@@ -28,6 +28,14 @@ public class SpaceManager {
         }
     }
 
+    public int getRows(){
+        return space.getRows();
+    }
+
+    public int getCols(){
+        return space.getCols();
+    }
+
     public void removeEntity(EntityInstance entity){
         space.removeEntity(entity);
     }

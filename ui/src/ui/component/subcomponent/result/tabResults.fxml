@@ -6,78 +6,83 @@
 <?import javafx.scene.layout.*?>
 <?import ui.component.custom.progress.*?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="ui.component.subcomponent.result.ResultsController">
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
     <ScrollPane fitToHeight="true" fitToWidth="true">
         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
         </padding>
         <ListView fx:id="listExecution">
             <placeholder>
-                <Label text="No simulations were executed."/>
+                <Label text="No simulations were executed." />
             </placeholder>
         </ListView>
     </ScrollPane>
     <ScrollPane fx:id="paneDetails" fitToHeight="true" fitToWidth="true">
         <AnchorPane>
             <padding>
-                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
             </padding>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0"
-                       AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane>
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
-                    <VBox spacing="8.0" styleClass="view-box" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <SimulationProgressView fx:id="gridSeconds" title="Seconds"/>
-                        <SimulationProgressView fx:id="gridTicks" title="Ticks"/>
-                        <GridPane hgap="8.0">
+                    <VBox alignment="TOP_CENTER" spacing="8.0" styleClass="view-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SimulationProgressView fx:id="gridSeconds" title="Seconds" />
+                        <SimulationProgressView fx:id="gridTicks" title="Ticks" />
+                        <GridPane hgap="8.0" vgap="8.0">
                             <columnConstraints>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints vgrow="SOMETIMES"/>
+                                <RowConstraints vgrow="SOMETIMES" />
+                                <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
                             <Button fx:id="buttonResume" mnemonicParsing="false" styleClass="button-circle">
                                 <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-play"/>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-play" />
                                 </graphic>
                             </Button>
-                            <Button fx:id="buttonPause" mnemonicParsing="false" styleClass="button-circle"
-                                    GridPane.columnIndex="1">
+                            <Button fx:id="buttonPause" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="1">
                                 <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-pause"/>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-pause" />
                                 </graphic>
                             </Button>
-                            <Button fx:id="buttonStop" mnemonicParsing="false" styleClass="button-circle"
-                                    GridPane.columnIndex="2">
+                            <Button fx:id="buttonStop" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2">
                                 <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop"/>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop" />
                                 </graphic>
                             </Button>
-                            <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle"
-                                    GridPane.columnIndex="3">
+                            <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3">
                                 <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay"/>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay" />
+                                </graphic>
+                            </Button>
+                            <Button fx:id="buttonNext" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-next" />
+                                </graphic>
+                            </Button>
+                            <Button fx:id="buttonPrev" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                <graphic>
+                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-prev" />
                                 </graphic>
                             </Button>
                         </GridPane>
+                  <Button fx:id="buttonBoard" mnemonicParsing="false" text="Show Board" />
                         <padding>
-                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                         </padding>
                     </VBox>
                 </AnchorPane>
                 <AnchorPane>
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
-                    <TextArea fx:id="textResult" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    <TextArea fx:id="textResult" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 </AnchorPane>
             </SplitPane>
         </AnchorPane>

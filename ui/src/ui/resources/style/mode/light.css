@@ -29,3 +29,9 @@
 .icon-replay {
     -fx-image: url("/ui/resources/icon/black/replay/baseline.png");
 }
+.icon-next {
+    -fx-image: url("/ui/resources/icon/black/skip_next/baseline.png");
+}
+.icon-prev {
+    -fx-image: url("/ui/resources/icon/black/skip_previous/baseline.png");
+}

@@ -31,7 +31,13 @@ public interface EngineInterface {
     DTOStatus getSimulationStatus(int id);
     DTOTermination getSimulationTermination(int id);
     void pauseSimulation(int id);
+
+    void tickSimulation(int id);
+
     void resumeSimulation(int id);
+
+    DTOSpace getSimulationSpace(int id);
+
     void stopSimulation(int id);
 
     void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);

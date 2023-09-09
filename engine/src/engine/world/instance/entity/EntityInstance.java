@@ -3,6 +3,7 @@ package engine.world.instance.entity;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.definition.property.PropertyDefinition;
 import engine.world.instance.property.PropertyInstance;
+import engine.world.space.Point;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class EntityInstance implements Serializable {
 
-    private int x,y;
+    private Point point;
     private final EntityDefinition entityDefinition;
     private final Map<String, PropertyInstance> properties;
 
@@ -40,24 +41,19 @@ public class EntityInstance implements Serializable {
         return entityDefinition;
     }
 
-    public void setXY(int x, int y){
-        this.x = x;
-        this.y = y;
+    public void setPoint(Point point){
+        this.point = point;
+    }
+
+    public Point getPoint() {
+        return point;
     }
 
     public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
+        return point.x();
     }
 
     public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+        return point.y();
     }
 }

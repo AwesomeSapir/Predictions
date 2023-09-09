@@ -11,6 +11,8 @@ public interface SimulationInterface extends Runnable {
 
     void run(int id);
 
+    void next();
+
     int getId();
 
     LocalDateTime getDate();

@@ -10,9 +10,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import ui.component.custom.board.BoardView;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
@@ -31,6 +34,8 @@ public class ResultsController {
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
+    @FXML public Button buttonBoard;
+    @FXML public Button buttonNext;
     private EngineManager engineManager;
 
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
@@ -94,6 +99,8 @@ public class ResultsController {
         buttonResume.setOnAction(this::actionSimulationResume);
         buttonStop.setOnAction(this::actionSimulationStop);
         buttonRerun.setOnAction(this::actionSimulationRerun);
+        buttonBoard.setOnAction(this::actionShowBoard);
+        buttonNext.setOnAction(this::actionSimulationNext);
 
         buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
         buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
@@ -136,5 +143,19 @@ public class ResultsController {
 
     private void actionSimulationRerun(ActionEvent actionEvent){
 
+    }
+
+    private void actionShowBoard(ActionEvent actionEvent){
+        Stage stage = new Stage();
+        BoardView boardView = new BoardView(engineManager, selectedSimulation.get());
+        boardView.setSize(100, 100);
+        Scene scene = new Scene(boardView);
+        stage.setScene(scene);
+        stage.setOnCloseRequest(event -> boardView.stop());
+        stage.show();
+    }
+
+    private void actionSimulationNext(ActionEvent actionEvent){
+        engineManager.tickSimulation(selectedSimulation.get().getId());
     }
 }

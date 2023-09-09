@@ -40,7 +40,7 @@ public class Simulation implements SimulationInterface, Serializable {
         }
     }
 
-    private void tick() {
+    public void tick() {
         if (world.getTermination().isMet(tick, totalDuration / 1000)) {
             status = Status.STOPPED;
             return;
@@ -48,14 +48,12 @@ public class Simulation implements SimulationInterface, Serializable {
         tick++;
         LocalDateTime begin = LocalDateTime.now();
 
-        //List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getAllEntityInstances());
+        List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getAllEntityInstances());
         List<Action> validActions = new ArrayList<>();
 
-        /*
         for (EntityInstance entityInstance : entityInstances) {
             world.getSpaceManager().moveEntity(entityInstance);
-        }*/
-
+        }
 
         for (Rule rule : world.getRules().values()) {
             if (rule.getActivation().canBeActivated(tick)) {
@@ -110,6 +108,9 @@ public class Simulation implements SimulationInterface, Serializable {
     public void setEntityPopulation(String name, int population) {
         EntityDefinition entityDefinition = world.getEntityManager().getEntityDefinition(name);
         world.getEntityManager().setPopulation(entityDefinition, population);
+        for (EntityInstance entityInstance : world.getEntityManager().getAllEntityInstances()){
+            world.getSpaceManager().putEntity(entityInstance);
+        }
     }
 
     @Override
@@ -161,6 +162,19 @@ public class Simulation implements SimulationInterface, Serializable {
             status = Status.STOPPED;
         } else {
             throw new RuntimeException("Simulation isn't running.");
+        }
+    }
+
+    @Override
+    public void next(){
+        if(status != Status.STOPPED){
+            status = Status.RUNNING;
+            tick();
+            if(status != Status.STOPPED){
+                status = Status.PAUSED;
+            }
+        } else {
+            throw new RuntimeException("Simulation is stopped.");
         }
     }
 

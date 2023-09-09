@@ -56,10 +56,10 @@ public class Space {
         int y = point.y();
         List<Point> tiles = new ArrayList<>();
         Tile[] adjacentTiles = {
-                getTile(Point.xy(x-1, y)),
-                getTile(Point.xy(x+1, y)),
-                getTile(Point.xy(x, y-1)),
-                getTile(Point.xy(x, y+1))
+                getTile(Point.xy(x-1 + rows, y)),
+                getTile(Point.xy(x+1 + rows, y)),
+                getTile(Point.xy(x, y-1 + cols)),
+                getTile(Point.xy(x, y+1 + cols))
         };
 
         for (Tile t : adjacentTiles) {
