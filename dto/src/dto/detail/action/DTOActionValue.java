@@ -1,7 +1,5 @@
 package dto.detail.action;
 
-import java.util.Map;
-
 public class DTOActionValue extends DTOAction{
 
     protected final String propertyName;
@@ -19,13 +17,5 @@ public class DTOActionValue extends DTOAction{
 
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public Map<String, String> getFieldValueMap() {
-        Map<String, String> fieldValues = super.getFieldValueMap();
-        fieldValues.put("Property Name", propertyName);
-        fieldValues.put("Value", value);
-        return fieldValues;
     }
 }

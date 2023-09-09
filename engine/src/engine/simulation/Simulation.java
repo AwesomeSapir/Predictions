@@ -18,7 +18,6 @@ public class Simulation implements SimulationInterface, Serializable {
     private final World world;
     private int id;
     private int tick = 0;
-    private long currentDuration = 0;
     private long totalDuration = 0;
     private LocalDateTime date;
 
@@ -37,27 +36,27 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     private void loop() {
-        LocalDateTime begin = LocalDateTime.now();
         while (status == Status.RUNNING) {
             tick();
-            currentDuration = Duration.between(begin, LocalDateTime.now()).toMillis();
         }
-        totalDuration += currentDuration;
-        currentDuration = 0;
     }
 
     private void tick() {
-        if (world.getTermination().isMet(tick, (currentDuration + totalDuration) / 1000)) {
+        if (world.getTermination().isMet(tick, totalDuration / 1000)) {
             status = Status.STOPPED;
+            return;
         }
         tick++;
+        LocalDateTime begin = LocalDateTime.now();
 
-        List<EntityInstance> entityInstances = new ArrayList<>(world.getAllInstances());
+        //List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getAllEntityInstances());
         List<Action> validActions = new ArrayList<>();
 
+        /*
         for (EntityInstance entityInstance : entityInstances) {
             world.getSpaceManager().moveEntity(entityInstance);
-        }
+        }*/
+
 
         for (Rule rule : world.getRules().values()) {
             if (rule.getActivation().canBeActivated(tick)) {
@@ -65,23 +64,29 @@ public class Simulation implements SimulationInterface, Serializable {
             }
         }
 
-        for (EntityDefinition entityDefinition : world.getEntityDefinitions()) {
-            for (Action action : validActions) {
-                if (action.getPrimaryEntity().equals(entityDefinition)) {
-                    for (EntityInstance entityInstance : world.getEntityInstances(entityDefinition)) {
-                        if (action.getSecondaryEntity() != null) {
-                            for (EntityInstance secondaryEntity :
-                                    world.getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
-                                action.execute(entityInstance, secondaryEntity, world);
+        try {
+            for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()) {
+                for (Action action : validActions) {
+                    if (action.getPrimaryEntity().equals(entityDefinition)) {
+                        List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getEntityInstances(entityDefinition));
+                        for (int i = 0; i < entityInstances.size(); i++) {
+                            if (action.getSecondaryEntity() != null) {
+                                for (EntityInstance secondaryEntity :
+                                        world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
+                                    action.execute(entityInstances.get(i), secondaryEntity, world);
+                                }
+                            } else {
+                                action.execute(entityInstances.get(i), world);
                             }
-                        } else {
-                            action.execute(entityInstance, world);
                         }
                     }
-                }
 
+                }
             }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+        totalDuration += Duration.between(begin, LocalDateTime.now()).toMillis();
     }
 
     @Override
@@ -111,7 +116,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public EntityDefinition getEntityDefinition(String name) {
-        return world.getEntityDefinition(name);
+        return world.getEntityManager().getEntityDefinition(name);
     }
 
     @Override
@@ -126,7 +131,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public long getDuration() {
-        return totalDuration + currentDuration;
+        return totalDuration;
     }
 
     @Override
@@ -148,6 +153,7 @@ public class Simulation implements SimulationInterface, Serializable {
         }
     }
 
+    @Override
     public void stop() {
         if (status == Status.RUNNING || status == Status.PAUSED) {
             status = Status.STOPPED;
@@ -157,7 +163,12 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
     public Collection<EntityDefinition> getAllEntityDefinitions(){
-        return world.getEntityDefinitions();
+        return world.getEntityManager().getAllEntityDefinitions();
     }
 }

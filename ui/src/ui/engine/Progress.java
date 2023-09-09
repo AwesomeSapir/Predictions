@@ -6,17 +6,18 @@ public class Progress {
 
     private final BooleanProperty limited;
     private final DoubleProperty percentage;
-    private final LongProperty value;
-    private final LongProperty max = new SimpleLongProperty();
-    public Progress(Long max) {
+    private final DoubleProperty value;
+    private final IntegerProperty max = new SimpleIntegerProperty();
+
+    public Progress(Integer max) {
         this.limited = new SimpleBooleanProperty(max != null);
-        this.value = new SimpleLongProperty(0);
+        this.value = new SimpleDoubleProperty(0);
         this.percentage = new SimpleDoubleProperty();
         this.max.setValue(max);
-        percentage.bind(value.divide(max != null ? (double) max : -1));
+        percentage.bind(value.divide(max != null ? max : -1));
     }
 
-    public void setValue(long value) {
+    public void setValue(double value) {
         this.value.set(value);
     }
 
@@ -36,19 +37,19 @@ public class Progress {
         return limited;
     }
 
-    public long getValue() {
+    public double getValue() {
         return value.get();
     }
 
-    public LongProperty valueProperty() {
+    public DoubleProperty valueProperty() {
         return value;
     }
 
-    public long getMax() {
+    public double getMax() {
         return max.get();
     }
 
-    public LongProperty maxProperty() {
+    public IntegerProperty maxProperty() {
         return max;
     }
 }

@@ -1,6 +1,5 @@
 package engine.world;
 
-import engine.world.definition.entity.EntityDefinition;
 import engine.world.instance.entity.EntityInstance;
 import engine.world.instance.entity.EntityManager;
 import engine.world.instance.environment.ActiveEnvironment;
@@ -11,7 +10,7 @@ import engine.world.space.SpaceManager;
 import engine.world.termination.Termination;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Map;
 
 public class World implements Context, Serializable {
 
@@ -51,38 +50,11 @@ public class World implements Context, Serializable {
     }
 
     @Override
-    public EntityDefinition getEntityDefinition(String name) {
-        return entityManager.getEntityDefinition(name);
-    }
-
-    public Collection<EntityDefinition> getEntityDefinitions(){
-        return entityManager.getEntityDefinitions();
+    public EntityManager getEntityManager(){
+        return entityManager;
     }
 
     @Override
-    public Collection<EntityInstance> getEntityInstances(EntityDefinition entityDefinition) {
-        return entityManager.getEntityInstances(entityDefinition);
-    }
-
-    @Override
-    public Collection<EntityInstance> getEntityInstances(EntityDefinition entityDefinition, int count) {
-        List<EntityInstance> entityInstances = new ArrayList<>(entityManager.getEntityInstances(entityDefinition));
-        List<EntityInstance> result = new ArrayList<>();
-        count = Math.min(count, entityInstances.size());
-        for (int i=0; i<count; i++){
-            result.add(entityInstances.get(i));
-        }
-        return result;
-    }
-
-    public Collection<EntityInstance> getAllInstances(){
-        List<EntityInstance> result = new ArrayList<>();
-        for (EntityDefinition entityDefinition : entityManager.getEntityDefinitions()){
-            result.addAll(getEntityInstances(entityDefinition));
-        }
-        return result;
-    }
-
     public EnvironmentManager getEnvironmentManager() {
         return environmentManager;
     }

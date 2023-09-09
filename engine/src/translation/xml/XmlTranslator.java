@@ -2,15 +2,11 @@ package translation.xml;
 
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
+import engine.world.World;
+import engine.world.definition.entity.EntityDefinition;
 import engine.world.definition.property.*;
 import engine.world.expression.*;
 import engine.world.instance.entity.EntityManager;
-import engine.world.rule.action.type.condition.*;
-import engine.world.space.SpaceManager;
-import validator.Validator;
-import engine.world.World;
-import engine.world.definition.entity.EntityDefinition;
-import engine.world.instance.entity.EntityInstance;
 import engine.world.instance.environment.ActiveEnvironment;
 import engine.world.instance.environment.EnvironmentManager;
 import engine.world.instance.property.PropertyInstance;
@@ -22,15 +18,18 @@ import engine.world.rule.action.type.ActionKill;
 import engine.world.rule.action.type.calculation.ActionCalc;
 import engine.world.rule.action.type.calculation.ActionDivide;
 import engine.world.rule.action.type.calculation.ActionMultiply;
+import engine.world.rule.action.type.condition.*;
 import engine.world.rule.action.type.value.ActionDecrease;
 import engine.world.rule.action.type.value.ActionIncrease;
 import engine.world.rule.action.type.value.ActionSet;
+import engine.world.space.SpaceManager;
 import engine.world.termination.BySecond;
 import engine.world.termination.ByTicks;
 import engine.world.termination.Termination;
 import engine.world.type.Range;
 import engine.world.value.generator.ValueGenerator;
 import engine.world.value.generator.ValueGeneratorFactory;
+import validator.Validator;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -45,9 +44,7 @@ public class XmlTranslator implements Translator{
     private World world;
     private EnvironmentManager environmentManager;
     private ActiveEnvironment activeEnvironment;
-    private EntityDefinition primaryEntityDefinition;
     private EntityManager entityManager;
-    private final List<EntityInstance> entityInstances = new ArrayList<>();
     private Termination termination;
 
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "engine.prd";
@@ -71,9 +68,6 @@ public class XmlTranslator implements Translator{
             entityDefinitions.add(getEntityDefinition(prdEntity));
         }
         entityManager = new EntityManager(entityDefinitions);
-        for(EntityInstance entityInstance : entityManager.getEntityInstances(primaryEntityDefinition)){
-            spaceManager.putEntity(entityInstance);
-        }
 
         termination = getTermination(prdWorld.getPRDTermination());
 
@@ -151,14 +145,13 @@ public class XmlTranslator implements Translator{
     public SingleCondition getSingleCondition(PRDCondition prdObject) throws InvalidClassException {
         Operator operator = Operator.fromDRP(prdObject.getOperator());
         String propertyName = prdObject.getProperty();
-        if(!primaryEntityDefinition.getName().equals(prdObject.getEntity())){
-            throw new IllegalArgumentException("Entity '" + prdObject.getEntity() + "' referenced in 'single condition' does not exist.");
-        }
-        PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(propertyName);
+        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
+
+        PropertyDefinition propertyDefinition = entity.getProperties().get(propertyName);
         if(propertyDefinition == null){
             throw new IllegalArgumentException("Property '" + propertyName + "' referenced in SingleCondition does not exist.");
         }
-        Expression value = getExpression(prdObject.getValue(), propertyDefinition);
+        Expression value = getExpression(prdObject.getValue(), entity, propertyDefinition);
         return new SingleCondition(operator, propertyName, value);
     }
 
@@ -166,7 +159,7 @@ public class XmlTranslator implements Translator{
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getBy(), primaryEntityDefinition.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getBy(), entity, entity.getProperties().get(propertyName));
         return new ActionIncrease(actionType, entity, propertyName, value);
     }
 
@@ -174,7 +167,7 @@ public class XmlTranslator implements Translator{
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getBy(), primaryEntityDefinition.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getBy(), entity, entity.getProperties().get(propertyName));
         return new ActionDecrease(actionType, entity, propertyName, value);
     }
 
@@ -189,15 +182,15 @@ public class XmlTranslator implements Translator{
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String resultPropertyName = prdObject.getResultProp();
-        PropertyDefinition propertyDefinition = primaryEntityDefinition.getProperties().get(resultPropertyName);
+        PropertyDefinition propertyDefinition = entity.getProperties().get(resultPropertyName);
 
         if (prdObject.getPRDMultiply() != null) {
-            Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), propertyDefinition);
-            Expression arg2 = getExpression(prdObject.getPRDMultiply().getArg2(), propertyDefinition);
+            Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), entity, propertyDefinition);
+            Expression arg2 = getExpression(prdObject.getPRDMultiply().getArg2(), entity, propertyDefinition);
             action = new ActionMultiply(actionType, entity, resultPropertyName, arg1, arg2);
         } else if (prdObject.getPRDDivide() != null) {
-            Expression arg1 = getExpression(prdObject.getPRDDivide().getArg1(), propertyDefinition);
-            Expression arg2 = getExpression(prdObject.getPRDDivide().getArg2(), propertyDefinition);
+            Expression arg1 = getExpression(prdObject.getPRDDivide().getArg1(), entity, propertyDefinition);
+            Expression arg2 = getExpression(prdObject.getPRDDivide().getArg2(), entity, propertyDefinition);
             action = new ActionDivide(actionType, entity, resultPropertyName, arg1, arg2);
         } else {
             throw new IllegalArgumentException("CalculationAction has no multiply or divide objects");
@@ -210,11 +203,11 @@ public class XmlTranslator implements Translator{
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
         ActionType actionType = ActionType.valueOf(prdObject.getType());
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getValue(), primaryEntityDefinition.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getValue(), entity, entity.getProperties().get(propertyName));
         return new ActionSet(actionType, entity, propertyName, value);
     }
 
-    public Expression getExpression(String expressionString, PropertyDefinition propertyDefinition) throws InvalidClassException {
+    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyDefinition propertyDefinition) throws InvalidClassException {
         try {
             String[] words = expressionString.split("\\(");
             String firstWord = words[0];
@@ -244,13 +237,13 @@ public class XmlTranslator implements Translator{
                     throw new UnsupportedOperationException("Function type not supported");
             }
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-            if (primaryEntityDefinition.getProperties().values().stream().anyMatch(
+            if (entityDefinition.getProperties().values().stream().anyMatch(
                     property -> property.getName().equals(expressionString))) {
                 if(!Validator
-                        .validate(primaryEntityDefinition.getProperties().get(expressionString).getType().toString())
+                        .validate(entityDefinition.getProperties().get(expressionString).getType().toString())
                         .isCompatibleWith(propertyDefinition.getType(), expressionString)
                         .isValid()){
-                    throw new InvalidClassException("Properties not of same type: " + primaryEntityDefinition.getProperties().get(expressionString).getType() + " - " + propertyDefinition.getType());
+                    throw new InvalidClassException("Properties not of same type: " + entityDefinition.getProperties().get(expressionString).getType() + " - " + propertyDefinition.getType());
                 }
                 return new EntityPropertyExpression(expressionString);
             } else {
@@ -276,16 +269,13 @@ public class XmlTranslator implements Translator{
     public Action getAction(PRDAction prdObject) throws InvalidClassException {
         ActionType type = ActionType.valueOf(prdObject.getType());
         String entityName = prdObject.getEntity();
+        EntityDefinition entityDefinition = entityManager.getEntityDefinition(entityName);
         PropertyDefinition propertyDefinition;
-        if(!primaryEntityDefinition.getName().equals(entityName)){
-            throw new IllegalArgumentException("Entity '" + entityName + "' referenced in '" + type + "' action does not exist.");
-        }
         if(!type.toString().equals("condition") && !type.toString().equals("kill")) {
             if(!type.toString().equals("calculation")) {
-                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getProperty());
-            }
-            else{
-                propertyDefinition = primaryEntityDefinition.getProperties().get(prdObject.getResultProp());
+                propertyDefinition = entityDefinition.getProperties().get(prdObject.getProperty());
+            } else{
+                propertyDefinition = entityDefinition.getProperties().get(prdObject.getResultProp());
             }
             if (propertyDefinition == null) {
                 throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");

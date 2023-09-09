@@ -1,6 +1,5 @@
 package engine.simulation;
 
-import engine.simulation.Status;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.termination.Termination;
@@ -30,11 +29,13 @@ public interface SimulationInterface {
 
     long getDuration();
 
+    void stop();
+
     Status getStatus();
 
     void pause();
 
     void resume();
 
-    public Collection<EntityDefinition> getAllEntityDefinitions();
+    Collection<EntityDefinition> getAllEntityDefinitions();
 }

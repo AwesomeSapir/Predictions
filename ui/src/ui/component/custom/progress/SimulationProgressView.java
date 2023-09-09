@@ -60,7 +60,7 @@ public class SimulationProgressView extends GridPane {
             if(newValue != null){
                 progressBar.progressProperty().bind(progress.get().percentageProperty());
                 labelMax.textProperty().bind(progress.get().maxProperty().asString());
-                labelValue.textProperty().bind(progress.get().valueProperty().asString());
+                labelValue.textProperty().bind(progress.get().valueProperty().asString("%.0f"));
                 limited.bind(progress.get().limitedProperty());
             }
         });

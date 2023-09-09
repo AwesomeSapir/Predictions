@@ -1,7 +1,5 @@
 package dto.detail;
 
-import java.util.Map;
-
 public abstract class DTOObject{
 
     protected final String name;
@@ -13,8 +11,6 @@ public abstract class DTOObject{
     public String getName() {
         return name;
     }
-
-    public abstract Map<String, String> getFieldValueMap();
 
     @Override
     public String toString() {

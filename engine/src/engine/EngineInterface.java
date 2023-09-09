@@ -31,7 +31,6 @@ public interface EngineInterface {
     DTOStatus getSimulationStatus(int id);
     DTOTermination getSimulationTermination();
     void pauseSimulation(int id);
-    DTOSimulation resumeSimulation(int id);
-
-
+    void resumeSimulation(int id);
+    void stopSimulation(int id);
 }

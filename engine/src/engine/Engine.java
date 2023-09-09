@@ -59,10 +59,10 @@ public class Engine implements EngineInterface, Serializable {
         World world = pastSimulations.get(id).getWorld();
         List<DTOEntityPopulation> entityPopulations = new ArrayList<>();
 
-        for (EntityDefinition entityDefinition : world.getEntityDefinitions()){
+        for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()){
             entityPopulations.add(new DTOEntityPopulation(
                     entityDefinition.getPopulation(),
-                    world.getEntityInstances(entityDefinition).size(),
+                    world.getEntityManager().getEntityInstances(entityDefinition).size(),
                     getEntity(entityDefinition)));
         }
 
@@ -108,7 +108,7 @@ public class Engine implements EngineInterface, Serializable {
     public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) {
         List<Object> values = new ArrayList<>();
         World world = pastSimulations.get(id).getWorld();
-        for (EntityInstance entityInstance : world.getEntityInstances(world.getEntityDefinition(entityName))) {
+        for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
             values.add(entityInstance.getPropertyByName(propertyName).getValue());
         }
         return new DTOSimulationHistogram(values, propertyName);
@@ -154,6 +154,9 @@ public class Engine implements EngineInterface, Serializable {
         int id = idCounter;
         archiveSimulation();
         SimulationInterface simulation = pastSimulations.get(id);
+        for (EntityDefinition entityDefinition : simulation.getWorld().getEntityManager().getAllEntityDefinitions()){ //delete after setting population from ui
+            simulation.getWorld().getEntityManager().setPopulation(entityDefinition, 100);
+        }
         simulation.run(id);
         return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
@@ -253,7 +256,8 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOStatus getSimulationStatus(int id){
-        return new DTOStatus(pastSimulations.get(id).getTick(), pastSimulations.get(id).getDuration());
+        SimulationInterface simulation = pastSimulations.get(id);
+        return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString());
     }
 
     @Override
@@ -269,9 +273,11 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulation resumeSimulation(int id) {
+    public void resumeSimulation(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.resume();
-        return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
+
+    @Override
+    public void stopSimulation(int id) { pastSimulations.get(id).stop(); }
 }

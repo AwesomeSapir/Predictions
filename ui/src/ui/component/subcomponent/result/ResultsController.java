@@ -40,7 +40,9 @@ public class ResultsController {
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
             updater.stop();
-            showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
+            if(newValue == Status.STOPPED){
+                showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
+            }
             engineManager.updateSimulationProgress(selectedSimulation.get());
         } else {
             updater.play();
@@ -59,6 +61,7 @@ public class ResultsController {
             gridTicks.setProgress(newValue.getProgressTicks());
             selectedStatus.unbind();
             selectedStatus.bind(newValue.statusProperty());
+            showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
         });
     }
 
@@ -91,13 +94,13 @@ public class ResultsController {
         buttonPause.setOnAction(this::actionSimulationPause);
         buttonResume.setOnAction(this::actionSimulationResume);
         buttonStop.setOnAction(this::actionSimulationStop);
-        buttonStop.setOnAction(this::actionSimulationRerun);
+        buttonRerun.setOnAction(this::actionSimulationRerun);
 
         buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
         buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
         buttonStop.disableProperty().bind(Bindings.and(
-                selectedStatus.isNotEqualTo(Status.RUNNING).not(),
-                selectedStatus.isNotEqualTo(Status.PAUSED).not()));
+                selectedStatus.isNotEqualTo(Status.RUNNING),
+                selectedStatus.isNotEqualTo(Status.PAUSED)));
         buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {

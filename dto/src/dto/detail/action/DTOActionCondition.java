@@ -3,7 +3,6 @@ package dto.detail.action;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class DTOActionCondition extends DTOAction{
 
@@ -28,14 +27,5 @@ public class DTOActionCondition extends DTOAction{
 
     public List<DTOAction> getActionsElse() {
         return actionsElse;
-    }
-
-    @Override
-    public Map<String, String> getFieldValueMap() {
-        Map<String, String> fieldValues = super.getFieldValueMap();
-        fieldValues.put("Conditions", conditions);
-        fieldValues.put("Then", actionsThen.toString());
-        fieldValues.put("Else", actionsElse.toString());
-        return fieldValues;
     }
 }

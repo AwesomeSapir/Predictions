@@ -54,7 +54,8 @@ public class EngineManager {
             }
         };
         task.setOnSucceeded(event -> {
-            simulations.get(task.getValue().getId()).setStatus(Status.valueOf(task.getValue().getStatus()));
+            int id = task.getValue().getId();
+            simulations.get(id).setStatus(Status.valueOf(engine.getSimulationStatus(id).getStatus()));
         });
         Simulation simulation =  new Simulation(engine.getNextId(), engine.getSimulationTermination());
         simulations.put(simulation.getId(), simulation);
@@ -64,14 +65,15 @@ public class EngineManager {
     }
 
     public void resumeSimulation(int id){
-        Task<DTOSimulation> task = new Task<DTOSimulation>() {
+        Task<Void> task = new Task<Void>() {
             @Override
-            protected DTOSimulation call() throws Exception {
-                return engine.resumeSimulation(id);
+            protected Void call() throws Exception {
+                engine.resumeSimulation(id);
+                return null;
             }
         };
         task.setOnSucceeded(event -> {
-            simulations.get(task.getValue().getId()).setStatus(Status.valueOf(task.getValue().getStatus()));
+            simulations.get(id).setStatus(Status.valueOf(engine.getSimulationStatus(id).getStatus()));
         });
         threadPool.execute(task);
         simulations.get(id).setStatus(Status.RUNNING);
@@ -83,17 +85,13 @@ public class EngineManager {
     }
 
     public void stopSimulation(int id){
-        try {
-            engine.pauseSimulation(id);
-        } catch (RuntimeException ignored){
-
-        }
+        engine.stopSimulation(id);
         simulations.get(id).setStatus(Status.STOPPED);
     }
 
     public void updateSimulationProgress(Simulation simulation) {
         DTOStatus status = engine.getSimulationStatus(simulation.getId());
-        simulation.getProgressSeconds().setValue(status.getSeconds());
+        simulation.getProgressSeconds().setValue(status.getMillis() / 1000.0);
         simulation.getProgressTicks().setValue(status.getTicks());
     }
 

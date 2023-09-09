@@ -1,11 +1,12 @@
 package dto.detail;
 
-public class DTOTermination {
+public class DTOTermination extends DTOObject{
 
     private final Long seconds;
     private final Long ticks;
 
     public DTOTermination(Long seconds, Long ticks) {
+        super("");
         this.seconds = seconds;
         this.ticks = ticks;
     }
