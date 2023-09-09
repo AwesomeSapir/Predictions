@@ -29,7 +29,7 @@ public interface EngineInterface {
     void loadFromFile(String filepath);
     int getNextId();
     DTOStatus getSimulationStatus(int id);
-    DTOTermination getSimulationTermination();
+    DTOTermination getSimulationTermination(int id);
     void pauseSimulation(int id);
     void resumeSimulation(int id);
     void stopSimulation(int id);

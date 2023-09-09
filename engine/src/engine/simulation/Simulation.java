@@ -32,7 +32,6 @@ public class Simulation implements SimulationInterface, Serializable {
         this.id = id;
         this.date = LocalDateTime.now();
         this.status = Status.RUNNING;
-        loop();
     }
 
     private void loop() {
@@ -151,7 +150,6 @@ public class Simulation implements SimulationInterface, Serializable {
     public void resume() {
         if (status == Status.PAUSED) {
             status = Status.RUNNING;
-            loop();
         } else {
             throw new RuntimeException("Simulation isn't paused.");
         }
@@ -174,5 +172,10 @@ public class Simulation implements SimulationInterface, Serializable {
     @Override
     public Collection<EntityDefinition> getAllEntityDefinitions() {
         return world.getEntityManager().getAllEntityDefinitions();
+    }
+
+    @Override
+    public void run() {
+        loop();
     }
 }

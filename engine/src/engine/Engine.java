@@ -28,6 +28,8 @@ import translation.xml.XmlTranslator;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Engine implements EngineInterface, Serializable {
 
@@ -35,6 +37,7 @@ public class Engine implements EngineInterface, Serializable {
     private SimulationInterface simulation = null;
     private String filepath;
     private int idCounter = 1;
+    private final ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10); //TODO get from xml
 
 
     @Override
@@ -157,16 +160,6 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulation runSimulation() throws NullPointerException {
-        isSimulationLoaded();
-        int id = idCounter;
-        archiveSimulation();
-        SimulationInterface simulation = pastSimulations.get(id);
-        simulation.run(id);
-        return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
-    }
-
-    @Override
     public DTOSimulationResult getSimulationResult(int id){
         if(pastSimulations.get(id).getStatus() != Status.STOPPED){
             return null;
@@ -269,21 +262,33 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOTermination getSimulationTermination() {
+    public DTOTermination getSimulationTermination(int id) {
         return new DTOTermination(
-                Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
-                Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
+                Optional.ofNullable(pastSimulations.get(id).getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
+                Optional.ofNullable(pastSimulations.get(id).getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
     }
 
     @Override
-    public void pauseSimulation(int id) {
-        pastSimulations.get(id).pause();
+    public DTOSimulation runSimulation() throws NullPointerException {
+        isSimulationLoaded();
+        int id = idCounter;
+        archiveSimulation();
+        SimulationInterface simulation = pastSimulations.get(id);
+        simulation.run(id);
+        threadPool.execute(simulation);
+        return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
 
     @Override
     public void resumeSimulation(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.resume();
+        threadPool.execute(simulation);
+    }
+
+    @Override
+    public void pauseSimulation(int id) {
+        pastSimulations.get(id).pause();
     }
 
     @Override

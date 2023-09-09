@@ -7,7 +7,7 @@ import engine.world.termination.Termination;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-public interface SimulationInterface {
+public interface SimulationInterface extends Runnable {
 
     void run(int id);
 

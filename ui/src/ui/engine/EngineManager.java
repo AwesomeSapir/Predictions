@@ -13,13 +13,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.concurrent.Task;
 import javafx.util.Pair;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class EngineManager {
 
@@ -33,8 +30,6 @@ public class EngineManager {
         engine = new Engine();
     }
 
-    private final ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-
     public void loadSimulation(File file){
         engine.loadXml(file.getAbsolutePath());
         isSimulationLoaded.set(false);
@@ -47,41 +42,21 @@ public class EngineManager {
     }
 
     public void runSimulation(){
-        Task<DTOSimulation> task = new Task<DTOSimulation>() {
-            @Override
-            protected DTOSimulation call() throws Exception {
-                return engine.runSimulation();
-            }
-        };
-        task.setOnSucceeded(event -> {
-            int id = task.getValue().getId();
-            simulations.get(id).setStatus(Status.valueOf(engine.getSimulationStatus(id).getStatus()));
-        });
-        Simulation simulation =  new Simulation(engine.getNextId(), engine.getSimulationTermination());
+        DTOSimulation dtoSimulation = engine.runSimulation();
+        Simulation simulation =  new Simulation(
+                dtoSimulation.getId(),
+                engine.getSimulationTermination(dtoSimulation.getId()));
         simulations.put(simulation.getId(), simulation);
         simulationsList.add(simulation);
-
-        threadPool.execute(task);
     }
 
     public void resumeSimulation(int id){
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                engine.resumeSimulation(id);
-                return null;
-            }
-        };
-        task.setOnSucceeded(event -> {
-            simulations.get(id).setStatus(Status.valueOf(engine.getSimulationStatus(id).getStatus()));
-        });
-        threadPool.execute(task);
+        engine.resumeSimulation(id);
         simulations.get(id).setStatus(Status.RUNNING);
     }
 
     public void pauseSimulation(int id){
         engine.pauseSimulation(id);
-        simulations.get(id).setStatus(Status.PAUSED);
     }
 
     public void stopSimulation(int id){

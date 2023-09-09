@@ -35,6 +35,7 @@ public class ResultsController {
 
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
         engineManager.updateSimulationProgress(selectedSimulation.get());
+        //selectedSimulation.get().setStatus(Status.valueOf(engineManager.engine.getSimulationStatus(selectedSimulation.get().getId()).getStatus()));
     }));
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
