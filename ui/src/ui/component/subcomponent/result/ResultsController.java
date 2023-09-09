@@ -33,16 +33,14 @@ public class ResultsController {
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
     private EngineManager engineManager;
 
-    private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(200), event -> {
+    private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
         engineManager.updateSimulationProgress(selectedSimulation.get());
     }));
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
             updater.stop();
-            if(newValue == Status.STOPPED){
-                showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
-            }
+            showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
             engineManager.updateSimulationProgress(selectedSimulation.get());
         } else {
             updater.play();

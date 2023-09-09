@@ -64,28 +64,26 @@ public class Simulation implements SimulationInterface, Serializable {
             }
         }
 
-        try {
-            for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()) {
-                for (Action action : validActions) {
-                    if (action.getPrimaryEntity().equals(entityDefinition)) {
-                        List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getEntityInstances(entityDefinition));
-                        for (int i = 0; i < entityInstances.size(); i++) {
-                            if (action.getSecondaryEntity() != null) {
-                                for (EntityInstance secondaryEntity :
-                                        world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
-                                    action.execute(entityInstances.get(i), secondaryEntity, world);
-                                }
-                            } else {
-                                action.execute(entityInstances.get(i), world);
+        for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()) {
+            for (Action action : validActions) {
+                if (action.getPrimaryEntity().equals(entityDefinition)) {
+                    for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(entityDefinition)) {
+                        if (action.getSecondaryEntity() != null) {
+                            for (EntityInstance secondaryEntity :
+                                    world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
+                                action.execute(entityInstance, secondaryEntity, world);
                             }
+                        } else {
+                            action.execute(entityInstance, world);
                         }
                     }
-
                 }
+
             }
-        } catch (Exception e){
-            e.printStackTrace();
         }
+
+        world.getEntityManager().killEntities();
+
         totalDuration += Duration.between(begin, LocalDateTime.now()).toMillis();
     }
 
@@ -168,7 +166,7 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
-    public Collection<EntityDefinition> getAllEntityDefinitions(){
+    public Collection<EntityDefinition> getAllEntityDefinitions() {
         return world.getEntityManager().getAllEntityDefinitions();
     }
 }

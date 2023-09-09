@@ -93,6 +93,7 @@ public class EngineManager {
         DTOStatus status = engine.getSimulationStatus(simulation.getId());
         simulation.getProgressSeconds().setValue(status.getMillis() / 1000.0);
         simulation.getProgressTicks().setValue(status.getTicks());
+        simulation.setStatus(Status.valueOf(status.getStatus()));
     }
 
     /*

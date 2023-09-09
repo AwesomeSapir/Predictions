@@ -8,6 +8,7 @@ import dto.detail.action.DTOActionValue;
 import dto.simulation.*;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationInterface;
+import engine.simulation.Status;
 import engine.world.World;
 import engine.world.definition.entity.EntityDefinition;
 import engine.world.definition.property.PropertyDefinition;
@@ -163,6 +164,9 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOSimulationResult getSimulationResult(int id){
+        if(pastSimulations.get(id).getStatus() != Status.STOPPED){
+            return null;
+        }
         Termination termination = pastSimulations.get(id).getTermination();
         return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
     }

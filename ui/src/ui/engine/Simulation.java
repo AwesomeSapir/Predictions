@@ -13,8 +13,8 @@ public class Simulation {
 
     public Simulation(int id, DTOTermination termination) {
         this.id = id;
-        progressSeconds = new Progress(termination.getSeconds().intValue());
-        progressTicks = new Progress(termination.getTicks().intValue());
+        progressSeconds = new Progress(termination.getSeconds()!=null ? termination.getSeconds().intValue() : null);
+        progressTicks = new Progress(termination.getTicks()!=null ? termination.getTicks().intValue() : null);
     }
 
     public int getId() {

@@ -8,6 +8,7 @@ public class EntityManager {
 
     protected final Map<String, EntityDefinition> entityDefinitions = new HashMap<>();
     protected final Map<EntityDefinition, List<EntityInstance>> entityInstances = new HashMap<>();
+    protected final List<EntityInstance> killableEntities = new ArrayList<>();
 
     public EntityManager(Collection<EntityDefinition> entityDefinitions) {
         for (EntityDefinition entityDefinition : entityDefinitions){
@@ -25,12 +26,12 @@ public class EntityManager {
     }
 
     public void removeEntity(EntityInstance entityInstance){
-        entityInstances.get(entityInstance.getEntityDefinition()).remove(entityInstance);
+        killableEntities.add(entityInstance);
     }
 
-    public EntityDefinition getEntityDefinition(String name) throws RuntimeException{
+    public EntityDefinition getEntityDefinition(String name) throws IllegalArgumentException{
         if(!containsEntityDefinition(name)){
-            throw new RuntimeException("Entity '" + name + "' does not exist.");
+            throw new IllegalArgumentException("Entity '" + name + "' does not exist.");
         }
         return entityDefinitions.get(name);
     }
@@ -63,5 +64,11 @@ public class EntityManager {
 
     public boolean containsEntityDefinition(String name){
         return entityDefinitions.containsKey(name);
+    }
+
+    public void killEntities(){
+        for (EntityInstance entityInstance : killableEntities){
+            entityInstances.get(entityInstance.getEntityDefinition()).remove(entityInstance);
+        }
     }
 }
