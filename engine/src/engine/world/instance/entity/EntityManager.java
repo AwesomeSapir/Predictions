@@ -8,7 +8,9 @@ public class EntityManager {
 
     protected final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
     protected final Map<EntityDefinition, List<EntityInstance>> entityInstances = new LinkedHashMap<>();
-    protected final List<EntityInstance> killableEntities = new ArrayList<>();
+    protected final List<EntityInstance> killQueue = new ArrayList<>();
+    protected final List<EntityInstance> creationQueue = new ArrayList<>();
+    protected final List<EntityInstance> replaceQueue = new ArrayList<>();
 
     public EntityManager(Collection<EntityDefinition> entityDefinitions) {
         for (EntityDefinition entityDefinition : entityDefinitions){
@@ -27,7 +29,7 @@ public class EntityManager {
     }
 
     public void removeEntity(EntityInstance entityInstance){
-        killableEntities.add(entityInstance);
+        killQueue.add(entityInstance);
     }
 
     public EntityDefinition getEntityDefinition(String name) throws IllegalArgumentException{
@@ -68,8 +70,17 @@ public class EntityManager {
     }
 
     public void killEntities(){
-        for (EntityInstance entityInstance : killableEntities){
+        for (EntityInstance entityInstance : killQueue){
             entityInstances.get(entityInstance.getEntityDefinition()).remove(entityInstance);
         }
+        killQueue.clear();
+    }
+
+    public void createEntities(){
+
+    }
+
+    public void replaceEntities(){
+
     }
 }
