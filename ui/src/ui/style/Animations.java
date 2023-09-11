@@ -33,24 +33,24 @@ public class Animations {
         shakeTimeline.playFromStart();
     }
 
-    public static void expandingCircle(Node targetNode) {
+    public static void expandingCircle(Node node) {
         // Create the circle that will start from the center of the node
         Circle circle = new Circle(0);
-        circle.setCenterX(targetNode.getLayoutBounds().getWidth() / 2);
-        circle.setCenterY(targetNode.getLayoutBounds().getHeight() / 2);
+        circle.setCenterX(node.getLayoutBounds().getWidth() / 2);
+        circle.setCenterY(node.getLayoutBounds().getHeight() / 2);
 
         // Use the circle as a mask for the target node
-        targetNode.setClip(circle);
+        node.setClip(circle);
 
         // Prepare the animation: expand the circle from radius 0 to half of the diagonal of the node
-        double endRadius = Math.sqrt(Math.pow(targetNode.getLayoutBounds().getWidth(), 2) + Math.pow(targetNode.getLayoutBounds().getHeight(), 2)) / 2;
+        double endRadius = Math.sqrt(Math.pow(node.getLayoutBounds().getWidth(), 2) + Math.pow(node.getLayoutBounds().getHeight(), 2)) / 2;
         Timeline timeline = new Timeline();
 
         KeyValue kv = new KeyValue(circle.radiusProperty(), endRadius);
         KeyFrame kf = new KeyFrame(Duration.millis(500), kv);
         timeline.getKeyFrames().add(kf);
 
-        timeline.setOnFinished(event -> targetNode.setClip(null));
+        timeline.setOnFinished(event -> node.setClip(null));
         // Start the animation
         timeline.play();
     }

@@ -1,8 +1,8 @@
 package engine;
 
 import dto.detail.DTOEntity;
-import dto.detail.DTOProperty;
 import dto.detail.DTOEnvironmentVariable;
+import dto.detail.DTOProperty;
 import dto.detail.DTOTermination;
 import dto.simulation.*;
 import javafx.util.Pair;

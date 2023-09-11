@@ -21,8 +21,10 @@ import java.util.*;
 
 public class BoardView extends VBox {
 
-    @FXML private GridPane gridBoard;
-    @FXML private HBox hboxLegend;
+    @FXML
+    private GridPane gridBoard;
+    @FXML
+    private HBox hboxLegend;
 
     private EntityTile[][] board;
     private final Map<String, String> entityColors = new HashMap<>();
@@ -59,7 +61,7 @@ public class BoardView extends VBox {
         createBoard();
     }
 
-    private void createBoard(){
+    private void createBoard() {
         board = new EntityTile[rows.get()][cols.get()];
         for (int row = 0; row < rows.get(); row++) {
             gridBoard.addRow(row);
@@ -76,10 +78,10 @@ public class BoardView extends VBox {
         }
     }
 
-    public void setTiles(String[][] space){
+    public void setTiles(String[][] space) {
         for (int row = 0; row < rows.get(); row++) {
             for (int col = 0; col < cols.get(); col++) {
-                if(space[row][col] == null){
+                if (space[row][col] == null) {
                     board[row][col].setEmpty();
                 } else {
                     board[row][col].setEntity(entityColors.get(space[row][col]));
@@ -89,13 +91,13 @@ public class BoardView extends VBox {
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         simulation.statusProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue == Status.STOPPED){
+            if (newValue == Status.STOPPED) {
                 updater.stop();
             }
         });
-        for (DTOEntity entity : engineManager.getSimulationDetails().getEntities()){
+        for (DTOEntity entity : engineManager.getSimulationDetails().getEntities()) {
             entityColors.put(entity.getName(), availableColors.get(0));
             Label legend = new Label(entity.getName());
             legend.getStyleClass().add("label-box");
@@ -106,7 +108,7 @@ public class BoardView extends VBox {
         updater.play();
     }
 
-    public void stop(){
+    public void stop() {
         updater.stop();
     }
 }

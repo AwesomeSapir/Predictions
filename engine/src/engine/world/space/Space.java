@@ -24,7 +24,7 @@ public class Space {
     }
 
     private Tile getTile(Point point){
-        return board[point.x()%rows][point.y()%cols];
+        return board[(point.x() + rows)%rows][(point.y() + cols)%cols];
     }
 
     private void removeAvailableTile(Point point){
@@ -35,7 +35,8 @@ public class Space {
         availableTiles.put(Point.xy(point.x()%rows, point.y()%cols), getTile(point));
     }
 
-    public void placeEntity(EntityInstance entity, Point point){
+    public void placeEntity(EntityInstance entity){
+        Point point = getRandomAvailableTile();
         getTile(point).setEntity(entity);
         removeAvailableTile(point);
     }
@@ -56,10 +57,10 @@ public class Space {
         int y = point.y();
         List<Point> tiles = new ArrayList<>();
         Tile[] adjacentTiles = {
-                getTile(Point.xy(x-1 + rows, y)),
-                getTile(Point.xy(x+1 + rows, y)),
-                getTile(Point.xy(x, y-1 + cols)),
-                getTile(Point.xy(x, y+1 + cols))
+                getTile(Point.xy(x-1, y)),
+                getTile(Point.xy(x+1, y)),
+                getTile(Point.xy(x, y-1)),
+                getTile(Point.xy(x, y+1))
         };
 
         for (Tile t : adjacentTiles) {
@@ -69,6 +70,30 @@ public class Space {
         }
 
         return tiles;
+    }
+
+    public Collection<EntityInstance> getEntitiesInProximity(Point source, int depth){
+        Set<EntityInstance> entityInstances = new HashSet<>();
+
+        for (int x = source.x()-depth; x <= source.x()+depth; x++) {
+            for (int y = source.y()-depth; y <= source.y()+depth; y++) {
+                int mx = ((x%rows) + rows);
+                int my = ((y%cols) + cols);
+
+                if(mx == source.x() && my == source.y()){
+                    continue;
+                }
+
+                Tile tile = getTile(new Point(mx, my));
+                if(tile.isTaken()){
+                    System.out.println("tile at " + tile.getX() + "," + tile.getY() + " is taken");
+                    System.out.println("entity is at " + tile.getEntity().getX() + "," + tile.getEntity().getY());
+                    entityInstances.add(tile.getEntity());
+                }
+            }
+        }
+
+        return entityInstances;
     }
 
     public int getRows() {

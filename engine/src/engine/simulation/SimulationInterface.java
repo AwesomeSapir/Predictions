@@ -21,6 +21,8 @@ public interface SimulationInterface extends Runnable {
 
     void setEnvironmentValue(String name, Object value);
 
+    void initSpace();
+
     Object getEnvironmentValue(String name);
 
     EntityDefinition getEntityDefinition(String name);

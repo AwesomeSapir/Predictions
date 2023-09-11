@@ -1,5 +1,6 @@
 package engine.world.space;
 
+import engine.world.definition.entity.EntityDefinition;
 import engine.world.instance.entity.EntityInstance;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class SpaceManager {
     }
 
     public void putEntity(EntityInstance entity){
-        space.placeEntity(entity, space.getRandomAvailableTile());
+        space.placeEntity(entity);
     }
 
     public void moveEntity(EntityInstance entity){
@@ -38,6 +39,15 @@ public class SpaceManager {
 
     public void removeEntity(EntityInstance entity){
         space.removeEntity(entity);
+    }
+
+    public EntityInstance getEntityInProximity(Point source, EntityDefinition target, int depth){
+        for (EntityInstance entityInstance : space.getEntitiesInProximity(source, depth)){
+            if(entityInstance.getEntityDefinition().equals(target)){
+                return entityInstance;
+            }
+        }
+        return null;
     }
 
     public int getAvailableSize(){

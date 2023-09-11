@@ -46,6 +46,7 @@ public class Simulation implements SimulationInterface, Serializable {
             return;
         }
         tick++;
+
         LocalDateTime begin = LocalDateTime.now();
 
         List<EntityInstance> entityInstances = new ArrayList<>(world.getEntityManager().getAllEntityInstances());
@@ -108,6 +109,10 @@ public class Simulation implements SimulationInterface, Serializable {
     public void setEntityPopulation(String name, int population) {
         EntityDefinition entityDefinition = world.getEntityManager().getEntityDefinition(name);
         world.getEntityManager().setPopulation(entityDefinition, population);
+    }
+
+    @Override
+    public void initSpace(){
         for (EntityInstance entityInstance : world.getEntityManager().getAllEntityInstances()){
             world.getSpaceManager().putEntity(entityInstance);
         }

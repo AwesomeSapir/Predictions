@@ -158,6 +158,7 @@ public class Engine implements EngineInterface, Serializable {
         for (Pair<String, Integer> entity : entityPopulations) {
             simulation.setEntityPopulation(entity.getKey(), entity.getValue());
         }
+        simulation.initSpace();
     }
 
     @Override
