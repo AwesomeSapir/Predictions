@@ -81,6 +81,7 @@ public class Simulation implements SimulationInterface, Serializable {
         }
 
         world.getEntityManager().killEntities();
+        world.getEntityManager().createEntities();
 
         totalDuration += Duration.between(begin, LocalDateTime.now()).toMillis();
     }

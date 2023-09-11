@@ -1,10 +1,12 @@
-package engine.simulation.world.expression;
+package engine.simulation.world.expression.auxiliry;
 
+import engine.simulation.world.expression.AbstractExpression;
+import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
 
 import java.util.Random;
 
-public class RandomExpression extends AbstractExpression{
+public class RandomExpression extends AbstractExpression {
     private final int arg;
 
     private final Random random = new Random();

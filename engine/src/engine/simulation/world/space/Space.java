@@ -36,12 +36,18 @@ public class Space {
     }
 
     public void placeEntityRandom(EntityInstance entity){
+        if(availableTiles.values().isEmpty()){
+            throw new RuntimeException("No available space.");
+        }
         Point point = getRandomAvailableTile();
         getTile(point).setEntity(entity);
         removeAvailableTile(point);
     }
 
     public void placeEntity(EntityInstance entity, Point point){
+        if(getTile(point).isTaken()){
+            throw new RuntimeException("Tile " + point.x() + "," + point.y() + " is already taken.");
+        }
         getTile(point).setEntity(entity);
         removeAvailableTile(point);
     }
