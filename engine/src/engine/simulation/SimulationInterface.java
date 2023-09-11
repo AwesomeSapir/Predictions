@@ -1,8 +1,8 @@
 package engine.simulation;
 
-import engine.world.World;
-import engine.world.definition.entity.EntityDefinition;
-import engine.world.termination.Termination;
+import engine.simulation.world.World;
+import engine.simulation.world.definition.entity.EntityDefinition;
+import engine.simulation.world.termination.Termination;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

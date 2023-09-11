@@ -1,6 +1,6 @@
 package translation.xml;
 
-import engine.world.World;
+import engine.simulation.world.World;
 
 import java.io.InvalidClassException;
 

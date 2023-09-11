@@ -1,11 +1,11 @@
 package engine.simulation;
 
-import engine.world.World;
-import engine.world.definition.entity.EntityDefinition;
-import engine.world.instance.entity.EntityInstance;
-import engine.world.rule.Rule;
-import engine.world.rule.action.Action;
-import engine.world.termination.Termination;
+import engine.simulation.world.World;
+import engine.simulation.world.definition.entity.EntityDefinition;
+import engine.simulation.world.instance.entity.EntityInstance;
+import engine.simulation.world.rule.Rule;
+import engine.simulation.world.rule.action.Action;
+import engine.simulation.world.termination.Termination;
 
 import java.io.Serializable;
 import java.time.Duration;
