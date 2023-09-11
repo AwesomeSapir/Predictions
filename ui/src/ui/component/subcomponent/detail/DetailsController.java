@@ -6,11 +6,13 @@ import dto.detail.action.DTOActionCondition;
 import dto.simulation.DTOSimulationDetails;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
 import ui.component.custom.detail.DetailView;
 import ui.engine.EngineManager;
+import ui.style.Animations;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class DetailsController {
     private EngineManager engineManager;
 
     private DetailView viewDetailController;
+    private Node viewDetail;
 
     @FXML
     public void initialize() {
@@ -32,9 +35,18 @@ public class DetailsController {
             loader.setLocation(Objects.requireNonNull(getClass().getResource("/ui/component/custom/detail/viewDetail.fxml")));
             paneRight.getChildren().add(loader.load());
             viewDetailController = loader.getController();
+            viewDetail = loader.getRoot();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        treeViewDetails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue.getValue() instanceof DTOObject) {
+                DTOObject dtoObject = (DTOObject) newValue.getValue();
+                displayObject(dtoObject);
+            }
+        });
+
     }
 
     private void loadTree() {
@@ -95,14 +107,6 @@ public class DetailsController {
         treeViewDetails.setRoot(rootItem);
     }
 
-    public void selectItem() {
-        TreeItem<Object> item = (TreeItem<Object>) treeViewDetails.getSelectionModel().getSelectedItem();
-        if (item != null && item.getValue() instanceof DTOObject) {
-            DTOObject dtoObject = (DTOObject) item.getValue();
-            displayObject(dtoObject);
-        }
-    }
-
     private void displayObject(DTOObject object){
         if(object instanceof DTOEntity){
             viewDetailController.setEntity((DTOEntity) object);
@@ -113,6 +117,7 @@ public class DetailsController {
         } else if (object instanceof DTOEnvironmentVariable){
             viewDetailController.setEnvVariable((DTOEnvironmentVariable) object);
         }
+        Animations.expandingCircle(viewDetail);
     }
 
     public void setEngineManager(EngineManager engineManager) {

@@ -109,6 +109,7 @@ public class ResultsController {
                 selectedStatus.isNotEqualTo(Status.RUNNING),
                 selectedStatus.isNotEqualTo(Status.PAUSED)));
         buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
+        buttonNext.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override

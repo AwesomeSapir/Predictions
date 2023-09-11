@@ -13,7 +13,7 @@ public class EnvironmentVariableView {
             case "DECIMAL":
             case "FLOAT":
                 if(environmentVariable.getRange() != null) {
-                    view = new RangedNumericItemView(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo());
+                    view = new RangedNumericItemView(environmentVariable.getRange().getFrom(), environmentVariable.getRange().getTo(), false);
                 } else {
                     view = new NumericItemView();
                 }

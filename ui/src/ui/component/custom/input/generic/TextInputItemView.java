@@ -1,17 +1,18 @@
 package ui.component.custom.input.generic;
 
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import ui.validation.Validator;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public abstract class TextInputItemView<T> extends InputItemView<T> {
 
     @FXML protected TextField textField;
     @FXML protected Label labelError;
-
-    protected SimpleStringProperty title;
     protected Validator validator;
 
     public TextInputItemView(Validator validator, String errorMessage) {
@@ -37,6 +38,11 @@ public abstract class TextInputItemView<T> extends InputItemView<T> {
 
     public TextField getTextField() {
         return textField;
+    }
+
+    @Override
+    protected Collection<Node> getNodeToShake() {
+        return Collections.singletonList(textField);
     }
 
     @FXML

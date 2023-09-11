@@ -4,6 +4,7 @@ import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
 import dto.detail.DTOObject;
 import dto.simulation.DTOSimulationDetails;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -21,11 +22,10 @@ import ui.component.custom.input.simulation.EntityPopulationView;
 import ui.component.custom.input.simulation.EnvironmentVariableView;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
+import ui.style.Animations;
 import ui.style.StyleManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class ExecutionController {
     @FXML
@@ -46,7 +46,6 @@ public class ExecutionController {
 
     @FXML
     public void initialize() {
-
         buttonClear.setOnMouseClicked(this::clearClicked);
     }
 
@@ -133,7 +132,7 @@ public class ExecutionController {
         for (Node view : vboxEntityPopulation.getChildren()) {
             if (view instanceof InputItemView<?>) {
                 Pair<String, Object> pair = getValue(view);
-                result.add(new Pair<>(pair.getKey(),  ((Double)pair.getValue()).intValue()));
+                result.add(new Pair<>(pair.getKey(), ((Double) pair.getValue()).intValue()));
             }
         }
         return result;
@@ -182,5 +181,23 @@ public class ExecutionController {
         StyleManager.register(alert.getDialogPane().getScene());
         alert.setOnCloseRequest(event -> StyleManager.unregister(alert.getDialogPane().getScene()));
         alert.showAndWait();
+    }
+
+    private Timer timer;
+
+    public void onFocus() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    Animations.highlight(buttonStart, 2);
+                });
+            }
+        }, 500, 5000);
+    }
+
+    public void onUnfocused() {
+        timer.cancel();
     }
 }

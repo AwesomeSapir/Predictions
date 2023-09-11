@@ -1,8 +1,12 @@
 package ui.component.custom.input.generic;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import org.controlsfx.control.ToggleSwitch;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class BooleanItemView extends InputItemView<Boolean> {
 
@@ -29,6 +33,11 @@ public class BooleanItemView extends InputItemView<Boolean> {
     @Override
     protected void randomize() {
         toggleSwitch.selectedProperty().set(random.nextBoolean());
+    }
+
+    @Override
+    protected Collection<Node> getNodeToShake() {
+        return Arrays.asList(toggleSwitch, labelValue);
     }
 
     @Override

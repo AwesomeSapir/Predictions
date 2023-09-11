@@ -10,10 +10,10 @@
            <opaqueInsets>
                <Insets />
            </opaqueInsets>
-           <Tab text="Details">
+           <Tab fx:id="tabDetailsID" text="Details">
                <fx:include fx:id="tabDetails" source="/ui/component/subcomponent/detail/tabDetails.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
            </Tab>
-           <Tab text="New Execution">
+           <Tab fx:id="tabExecutionID" text="New Execution">
                <fx:include fx:id="tabExecution" source="/ui/component/subcomponent/execution/tabExecution.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
            </Tab>
            <Tab fx:id="tabResultsID" text="Results">

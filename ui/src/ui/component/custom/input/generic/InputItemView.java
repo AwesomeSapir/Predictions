@@ -6,13 +6,16 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import ui.style.Animations;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Random;
 
 public abstract class InputItemView<T> extends GridPane {
@@ -31,6 +34,15 @@ public abstract class InputItemView<T> extends GridPane {
         title = new SimpleStringProperty();
         isValid = new SimpleBooleanProperty(true);
         value = new SimpleObjectProperty<>();
+    }
+
+    protected abstract Collection<Node> getNodeToShake();
+
+    protected void animateShake() {
+        Animations.shake(buttonRandom);
+        for (Node node : getNodeToShake()){
+            Animations.shake(node);
+        }
     }
 
     protected void load(URL fxmlPath){
@@ -81,6 +93,7 @@ public abstract class InputItemView<T> extends GridPane {
 
     private void clickRandom(MouseEvent event){
         randomize();
+        animateShake();
     }
 
     protected abstract void randomize();

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import ui.component.custom.progress.*?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
+<SplitPane dividerPositions="0.3" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
     <ScrollPane fitToHeight="true" fitToWidth="true">
         <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
@@ -72,7 +72,7 @@
                                 </graphic>
                             </Button>
                         </GridPane>
-                  <Button fx:id="buttonBoard" mnemonicParsing="false" text="Show Board" />
+                  <Button fx:id="buttonBoard" mnemonicParsing="false" text="SHOW BOARD" />
                         <padding>
                             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                         </padding>

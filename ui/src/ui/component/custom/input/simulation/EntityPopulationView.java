@@ -5,16 +5,8 @@ import ui.component.custom.input.generic.RangedNumericItemView;
 
 public class EntityPopulationView extends RangedNumericItemView {
 
-    private DTOEntity entity;
-
     public EntityPopulationView(DTOEntity entity, int max) {
-        super(0, max);
-        this.entity = entity;
-        title.set(entity.getName());
-    }
-
-    public void setEntity(DTOEntity entity) {
-        this.entity = entity;
+        super(0, max, true);
         title.set(entity.getName());
     }
 

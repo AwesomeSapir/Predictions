@@ -143,5 +143,4 @@ public class DetailView {
         labelTerminationTicks.textProperty().bind(ticks.asString());
         labelTerminationSeconds.textProperty().bind(seconds.asString());
     }
-
 }

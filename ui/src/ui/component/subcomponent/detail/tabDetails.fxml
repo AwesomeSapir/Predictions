@@ -10,7 +10,7 @@
         <padding>
             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
         </padding>
-        <TreeView fx:id="treeViewDetails" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem"
+        <TreeView fx:id="treeViewDetails"
                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                   AnchorPane.topAnchor="0.0"/>
     </AnchorPane>

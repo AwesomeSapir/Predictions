@@ -1,15 +1,14 @@
 package ui.component.main;
 
-import dto.simulation.DTOSimulationResult;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import ui.engine.EngineManager;
 import ui.component.subcomponent.detail.DetailsController;
 import ui.component.subcomponent.execution.ExecutionController;
 import ui.component.subcomponent.result.ResultsController;
+import ui.engine.EngineManager;
 import ui.engine.Simulation;
 
 import java.io.File;
@@ -28,6 +27,8 @@ public class MainController {
     @FXML private ResultsController tabResultsController;
 
     @FXML private Tab tabResultsID;
+    @FXML public Tab tabDetailsID;
+    @FXML public Tab tabExecutionID;
 
     @FXML
     void chooseXMLFile(ActionEvent event){
@@ -67,6 +68,14 @@ public class MainController {
     @FXML
     public void initialize() {
         tabExecutionController.setMainController(this);
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.equals(tabExecutionID)){
+                tabExecutionController.onFocus();
+            }
+            if(oldValue.equals(tabExecutionID)){
+                tabExecutionController.onUnfocused();
+            }
+        });
     }
 
     public void switchToResultsTab() {
