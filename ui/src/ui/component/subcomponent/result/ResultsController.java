@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -21,6 +22,9 @@ import ui.engine.EngineManager;
 import ui.engine.Simulation;
 import ui.engine.Status;
 import ui.style.StyleManager;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -37,11 +41,19 @@ public class ResultsController {
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
     @FXML public Button buttonBoard;
     @FXML public Button buttonNext;
+
+    @FXML private TableView<EntityInfo> entityTable;
+
+    @FXML private TableColumn<EntityInfo, String> entityNameColumn;
+
+    @FXML private TableColumn<EntityInfo, Integer> instanceCountColumn;
+
     private EngineManager engineManager;
 
     //TODO replace with thread
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
         engineManager.updateSimulationProgress(selectedSimulation.get());
+        populateEntityTable(selectedSimulation.get().getId());
         //selectedSimulation.get().setStatus(Status.valueOf(engineManager.engine.getSimulationStatus(selectedSimulation.get().getId()).getStatus()));
     }));
 
@@ -68,6 +80,9 @@ public class ResultsController {
             selectedStatus.unbind();
             selectedStatus.bind(newValue.statusProperty());
             showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
+
+            // Call the method to populate the table based on the selected simulation
+            populateEntityTable(newValue.getId());
         });
     }
 
@@ -118,16 +133,27 @@ public class ResultsController {
                 return new ListCell<Simulation>() {
                     @Override
                     protected void updateItem(Simulation item, boolean empty) {
+                        String runDate = "";
+                        if(item != null) {
+                            runDate = item.getRunDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH.mm.ss"));
+                        }
                         super.updateItem(item, empty);
                         if (empty || item == null) {
                             setText(null);
                         } else {
-                            setText("Simulation #" + item.getId());
+                            setText("Simulation #" + item.getId() + "   " + runDate);
                         }
                     }
                 };
             }
         });
+
+        entityTable.setFixedCellSize(25);
+        entityTable.prefHeightProperty().bind(Bindings.size(entityTable.getItems()).multiply(entityTable.getFixedCellSize()).add(30));
+        // Bind the columns to the EntityInfo properties
+        entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
+        instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
+
 
         updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
     }
@@ -165,5 +191,18 @@ public class ResultsController {
     private void actionSimulationNext(ActionEvent actionEvent){
         engineManager.tickSimulation(selectedSimulation.get().getId());
         engineManager.updateSimulationProgress(selectedSimulation.get());
+    }
+
+    private void populateEntityTable(int simulationId) {
+        // Clear existing items in the table
+        entityTable.getItems().clear();
+
+        // Get entity information from the engineManager
+        Collection<DTOEntityPopulation> entityPopulations = engineManager.engine.getDetailsByEntityCount(simulationId);
+
+        // Populate the table with entity information
+        for (DTOEntityPopulation entityPopulation : entityPopulations) {
+            entityTable.getItems().add(new EntityInfo(entityPopulation.getEntity().getName(), entityPopulation.getFinalPopulation()));
+        }
     }
 }

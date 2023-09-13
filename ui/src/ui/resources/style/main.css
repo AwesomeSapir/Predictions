@@ -25,6 +25,24 @@ VBox,
     -fx-border-color: transparent;
 }
 
+
+.table-view .column-header {
+    -fx-background-color: -primary-background;
+    -fx-border-color: -secondary-background;
+}
+
+#entityTable .table-column {
+    -fx-alignment: CENTER;
+}
+
+.table-view .column-header .label{
+    -fx-font-weight: bold;
+}
+
+.table-view .virtual-flow .scroll-bar {
+    -fx-opacity: 0;
+}
+
 .text {
     -fx-text-fill: -primary-text;
     -fx-font-family: 'Poppins';

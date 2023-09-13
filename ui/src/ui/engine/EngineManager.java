@@ -46,6 +46,7 @@ public class EngineManager {
         DTOSimulation dtoSimulation = engine.runSimulation();
         Simulation simulation =  new Simulation(
                 dtoSimulation.getId(),
+                dtoSimulation.getBeginTime(),
                 engine.getSimulationTermination(dtoSimulation.getId()));
         simulations.put(simulation.getId(), simulation);
         simulationsList.add(simulation);

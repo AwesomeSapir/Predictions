@@ -3,6 +3,7 @@ package engine.simulation;
 import engine.simulation.world.World;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
+import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.termination.Termination;
@@ -53,6 +54,10 @@ public class Simulation implements SimulationInterface, Serializable {
         List<Action> validActions = new ArrayList<>();
 
         for (EntityInstance entityInstance : entityInstances) {
+            for(PropertyInstance propertyInstance : entityInstance.getPropertyInstances()){
+                propertyInstance.updateTicksOfSameValue();
+                //System.out.println("Property '" + propertyInstance.getPropertyDefinition().getName() +"' didn't change for '" +propertyInstance.getTicksOfSameValue() + "' ticks");
+            }
             world.getSpaceManager().moveEntity(entityInstance);
         }
 

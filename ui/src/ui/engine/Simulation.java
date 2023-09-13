@@ -4,21 +4,30 @@ import dto.detail.DTOTermination;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
+import java.time.LocalDateTime;
+
 public class Simulation {
 
     private final int id;
+    private final LocalDateTime runDate;
+
     private final Progress progressSeconds;
     private final Progress progressTicks;
     private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.RUNNING);
 
-    public Simulation(int id, DTOTermination termination) {
+    public Simulation(int id, LocalDateTime runDate, DTOTermination termination) {
         this.id = id;
+        this.runDate = runDate;
         progressSeconds = new Progress(termination.getSeconds()!=null ? termination.getSeconds().intValue() : null);
         progressTicks = new Progress(termination.getTicks()!=null ? termination.getTicks().intValue() : null);
     }
 
     public int getId() {
         return id;
+    }
+
+    public LocalDateTime getRunDate() {
+        return runDate;
     }
 
     public Progress getProgressSeconds() {

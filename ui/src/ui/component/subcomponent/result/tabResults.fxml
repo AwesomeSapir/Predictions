@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -73,6 +74,19 @@
                             </Button>
                         </GridPane>
                   <Button fx:id="buttonBoard" mnemonicParsing="false" text="SHOW BOARD" />
+                        <!-- Table view for entity information -->
+                        <TableView fx:id="entityTable">
+                            <columns>
+                                <TableColumn fx:id="entityNameColumn" text="Entity Name" />
+                                <TableColumn fx:id="instanceCountColumn" text="Quantity" />
+                            </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                     <cursor>
+                        <Cursor fx:constant="NONE" />
+                     </cursor>
+                        </TableView>
                         <padding>
                             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                         </padding>

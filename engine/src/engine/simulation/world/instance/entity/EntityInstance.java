@@ -6,6 +6,7 @@ import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.space.Point;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,10 @@ public class EntityInstance implements Serializable {
         for (PropertyDefinition propertyDefinition : entityDefinition.getProperties().values()){
             addPropertyInstance(new PropertyInstance(propertyDefinition));
         }
+    }
+
+    public Collection<PropertyInstance> getPropertyInstances(){
+        return properties.values();
     }
 
     public PropertyInstance getPropertyByName(String name){

@@ -1,4 +1,4 @@
-package engine.simulation.world.expression.auxiliry;
+package engine.simulation.world.expression.auxiliary;
 
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.PropertyDefinition;

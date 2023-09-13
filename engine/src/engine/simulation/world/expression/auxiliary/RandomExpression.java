@@ -1,4 +1,4 @@
-package engine.simulation.world.expression.auxiliry;
+package engine.simulation.world.expression.auxiliary;
 
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
