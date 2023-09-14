@@ -26,7 +26,7 @@ import ui.engine.Status;
 import ui.style.StyleManager;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
+import java.util.*;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -52,7 +52,7 @@ public class ResultsController {
     @FXML private TableColumn<EntityInfo, Integer> instanceCountColumn;
 
     //Preparing the data points for the line1
-    private XYChart.Series series = new XYChart.Series();
+    private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
 
 
 
@@ -82,16 +82,19 @@ public class ResultsController {
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
         listExecution.setItems(engineManager.getSimulationsList());
+        entityAmountByTicks.setTitle("Quantity as a function of ticks");
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             gridSeconds.setProgress(newValue.getProgressSeconds());
             gridTicks.setProgress(newValue.getProgressTicks());
+            entityAmountByTicks.visibleProperty().unbind();
+            entityAmountByTicks.setVisible(false);
             selectedStatus.unbind();
             selectedStatus.bind(newValue.statusProperty());
+            entityAmountByTicks.getData().clear();
             showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
+            entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
 
-            // Call the method to populate the table based on the selected simulation
             populateEntityTable(newValue.getId());
-            entityAmountByTicks.setTitle("Quantity as a function of ticks");
         });
     }
 
@@ -113,8 +116,8 @@ public class ResultsController {
                 result += "\nInitial Quantity: " + entityPopulation.getInitialPopulation();
                 result += "\nFinal Quantity: " + entityPopulation.getFinalPopulation();
             }
-            entityAmountByTicks.getData().add(series);
-            entityAmountByTicks.setVisible(true);
+            // Get or create the series for the current simulation ID
+            entityAmountByTicks.getData().add(seriesMap.get(simulationResult.getId()));
         }
         textResult.textProperty().set(result);
     }
@@ -123,6 +126,7 @@ public class ResultsController {
     public void initialize() {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
         selectedStatus.addListener(simulationStatusListener);
+        entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         buttonPause.setOnAction(this::actionSimulationPause);
         buttonResume.setOnAction(this::actionSimulationResume);
         buttonStop.setOnAction(this::actionSimulationStop);
@@ -204,8 +208,11 @@ public class ResultsController {
     }
 
     private void populateEntityTable(int simulationId) {
-        // Clear existing items in the table
+        // Clear existing items in the table and reset the series
         entityTable.getItems().clear();
+
+        // Get or create the series for the current simulation ID
+        XYChart.Series series = seriesMap.computeIfAbsent(simulationId, k -> new XYChart.Series());
 
         // Get entity information from the engineManager
         Collection<DTOEntityPopulation> entityPopulations = engineManager.engine.getDetailsByEntityCount(simulationId);
@@ -217,7 +224,8 @@ public class ResultsController {
             entityTable.getItems().add(new EntityInfo(entityPopulation.getEntity().getName(), population));
 
             if(ticks % 10 == 0) {
-                series.getData().add(new XYChart.Data(ticks, population));
+                // Add data points to the LineChart series
+                series.getData().add(new XYChart.Data<>(ticks, population));
             }
         }
     }

@@ -100,7 +100,7 @@
                <VBox layoutX="16.0" layoutY="16.0">
                   <children>
                           <TextArea fx:id="textResult" />
-                     <LineChart fx:id="entityAmountByTicks" legendSide="TOP" legendVisible="false" visible="false">
+                     <LineChart fx:id="entityAmountByTicks" legendSide="TOP" legendVisible="false" >
                          <xAxis>
                              <NumberAxis animated="false" label="Ticks" />
                          </xAxis>
