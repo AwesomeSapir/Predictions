@@ -43,6 +43,50 @@ VBox,
     -fx-opacity: 0;
 }
 
+.chart-content {
+    -fx-padding: 30px;
+}
+
+.chart-title {
+    -fx-wrap-text : true;
+    -fx-alignment : center;
+    -fx-font-size: 1.6em;
+}
+
+
+.chart-legend {
+    -fx-background-color:  transparent;
+    -fx-padding: 20px;
+}
+
+.chart-legend-item-symbol{
+    -fx-background-radius: 0;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: -primary-accent-gradient;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: -primary-accent-gradient;
+}
+.chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
+}
+
+.axis {
+    -fx-font-size: 1.4em;
+    -fx-tick-label-fill: -primary-text;
+    -fx-font-family: Tahoma;
+    -fx-tick-length: 20;
+    -fx-minor-tick-length: 10;
+}
+
 .text {
     -fx-text-fill: -primary-text;
     -fx-font-family: 'Poppins';

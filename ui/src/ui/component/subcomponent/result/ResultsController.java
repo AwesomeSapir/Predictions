@@ -11,6 +11,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -41,12 +43,18 @@ public class ResultsController {
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
     @FXML public Button buttonBoard;
     @FXML public Button buttonNext;
+    @FXML public LineChart entityAmountByTicks;
 
     @FXML private TableView<EntityInfo> entityTable;
 
     @FXML private TableColumn<EntityInfo, String> entityNameColumn;
 
     @FXML private TableColumn<EntityInfo, Integer> instanceCountColumn;
+
+    //Preparing the data points for the line1
+    private XYChart.Series series = new XYChart.Series();
+
+
 
     private EngineManager engineManager;
 
@@ -83,6 +91,7 @@ public class ResultsController {
 
             // Call the method to populate the table based on the selected simulation
             populateEntityTable(newValue.getId());
+            series.setName("Quantity as a function of ticks");
         });
     }
 
@@ -104,6 +113,8 @@ public class ResultsController {
                 result += "\nInitial Quantity: " + entityPopulation.getInitialPopulation();
                 result += "\nFinal Quantity: " + entityPopulation.getFinalPopulation();
             }
+            entityAmountByTicks.getData().add(series);
+            entityAmountByTicks.setVisible(true);
         }
         textResult.textProperty().set(result);
     }
@@ -154,7 +165,6 @@ public class ResultsController {
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
 
-
         updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
     }
 
@@ -202,7 +212,13 @@ public class ResultsController {
 
         // Populate the table with entity information
         for (DTOEntityPopulation entityPopulation : entityPopulations) {
-            entityTable.getItems().add(new EntityInfo(entityPopulation.getEntity().getName(), entityPopulation.getFinalPopulation()));
+            int population = entityPopulation.getFinalPopulation();
+            double ticks = engineManager.getSimulations().get(simulationId).getProgressTicks().getValue();
+            entityTable.getItems().add(new EntityInfo(entityPopulation.getEntity().getName(), population));
+
+            if(ticks % 10 == 0) {
+                series.getData().add(new XYChart.Data(ticks, population));
+            }
         }
     }
 }
