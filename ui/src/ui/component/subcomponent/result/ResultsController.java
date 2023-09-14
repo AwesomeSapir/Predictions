@@ -91,7 +91,7 @@ public class ResultsController {
 
             // Call the method to populate the table based on the selected simulation
             populateEntityTable(newValue.getId());
-            series.setName("Quantity as a function of ticks");
+            entityAmountByTicks.setTitle("Quantity as a function of ticks");
         });
     }
 

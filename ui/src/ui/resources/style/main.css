@@ -51,6 +51,7 @@ VBox,
     -fx-wrap-text : true;
     -fx-alignment : center;
     -fx-font-size: 1.6em;
+    -fx-underline: true;
 }
 
 
