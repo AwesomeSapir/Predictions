@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.util.Pair;
 import ui.component.custom.board.BoardView;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
@@ -52,7 +53,7 @@ public class ResultsController {
     @FXML private TableColumn<EntityInfo, Integer> instanceCountColumn;
 
     //Preparing the data points for the line1
-    private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
+    private Map<Integer, Map<String,XYChart.Series>> seriesMap = new HashMap<>();
 
 
 
@@ -117,7 +118,12 @@ public class ResultsController {
                 result += "\nFinal Quantity: " + entityPopulation.getFinalPopulation();
             }
             // Get or create the series for the current simulation ID
-            entityAmountByTicks.getData().add(seriesMap.get(simulationResult.getId()));
+            Map<String, XYChart.Series> simulationSeriesMap = seriesMap.get(simulationResult.getId());
+            if (simulationSeriesMap != null) {
+                for (XYChart.Series series : simulationSeriesMap.values()) {
+                    entityAmountByTicks.getData().add(series);
+                }
+            }
         }
         textResult.textProperty().set(result);
     }
@@ -211,21 +217,25 @@ public class ResultsController {
         // Clear existing items in the table and reset the series
         entityTable.getItems().clear();
 
-        // Get or create the series for the current simulation ID
-        XYChart.Series series = seriesMap.computeIfAbsent(simulationId, k -> new XYChart.Series());
-
         // Get entity information from the engineManager
         Collection<DTOEntityPopulation> entityPopulations = engineManager.engine.getDetailsByEntityCount(simulationId);
 
         // Populate the table with entity information
         for (DTOEntityPopulation entityPopulation : entityPopulations) {
+            String entityName = entityPopulation.getEntity().getName();
+            Map<String, XYChart.Series> stringSeriesMap = seriesMap.computeIfAbsent(simulationId, k -> new HashMap<>());
+            XYChart.Series series = stringSeriesMap.computeIfAbsent(entityName, k -> new XYChart.Series());
+            series.setName(entityName); // Set the name for the series
+
             int population = entityPopulation.getFinalPopulation();
             double ticks = engineManager.getSimulations().get(simulationId).getProgressTicks().getValue();
-            entityTable.getItems().add(new EntityInfo(entityPopulation.getEntity().getName(), population));
+            entityTable.getItems().add(new EntityInfo(entityName, population));
 
-            if(ticks % 10 == 0) {
+            if (ticks % 10 == 0) {
                 // Add data points to the LineChart series
                 series.getData().add(new XYChart.Data<>(ticks, population));
+                stringSeriesMap.put(entityName,series);
+                seriesMap.put(simulationId, stringSeriesMap);
             }
         }
     }
