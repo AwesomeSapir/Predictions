@@ -36,3 +36,21 @@
 .icon-prev {
     -fx-image: url("/ui/resources/icon/white/skip_previous/baseline.png");
 }
+.icon-settings {
+    -fx-image: url("/ui/resources/icon/white/settings/baseline.png");
+}
+.icon-clear {
+    -fx-image: url("/ui/resources/icon/white/delete/baseline.png");
+}
+.icon-delete {
+    -fx-image: url("/ui/resources/icon/white/delete/baseline.png");
+}
+.icon-file-open {
+    -fx-image: url("/ui/resources/icon/white/file_upload/baseline.png");
+}
+.icon-queue {
+    -fx-image: url("/ui/resources/icon/white/playlist_play/baseline.png");
+}
+.icon-map {
+    -fx-image: url("/ui/resources/icon/white/person_pin/baseline.png");
+}

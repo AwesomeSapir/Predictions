@@ -2,8 +2,8 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import ui.component.custom.node.*?>
 <?import ui.component.custom.progress.*?>
 
 <SplitPane dividerPositions="0.3" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.result.ResultsController">
@@ -41,38 +41,13 @@
                                 <RowConstraints vgrow="SOMETIMES" />
                                 <RowConstraints vgrow="SOMETIMES" />
                             </rowConstraints>
-                            <Button fx:id="buttonResume" mnemonicParsing="false" styleClass="button-circle">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-play" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonPause" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-pause" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonStop" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonNext" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-next" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonPrev" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-prev" />
-                                </graphic>
-                            </Button>
+                            <IconButton fx:id="buttonPrev" icon="icon-prev" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="0" />
+                            <ToggleIconButton fx:id="buttonPlayPause" icon="icon-play" iconOff="icon-play" iconOn="icon-pause" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="1" />
+                            <IconButton fx:id="buttonNext" icon="icon-next" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" />
+                            <IconButton fx:id="buttonStop" icon="icon-stop" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3" />
+                            <IconButton fx:id="buttonBoard" icon="icon-map" mnemonicParsing="false" text="SHOW BOARD" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.columnSpan="3" />
+                            <IconButton fx:id="buttonRerun" icon="icon-replay" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                         </GridPane>
-                  <Button fx:id="buttonBoard" mnemonicParsing="false" text="SHOW BOARD" />
                         <padding>
                             <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                         </padding>

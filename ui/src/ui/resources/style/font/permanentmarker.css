@@ -1,0 +1,8 @@
+.text-area,
+.text-field,
+.text {
+    -fx-font-family: 'Permanent Marker';
+    -fx-font-weight: 100;
+    -fx-font-smoothing-type: gray;
+    -fx-font-style: normal;
+}

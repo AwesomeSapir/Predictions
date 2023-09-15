@@ -4,15 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
 import ui.style.StyleManager;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 public class ConsoleUI extends Application implements MainUI{
 
@@ -20,6 +15,7 @@ public class ConsoleUI extends Application implements MainUI{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        StyleManager.init();
         primaryStage.setTitle("Predictions");
 
         FXMLLoader loader = new FXMLLoader();
@@ -29,24 +25,12 @@ public class ConsoleUI extends Application implements MainUI{
         MainController mainController = loader.getController();
         mainController.setEngineManager(engineManager);
 
-        Scene scene = new Scene(root, 600, 400);
-        loadFonts();
+        Scene scene = new Scene(root, 1000, 800);
         StyleManager.register(scene);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
-    }
-
-    private void loadFonts(){
-        List<String> fonts = Arrays.asList(
-                "Roboto-Regular",
-                "Roboto-Bold",
-                "Poppins-Bold",
-                "Poppins-Medium");
-        for (String font : fonts){
-            Font.loadFont(Objects.requireNonNull(getClass().getResource("/ui/resources/font/" + font + ".ttf")).toExternalForm(), 24);
-        }
     }
 
     /*

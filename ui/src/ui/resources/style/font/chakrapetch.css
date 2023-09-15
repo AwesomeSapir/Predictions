@@ -1,0 +1,8 @@
+.text-area,
+.text-field,
+.text {
+    -fx-font-family: 'Chakra Petch';
+    -fx-font-weight: bold;
+    -fx-font-smoothing-type: gray;
+    -fx-font-style: normal;
+}

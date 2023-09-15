@@ -2,8 +2,10 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import ui.component.custom.node.IconButton?>
 <BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.main.MainController">
    <center>
        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
@@ -22,31 +24,23 @@
        </TabPane>
    </center>
    <top>
-      <BorderPane BorderPane.alignment="CENTER">
-         <left>
-            <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#chooseXMLFile" text="LOAD FILE" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets right="8.0" />
-               </BorderPane.margin>
-            </Button>
-         </left>
-         <right>
-            <Button fx:id="queueManagementButton" mnemonicParsing="false" text="QUEUE" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets left="8.0" />
-               </BorderPane.margin>
-            </Button>
-         </right>
-         <center>
-            <TextField fx:id="filePathTextField" editable="false" prefHeight="26.0" prefWidth="153.0" promptText="Current Loaded File Path" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets left="8.0" right="8.0" />
-               </BorderPane.margin>
-            </TextField>
-         </center>
-         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-         </padding>
-      </BorderPane>
+       <GridPane hgap="8.0" BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="NEVER" />
+               <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+               <ColumnConstraints hgrow="NEVER" />
+               <ColumnConstraints hgrow="NEVER" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <padding>
+               <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+           </padding>
+           <IconButton fx:id="chooseFileButton" icon="icon-file-open" mnemonicParsing="false" onAction="#chooseXMLFile" text="LOAD FILE" GridPane.columnIndex="0" />
+           <TextField fx:id="filePathTextField" editable="false" prefHeight="26.0" prefWidth="153.0" promptText="Current Loaded File Path" GridPane.columnIndex="1" />
+           <IconButton fx:id="queueManagementButton" icon="icon-queue" mnemonicParsing="false" text="QUEUE" GridPane.columnIndex="2" />
+           <IconButton fx:id="buttonSettings" icon="icon-settings" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3"/>
+       </GridPane>
    </top>
 </BorderPane>

@@ -4,7 +4,6 @@ import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationResult;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -16,10 +15,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import ui.component.custom.board.BoardView;
+import ui.component.custom.node.IconButton;
+import ui.component.custom.node.ToggleIconButton;
+import ui.component.custom.node.State;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
 import ui.engine.Status;
+import ui.style.Animations;
 import ui.style.StyleManager;
 
 public class ResultsController {
@@ -27,16 +30,16 @@ public class ResultsController {
     @FXML public ListView<Simulation> listExecution;
     @FXML public SimulationProgressView gridSeconds;
     @FXML public SimulationProgressView gridTicks;
-    @FXML public Button buttonResume;
-    @FXML public Button buttonPause;
-    @FXML public Button buttonStop;
-    @FXML public Button buttonRerun;
+    @FXML public ToggleIconButton buttonPlayPause;
+    @FXML public IconButton buttonStop;
+    @FXML public IconButton buttonRerun;
     @FXML public ScrollPane paneDetails;
 
     private final ObjectProperty<Simulation> selectedSimulation = new SimpleObjectProperty<>();
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
     @FXML public Button buttonBoard;
-    @FXML public Button buttonNext;
+    @FXML public IconButton buttonPrev;
+    @FXML public IconButton buttonNext;
     private EngineManager engineManager;
 
     //TODO replace with thread
@@ -48,9 +51,11 @@ public class ResultsController {
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
             updater.stop();
+            buttonPlayPause.setState(State.OFF);
             showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
             engineManager.updateSimulationProgress(selectedSimulation.get());
         } else {
+            buttonPlayPause.setState(State.ON);
             updater.play();
         }
     };
@@ -97,18 +102,15 @@ public class ResultsController {
     public void initialize() {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
         selectedStatus.addListener(simulationStatusListener);
-        buttonPause.setOnAction(this::actionSimulationPause);
-        buttonResume.setOnAction(this::actionSimulationResume);
+        buttonPlayPause.setOnActionOn(this::actionSimulationResume);
+        buttonPlayPause.setOnActionOff(this::actionSimulationPause);
         buttonStop.setOnAction(this::actionSimulationStop);
         buttonRerun.setOnAction(this::actionSimulationRerun);
         buttonBoard.setOnAction(this::actionShowBoard);
         buttonNext.setOnAction(this::actionSimulationNext);
 
-        buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
-        buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
-        buttonStop.disableProperty().bind(Bindings.and(
-                selectedStatus.isNotEqualTo(Status.RUNNING),
-                selectedStatus.isNotEqualTo(Status.PAUSED)));
+        buttonPlayPause.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+        buttonStop.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
         buttonNext.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
 
@@ -125,6 +127,15 @@ public class ResultsController {
                             setText("Simulation #" + item.getId());
                         }
                     }
+
+                    @Override
+                    public void updateSelected(boolean selected) {
+                        super.updateSelected(selected);
+
+                        if(selected){
+                            Animations.bounceRight(this);
+                        }
+                    }
                 };
             }
         });
@@ -133,15 +144,21 @@ public class ResultsController {
     }
 
     private void actionSimulationPause(ActionEvent actionEvent) {
-        engineManager.pauseSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() == Status.RUNNING) {
+            engineManager.pauseSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationStop(ActionEvent actionEvent) {
-        engineManager.stopSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() != Status.STOPPED) {
+            engineManager.stopSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationResume(ActionEvent actionEvent) {
-        engineManager.resumeSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() == Status.PAUSED) {
+            engineManager.resumeSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationRerun(ActionEvent actionEvent){

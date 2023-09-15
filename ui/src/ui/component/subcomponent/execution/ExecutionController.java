@@ -4,7 +4,8 @@ import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
 import dto.detail.DTOObject;
 import dto.simulation.DTOSimulationDetails;
-import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import ui.component.custom.input.generic.InputItemView;
 import ui.component.custom.input.simulation.EntityPopulationView;
@@ -25,7 +27,9 @@ import ui.engine.EngineManager;
 import ui.style.Animations;
 import ui.style.StyleManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ExecutionController {
     @FXML
@@ -114,14 +118,9 @@ public class ExecutionController {
         }
 
         if (isPopulationValid && isEnvVariablesValid) {
-            showAlert("Success", "The simulation is loaded.", Alert.AlertType.CONFIRMATION);
-
             engineManager.setEntityPopulations(getEntityPopulations());
             engineManager.setEnvironmentValues(getEnvironmentValues());
-
-            engineManager.runSimulation();
-
-            mainController.switchToResultsTab();
+            showAlert("Success", "The simulation was configured correctly. Would you like to switch to the results tab?", Alert.AlertType.CONFIRMATION);
         } else {
             showAlert("Invalid input!", errorMessage, Alert.AlertType.ERROR);
         }
@@ -175,6 +174,20 @@ public class ExecutionController {
 
     private void showAlert(String title, String contentText, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
+        alert.setResultConverter(param -> {
+            switch (alertType) {
+                case CONFIRMATION:
+                    engineManager.runSimulation();
+                    if (param.getButtonData().isDefaultButton()) {
+                        mainController.switchToResultsTab();
+                    }
+                    break;
+                case ERROR:
+
+                    break;
+            }
+            return param;
+        });
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(contentText);
@@ -183,21 +196,15 @@ public class ExecutionController {
         alert.showAndWait();
     }
 
-    private Timer timer;
+    private Timeline buttonStartAniamtion = new Timeline(new KeyFrame(Duration.millis(10000), event -> {
+        Animations.highlight(buttonStart, 2);
+    }));
 
     public void onFocus() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    Animations.highlight(buttonStart, 2);
-                });
-            }
-        }, 500, 5000);
+        buttonStartAniamtion.playFromStart();
     }
 
     public void onUnfocused() {
-        timer.cancel();
+        buttonStartAniamtion.stop();
     }
 }

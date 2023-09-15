@@ -25,12 +25,10 @@ VBox,
     -fx-border-color: transparent;
 }
 
+.text-area,
+.text-field,
 .text {
     -fx-text-fill: -primary-text;
-    -fx-font-family: 'Poppins';
-    -fx-font-weight: 700;
-    -fx-font-smoothing-type: gray;
-    -fx-font-style: normal;
 }
 
 .text-area .content{
@@ -52,7 +50,7 @@ VBox,
     -fx-background-color: -interact-background;
     -fx-border-color: -interact-background;
     -fx-border-width: 2px;
-    -fx-border-radius: 16px;
+    -fx-border-radius: 100px;
 }
 
 .tab-pane .tab:selected .tab-label {
@@ -70,7 +68,7 @@ VBox,
     -fx-background-color: -secondary-accent;
     -fx-background-insets: 0 4 0 4;
     -fx-border-insets: 0 4 0 4;
-    -fx-background-radius: 16px;
+    -fx-background-radius: 100px;
 }
 
 .button {
@@ -106,7 +104,7 @@ VBox,
     -fx-background-color: -interact-background;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
-    -fx-border-color: -primary-accent;
+    -fx-border-color: -primary-accent-gradient;
     -fx-border-width: 2px;
     -fx-text-fill: -primary-text;
     -fx-prompt-text-fill: -secondary-text;
@@ -116,6 +114,7 @@ VBox,
 .tree-cell:expanded > .tree-disclosure-node .arrow,
 .tree-cell > .tree-disclosure-node .arrow {
     -fx-background-color: -primary-accent;
+
 }
 
 .tree-cell:selected:expanded > .tree-disclosure-node .arrow,
@@ -180,7 +179,7 @@ VBox,
     -fx-background-color: -secondary-accent;
 }
 .slider .thumb{
-    -fx-background-color: -primary-accent;
+    -fx-background-color: -primary-accent-gradient;
 }
 
 .toggle-switch:selected .thumb-area {
@@ -193,7 +192,9 @@ VBox,
 
 .toggle-switch .thumb ,
 .toggle-switch:selected .thumb{
-    -fx-background-color: -primary-accent;
+    -fx-background-color: -primary-accent-gradient;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
 }
 
 .scroll-bar .thumb {
@@ -239,12 +240,15 @@ VBox,
     -fx-padding :0.0 0.15em;
 }
 
+
 .list-cell,
 .tree-cell {
     -fx-background-color: -secondary-background;
     -fx-text-fill: -primary-text;
+    -fx-label-padding: 0px 8px 0px 8px;
 }
 
+.combo-box .list-view .list-cell:selected,
 .list-cell:selected,
 .tree-cell:selected {
     -fx-background-color: -primary-accent-gradient;
@@ -310,6 +314,29 @@ VBox,
 .button-full {
     -fx-background-color: -primary-accent-gradient;
     -fx-text-fill: -text-light;
+}
+
+.combo-box {
+    -fx-background-color: -interact-background;
+    -fx-background-radius: 100px;
+    -fx-border-radius: 100px;
+    -fx-border-color: -primary-accent-gradient;
+    -fx-border-width: 2px;
+}
+
+.combo-box .arrow-button .arrow {
+    -fx-background-color: -text-light;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: -primary-accent-gradient;
+    -fx-background-radius: 16px;
+    -fx-background-insets: 2px;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-text;
 }
 
 .color-red {
