@@ -6,9 +6,7 @@ import engine.simulation.world.World;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.*;
 import engine.simulation.world.expression.*;
-import engine.simulation.world.expression.auxiliary.EnvironmentExpression;
-import engine.simulation.world.expression.auxiliary.FunctionType;
-import engine.simulation.world.expression.auxiliary.RandomExpression;
+import engine.simulation.world.expression.auxiliary.*;
 import engine.simulation.world.rule.action.type.condition.*;
 import engine.simulation.world.instance.entity.EntityManager;
 import engine.simulation.world.instance.environment.ActiveEnvironment;
@@ -210,6 +208,7 @@ public class XmlTranslator implements Translator{
             String firstWord = words[0];
             String secondWord = words[1].substring(0, words[1].length() - 1);
             FunctionType type = FunctionType.valueOf(firstWord.toUpperCase());
+            String[] subwords;
             // Check and handle auxiliary function expression
             switch (type) {
                 case ENVIRONMENT:
@@ -230,6 +229,48 @@ public class XmlTranslator implements Translator{
                         throw new UnsupportedOperationException("The auxiliary function Random must get only integer values.");
                     }
                     return new RandomExpression(range);
+                case TICKS: {
+                    subwords = secondWord.split("\\.");
+                    if (subwords.length != 2) {
+                        throw new InvalidClassException("Invalid structure of arguments for function Ticks");
+                    }
+                    String entityName = subwords[0];
+                    String propertyName = subwords[1];
+
+                    if (entityManager.containsEntityDefinition(entityName)) {
+                        if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
+                            return new TicksExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                        }
+                        throw new InvalidClassException("Property " + propertyName + " for " + entityName + " in function Tick doesn't exist.");
+                    }
+                    throw new InvalidClassException("Entity " + entityName + " in function Tick doesn't exist.");
+                }
+                case EVALUATE: {
+                    subwords = secondWord.split("\\.");
+                    if (subwords.length != 2) {
+                        throw new InvalidClassException("Invalid structure of arguments for function Evaluate");
+                    }
+                    String entityName = subwords[0];
+                    String propertyName = subwords[1];
+
+                    if (entityManager.containsEntityDefinition(entityName)) {
+                        if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
+                            return new EvaluateExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                        }
+                        throw new InvalidClassException("Property " + propertyName + " for " + entityName + " in function Evaluate doesn't exist.");
+                    }
+                    throw new InvalidClassException("Entity " + entityName + " in function Evaluate doesn't exist.");
+                }
+                case PERCENT:
+                    subwords = secondWord.split(",");
+                    if(subwords.length != 2){
+                        throw new InvalidClassException("Invalid structure of arguments for function Percent");
+                    }
+                    String argString = subwords[0];
+                    String percentageString = subwords[1];
+                    Expression arg = getExpression(argString, entityDefinition, propertyDefinition);
+                    Expression percentage = getExpression(percentageString, entityDefinition, propertyDefinition);
+                    return new PercentExpression(arg, percentage);
                 default:
                     throw new UnsupportedOperationException("Function type not supported");
             }

@@ -19,7 +19,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import javafx.util.Pair;
 import ui.component.custom.board.BoardView;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
@@ -28,7 +27,10 @@ import ui.engine.Status;
 import ui.style.StyleManager;
 
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -205,8 +207,6 @@ public class ResultsController {
             }
         });
 
-        entityTable.setFixedCellSize(25);
-        entityTable.prefHeightProperty().bind(Bindings.size(entityTable.getItems()).multiply(entityTable.getFixedCellSize()).add(30));
         // Bind the columns to the EntityInfo properties
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));

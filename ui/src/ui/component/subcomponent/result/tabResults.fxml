@@ -25,116 +25,127 @@
                 <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
             </padding>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+               <content>
+                       <VBox alignment="TOP_CENTER" spacing="8.0" styleClass="view-box">
+                           <SimulationProgressView fx:id="gridSeconds" title="Seconds" />
+                           <SimulationProgressView fx:id="gridTicks" title="Ticks" />
+                           <GridPane hgap="8.0" vgap="8.0">
+                               <columnConstraints>
+                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                   <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                               </columnConstraints>
+                               <rowConstraints>
+                                   <RowConstraints vgrow="SOMETIMES" />
+                                   <RowConstraints vgrow="SOMETIMES" />
+                               </rowConstraints>
+                               <Button fx:id="buttonResume" mnemonicParsing="false" styleClass="button-circle">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-play" />
+                                   </graphic>
+                               </Button>
+                               <Button fx:id="buttonPause" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="1">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-pause" />
+                                   </graphic>
+                               </Button>
+                               <Button fx:id="buttonStop" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop" />
+                                   </graphic>
+                               </Button>
+                               <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay" />
+                                   </graphic>
+                               </Button>
+                               <Button fx:id="buttonNext" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-next" />
+                                   </graphic>
+                               </Button>
+                               <Button fx:id="buttonPrev" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                   <graphic>
+                                       <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-prev" />
+                                   </graphic>
+                               </Button>
+                           </GridPane>
+                           <Button fx:id="buttonBoard" mnemonicParsing="false" text="SHOW BOARD" />
+                           <!-- Table view for entity information -->
+                           <TableView fx:id="entityTable" VBox.vgrow="SOMETIMES">
+                               <columns>
+                                   <TableColumn fx:id="entityNameColumn" text="Entity Name" />
+                                   <TableColumn fx:id="instanceCountColumn" text="Quantity" />
+                               </columns>
+                               <columnResizePolicy>
+                                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                               </columnResizePolicy>
+                               <cursor>
+                                   <Cursor fx:constant="NONE" />
+                               </cursor>
+                           </TableView>
+                           <padding>
+                               <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                           </padding>
+                       </VBox>
+               </content>
+               <padding>
+                  <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+               </padding>
+            </ScrollPane>
                 <AnchorPane>
                     <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
-                    <VBox alignment="TOP_CENTER" spacing="8.0" styleClass="view-box" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <SimulationProgressView fx:id="gridSeconds" title="Seconds" />
-                        <SimulationProgressView fx:id="gridTicks" title="Ticks" />
-                        <GridPane hgap="8.0" vgap="8.0">
-                            <columnConstraints>
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                            </columnConstraints>
-                            <rowConstraints>
-                                <RowConstraints vgrow="SOMETIMES" />
-                                <RowConstraints vgrow="SOMETIMES" />
-                            </rowConstraints>
-                            <Button fx:id="buttonResume" mnemonicParsing="false" styleClass="button-circle">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-play" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonPause" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-pause" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonStop" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-stop" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonRerun" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-replay" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonNext" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-next" />
-                                </graphic>
-                            </Button>
-                            <Button fx:id="buttonPrev" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                                <graphic>
-                                    <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-prev" />
-                                </graphic>
-                            </Button>
-                        </GridPane>
-                  <Button fx:id="buttonBoard" mnemonicParsing="false" text="SHOW BOARD" />
-                        <!-- Table view for entity information -->
-                        <TableView fx:id="entityTable">
-                            <columns>
-                                <TableColumn fx:id="entityNameColumn" text="Entity Name" />
-                                <TableColumn fx:id="instanceCountColumn" text="Quantity" />
-                            </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                     <cursor>
-                        <Cursor fx:constant="NONE" />
-                     </cursor>
-                        </TableView>
-                        <padding>
-                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-                        </padding>
-                    </VBox>
-                </AnchorPane>
-                <AnchorPane>
-                    <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-                    </padding>
-               <TabPane fx:id="simulationResultsMainTanPane" layoutX="16.0" layoutY="16.0" tabClosingPolicy="UNAVAILABLE">
-                  <tabs>
-                     <Tab fx:id="chartLineTab" text="Graph">
-                        <content>
-                           <VBox>
-                              <children>
-                                      <TextArea fx:id="textResult" />
-                                 <LineChart fx:id="entityAmountByTicks" legendSide="BOTTOM">
-                                     <xAxis>
-                                         <NumberAxis animated="false" label="Ticks" />
-                                     </xAxis>
-                                     <yAxis>
-                                         <NumberAxis animated="false" label="Quantity" />
-                                     </yAxis>
-                                 </LineChart>
-                              </children>
-                           </VBox>
-                        </content>
-                     </Tab>
-                      <Tab fx:id="entityPropertyTab" text="Entity-Property">
-                          <content>
-                              <VBox>
-                              <children>
-                                 <ComboBox fx:id="propertyComboBox" promptText="Select a property">
-                                    <VBox.margin>
-                                       <Insets left="400.0" top="40.0" />
-                                    </VBox.margin>
-                                 </ComboBox>
-                                 <ComboBox fx:id="entityComboBox" promptText="Select an entity">
-                                    <VBox.margin>
-                                        <Insets left="200.0" top="40.0" />
-                                    </VBox.margin></ComboBox>
-                              </children>
-                              </VBox>
-                          </content>
-                      </Tab>
-                  </tabs>
-               </TabPane>
+                    <TabPane fx:id="simulationResultsMainTanPane" layoutX="16.0" layoutY="16.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <tabs>
+                            <Tab fx:id="chartLineTab" text="Graph">
+                                <content>
+                           <ScrollPane>
+                              <content>
+                                          <VBox>
+                                              <children>
+                                                  <TextArea fx:id="textResult" />
+                                                  <LineChart fx:id="entityAmountByTicks" legendSide="BOTTOM">
+                                                      <xAxis>
+                                                          <NumberAxis animated="false" label="Ticks" />
+                                                      </xAxis>
+                                                      <yAxis>
+                                                          <NumberAxis animated="false" label="Quantity" />
+                                                      </yAxis>
+                                                  </LineChart>
+                                              </children>
+                                          </VBox>
+                              </content>
+                           </ScrollPane>
+                                </content>
+                            </Tab>
+                            <Tab fx:id="entityPropertyTab" text="Entity-Property">
+                                <content>
+                           <ScrollPane>
+                              <content>
+                                          <VBox>
+                                              <children>
+                                                  <ComboBox fx:id="propertyComboBox" promptText="Select a property">
+                                                      <VBox.margin>
+                                                          <Insets left="400.0" top="40.0" />
+                                                      </VBox.margin>
+                                                  </ComboBox>
+                                                  <ComboBox fx:id="entityComboBox" promptText="Select an entity">
+                                                      <VBox.margin>
+                                                          <Insets left="200.0" top="40.0" />
+                                                      </VBox.margin>
+                                                  </ComboBox>
+                                              </children>
+                                          </VBox>
+                              </content>
+                           </ScrollPane>
+                                </content>
+                            </Tab>
+                        </tabs>
+                    </TabPane>
                 </AnchorPane>
             </SplitPane>
         </AnchorPane>
