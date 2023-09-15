@@ -97,7 +97,7 @@
                     <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
-               <TabPane fx:id="simulationResultsMainTanPane" tabClosingPolicy="UNAVAILABLE" layoutX="16.0" layoutY="16.0">
+               <TabPane fx:id="simulationResultsMainTanPane" layoutX="16.0" layoutY="16.0" tabClosingPolicy="UNAVAILABLE">
                   <tabs>
                      <Tab fx:id="chartLineTab" text="Graph">
                         <content>
@@ -122,9 +122,13 @@
                               <children>
                                  <ComboBox fx:id="propertyComboBox" promptText="Select a property">
                                     <VBox.margin>
-                                       <Insets left="40.0" top="40.0" />
+                                       <Insets left="400.0" top="40.0" />
                                     </VBox.margin>
                                  </ComboBox>
+                                 <ComboBox fx:id="entityComboBox" promptText="Select an entity">
+                                    <VBox.margin>
+                                        <Insets left="200.0" top="40.0" />
+                                    </VBox.margin></ComboBox>
                               </children>
                               </VBox>
                           </content>

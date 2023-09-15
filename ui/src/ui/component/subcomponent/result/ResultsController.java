@@ -47,6 +47,7 @@ public class ResultsController {
     @FXML public Button buttonNext;
     @FXML public LineChart entityAmountByTicks;
     @FXML public ComboBox propertyComboBox;
+    @FXML public ComboBox entityComboBox;
     @FXML public TabPane simulationResultsMainTanPane;
     @FXML public Tab chartLineTab;
     @FXML public Tab entityPropertyTab;
@@ -95,13 +96,17 @@ public class ResultsController {
             entityAmountByTicks.visibleProperty().unbind();
             entityAmountByTicks.setVisible(false);
             selectedStatus.unbind();
+            entityComboBox.visibleProperty().unbind();
             propertyComboBox.visibleProperty().unbind();
+            entityComboBox.setVisible(false);
             propertyComboBox.setVisible(false);
             selectedStatus.bind(newValue.statusProperty());
             entityAmountByTicks.getData().clear();
+            entityComboBox.getItems().clear();
             propertyComboBox.getItems().clear();
             showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
             entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+            entityComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
             propertyComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
             populateEntityTable(newValue.getId());
         });
@@ -125,10 +130,9 @@ public class ResultsController {
                 result += "\nInitial Quantity: " + entityPopulation.getInitialPopulation();
                 result += "\nFinal Quantity: " + entityPopulation.getFinalPopulation();
                 // Populate characteristicComboBox with available characteristics
-                for (DTOProperty property : entityPopulation.getEntity().getProperties()) {
-                    // Populate characteristicComboBox with available characteristics
-                    propertyComboBox.getItems().add(property.getName());
-                }
+                // Call the updatePropertyComboBox method with the simulation ID and selected entity
+                entityComboBox.getItems().add(entityPopulation.getEntity().getName());
+                updatePropertyComboBox(simulationResult.getId(), entityPopulation.getEntity().getName());
             }
             // Get or create the series for the current simulation ID
             Map<String, XYChart.Series> simulationSeriesMap = seriesMap.get(simulationResult.getId());
@@ -141,11 +145,29 @@ public class ResultsController {
         textResult.textProperty().set(result);
     }
 
+    private void updatePropertyComboBox(int simulationId, String selectedEntity) {
+        // Get entity properties for the selected entity using simulationId
+        List<DTOProperty> entityProperties = (List<DTOProperty>) engineManager.engine.getPastEntityProperties(simulationId,selectedEntity);
+
+        // Clear and populate the propertyComboBox with entity properties
+        propertyComboBox.getItems().clear();
+        for (DTOProperty property : entityProperties) {
+            propertyComboBox.getItems().add(property.getName());
+        }
+
+        // Optionally, you can select the first property if needed
+        if (!entityProperties.isEmpty()) {
+            propertyComboBox.getSelectionModel().selectFirst();
+        }
+    }
+
+
     @FXML
     public void initialize() {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
         selectedStatus.addListener(simulationStatusListener);
         entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+        entityComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         propertyComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         buttonPause.setOnAction(this::actionSimulationPause);
         buttonResume.setOnAction(this::actionSimulationResume);
@@ -190,6 +212,19 @@ public class ResultsController {
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
 
         updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
+        // Add a listener to the entityComboBox selection
+        entityComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Get the selected entity
+                String selectedEntity = newValue.toString();
+
+                // Call the updatePropertyComboBox method with the simulation ID and selected entity
+                if (selectedSimulation.get() != null) {
+                    int simulationId = selectedSimulation.get().getId();
+                    updatePropertyComboBox(simulationId, selectedEntity);
+                }
+            }
+        });
     }
 
     private void actionSimulationPause(ActionEvent actionEvent) {
