@@ -97,19 +97,40 @@
                     <padding>
                         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
                     </padding>
-               <VBox layoutX="16.0" layoutY="16.0">
-                  <children>
-                          <TextArea fx:id="textResult" />
-                     <LineChart fx:id="entityAmountByTicks" legendSide="BOTTOM">
-                         <xAxis>
-                             <NumberAxis animated="false" label="Ticks" />
-                         </xAxis>
-                         <yAxis>
-                             <NumberAxis animated="false" label="Quantity" />
-                         </yAxis>
-                     </LineChart>
-                  </children>
-               </VBox>
+               <TabPane fx:id="simulationResultsMainTanPane" tabClosingPolicy="UNAVAILABLE" layoutX="16.0" layoutY="16.0">
+                  <tabs>
+                     <Tab fx:id="chartLineTab" text="Graph">
+                        <content>
+                           <VBox>
+                              <children>
+                                      <TextArea fx:id="textResult" />
+                                 <LineChart fx:id="entityAmountByTicks" legendSide="BOTTOM">
+                                     <xAxis>
+                                         <NumberAxis animated="false" label="Ticks" />
+                                     </xAxis>
+                                     <yAxis>
+                                         <NumberAxis animated="false" label="Quantity" />
+                                     </yAxis>
+                                 </LineChart>
+                              </children>
+                           </VBox>
+                        </content>
+                     </Tab>
+                      <Tab fx:id="entityPropertyTab" text="Entity-Property">
+                          <content>
+                              <VBox>
+                              <children>
+                                 <ComboBox fx:id="propertyComboBox" promptText="Select a property">
+                                    <VBox.margin>
+                                       <Insets left="40.0" top="40.0" />
+                                    </VBox.margin>
+                                 </ComboBox>
+                              </children>
+                              </VBox>
+                          </content>
+                      </Tab>
+                  </tabs>
+               </TabPane>
                 </AnchorPane>
             </SplitPane>
         </AnchorPane>

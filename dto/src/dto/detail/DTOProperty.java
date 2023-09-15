@@ -12,6 +12,11 @@ public class DTOProperty extends DTOObject {
         this.isRandomInit = isRandomInit;
     }
 
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
     public String getType() {
         return type;
     }

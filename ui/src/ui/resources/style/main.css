@@ -88,6 +88,10 @@ VBox,
     -fx-minor-tick-length: 10;
 }
 
+.combo-box .list-cell:hover {
+    -fx-background-color: -primary-accent-gradient; /* Change this color to your desired hover background color */
+}
+
 .text {
     -fx-text-fill: -primary-text;
     -fx-font-family: 'Poppins';

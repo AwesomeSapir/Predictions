@@ -1,5 +1,6 @@
 package ui.component.subcomponent.result;
 
+import dto.detail.DTOProperty;
 import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationResult;
 import javafx.animation.KeyFrame;
@@ -45,6 +46,10 @@ public class ResultsController {
     @FXML public Button buttonBoard;
     @FXML public Button buttonNext;
     @FXML public LineChart entityAmountByTicks;
+    @FXML public ComboBox propertyComboBox;
+    @FXML public TabPane simulationResultsMainTanPane;
+    @FXML public Tab chartLineTab;
+    @FXML public Tab entityPropertyTab;
 
     @FXML private TableView<EntityInfo> entityTable;
 
@@ -90,11 +95,14 @@ public class ResultsController {
             entityAmountByTicks.visibleProperty().unbind();
             entityAmountByTicks.setVisible(false);
             selectedStatus.unbind();
+            propertyComboBox.visibleProperty().unbind();
+            propertyComboBox.setVisible(false);
             selectedStatus.bind(newValue.statusProperty());
             entityAmountByTicks.getData().clear();
+            propertyComboBox.getItems().clear();
             showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
             entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
-
+            propertyComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
             populateEntityTable(newValue.getId());
         });
     }
@@ -116,6 +124,11 @@ public class ResultsController {
                 result += "\nEntity Name: " + entityPopulation.getEntity().getName();
                 result += "\nInitial Quantity: " + entityPopulation.getInitialPopulation();
                 result += "\nFinal Quantity: " + entityPopulation.getFinalPopulation();
+                // Populate characteristicComboBox with available characteristics
+                for (DTOProperty property : entityPopulation.getEntity().getProperties()) {
+                    // Populate characteristicComboBox with available characteristics
+                    propertyComboBox.getItems().add(property.getName());
+                }
             }
             // Get or create the series for the current simulation ID
             Map<String, XYChart.Series> simulationSeriesMap = seriesMap.get(simulationResult.getId());
@@ -133,6 +146,7 @@ public class ResultsController {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
         selectedStatus.addListener(simulationStatusListener);
         entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+        propertyComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         buttonPause.setOnAction(this::actionSimulationPause);
         buttonResume.setOnAction(this::actionSimulationResume);
         buttonStop.setOnAction(this::actionSimulationStop);
