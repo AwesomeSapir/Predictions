@@ -128,16 +128,26 @@
                               <content>
                                           <VBox>
                                               <children>
-                                                  <ComboBox fx:id="propertyComboBox" promptText="Select a property">
-                                                      <VBox.margin>
-                                                          <Insets left="400.0" top="40.0" />
-                                                      </VBox.margin>
+                                                  <HBox>
+                              <children>
+                                 <ComboBox fx:id="entityComboBox" promptText="Select an entity">
+                                    <HBox.margin>
+                                       <Insets top="10.0" />
+                                    </HBox.margin>
+                                 </ComboBox>
+                                 <ComboBox fx:id="propertyComboBox" promptText="Select a property">
+                                                      <HBox.margin>
+                                                          <Insets left="20.0" top="10.0" />
+                                                      </HBox.margin>
                                                   </ComboBox>
-                                                  <ComboBox fx:id="entityComboBox" promptText="Select an entity">
-                                                      <VBox.margin>
-                                                          <Insets left="200.0" top="40.0" />
-                                                      </VBox.margin>
-                                                  </ComboBox>
+                                                  <ComboBox fx:id="propertyDataDisplayComboBox" promptText="Select a display way">
+                                                      <HBox.margin>
+                                                          <Insets left="20.0" top="10.0" />
+                                                      </HBox.margin>
+                                                  </ComboBox></children>
+                           </HBox>
+                                  <!-- Placeholder for the BarChart -->
+                                  <VBox fx:id="histogramPlaceholder" />
                                               </children>
                                           </VBox>
                               </content>
