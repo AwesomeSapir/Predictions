@@ -146,8 +146,8 @@
                                                       </HBox.margin>
                                                   </ComboBox></children>
                            </HBox>
-                                  <!-- Placeholder for the BarChart -->
-                                  <VBox fx:id="histogramPlaceholder" />
+                                  <!-- Placeholder for the property display type -->
+                                  <VBox fx:id="propertyDisplayTypePlaceholder" />
                                               </children>
                                           </VBox>
                               </content>

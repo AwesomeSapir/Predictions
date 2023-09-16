@@ -41,4 +41,6 @@ public interface EngineInterface {
     void stopSimulation(int id);
 
     void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);
+
+    Collection<Integer> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
 }

@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
@@ -55,7 +56,7 @@ public class ResultsController {
     @FXML public Tab chartLineTab;
     @FXML public Tab entityPropertyTab;
     @FXML public ComboBox propertyDataDisplayComboBox;
-    @FXML public VBox histogramPlaceholder;
+    @FXML public VBox propertyDisplayTypePlaceholder;
 
     @FXML private TableView<EntityInfo> entityTable;
 
@@ -111,7 +112,7 @@ public class ResultsController {
             entityAmountByTicks.getData().clear();
             entityComboBox.getItems().clear();
             propertyComboBox.getItems().clear();
-            histogramPlaceholder.getChildren().clear(); // Clear any previous content
+            propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
             propertyDataDisplayComboBox.getItems().clear();
             showSimulationResult(engineManager.engine.getSimulationResult(newValue.getId()));
             propertyDataDisplayComboBox.getItems().add(0,"Histogram of population");
@@ -213,7 +214,7 @@ public class ResultsController {
                 String selectedEntity = newValue.toString();
                 // Clear and populate the propertyComboBox with entity properties
                 propertyComboBox.getItems().clear();
-                histogramPlaceholder.getChildren().clear(); // Clear any previous content
+                propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
 
                 // Call the updatePropertyComboBox method with the simulation ID and selected entity
                 if (selectedSimulation.get() != null) {
@@ -275,7 +276,7 @@ public class ResultsController {
     }
 
     private void updatePropertyDataDisplayComboBox(int simulationId,String selectedEntity,String selectedProperty, String selectedDisplayWay) {
-        histogramPlaceholder.getChildren().clear(); // Clear any previous content
+        propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
        switch (selectedDisplayWay){
            case "Histogram of population":
                displayHistogram(simulationId,selectedEntity,selectedProperty);
@@ -315,12 +316,42 @@ public class ResultsController {
         histogramChart.getData().add(series);
 
         // Add the BarChart to the histogramPlaceholder VBox
-        VBox histogramPlaceholder = (VBox) simulationResultsMainTanPane.getTabs().get(1).getContent().lookup("#histogramPlaceholder");
+        VBox histogramPlaceholder = (VBox) simulationResultsMainTanPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
         histogramPlaceholder.getChildren().add(histogramChart);
     }
 
     private void displayConsistency(int simulationId,String selectedEntity,String selectedProperty){
 
+        // Get the list of ticksOfSameValue for the selected property
+        List<Integer> listOfTicksOfSameValue = (List<Integer>) engineManager.engine.getTicksOfSameValueOfPropertyInstances(simulationId, selectedProperty,selectedEntity);
+
+        // Calculate the average consistency
+        double averageConsistency = calculateAverageConsistency(listOfTicksOfSameValue);
+
+        // Display the average consistency
+        String consistencyText = "Average Consistency for '" + selectedProperty + "': " + averageConsistency;
+        Label titleLabel = new Label(consistencyText);
+
+        // Add the BarChart to the histogramPlaceholder VBox
+        VBox consistencyLabelPlaceholder = (VBox) simulationResultsMainTanPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
+        consistencyLabelPlaceholder.getChildren().add(titleLabel);
+
+        consistencyLabelPlaceholder.setPadding((new Insets(20, 150, 10, 10))); // Adjust the spacing between labels and other nodes
+    }
+
+    private double calculateAverageConsistency(List<Integer> listOfTicksOfSameValue) {
+        if (listOfTicksOfSameValue.isEmpty()) {
+            return 0.0;
+        }
+
+        int totalConsistency = 0;
+        int valueCount = 0;
+
+        for (Integer tickOfSameValue : listOfTicksOfSameValue) {
+            totalConsistency += tickOfSameValue;
+            valueCount++;
+        }
+        return (double) totalConsistency / valueCount;
     }
 
     private void displayAverageValue(int simulationId,String selectedEntity,String selectedProperty){
