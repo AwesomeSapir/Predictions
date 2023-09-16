@@ -29,10 +29,7 @@ import ui.engine.Status;
 import ui.style.StyleManager;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ResultsController {
     @FXML public TextArea textResult;
@@ -214,6 +211,10 @@ public class ResultsController {
                 String selectedEntity = newValue.toString();
                 // Clear and populate the propertyComboBox with entity properties
                 propertyComboBox.getItems().clear();
+                propertyDataDisplayComboBox.getItems().clear();
+                propertyDataDisplayComboBox.getItems().add(0,"Histogram of population");
+                propertyDataDisplayComboBox.getItems().add(1,"Consistency");
+                propertyDataDisplayComboBox.getItems().add(2,"Average value");
                 propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
 
                 // Call the updatePropertyComboBox method with the simulation ID and selected entity
@@ -323,40 +324,70 @@ public class ResultsController {
     private void displayConsistency(int simulationId,String selectedEntity,String selectedProperty){
 
         // Get the list of ticksOfSameValue for the selected property
-        List<Integer> listOfTicksOfSameValue = (List<Integer>) engineManager.engine.getTicksOfSameValueOfPropertyInstances(simulationId, selectedProperty,selectedEntity);
+        List<Double> listOfTicksOfSameValue = (List<Double>) engineManager.engine.getTicksOfSameValueOfPropertyInstances(simulationId, selectedProperty,selectedEntity);
 
         // Calculate the average consistency
-        double averageConsistency = calculateAverageConsistency(listOfTicksOfSameValue);
+        double averageConsistency = calculateAverage(listOfTicksOfSameValue);
 
         // Display the average consistency
         String consistencyText = "Average Consistency for '" + selectedProperty + "': " + averageConsistency;
         Label titleLabel = new Label(consistencyText);
 
-        // Add the BarChart to the histogramPlaceholder VBox
+        // Add the Label to the propertyDisplayTypePlaceholder VBox
         VBox consistencyLabelPlaceholder = (VBox) simulationResultsMainTanPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
         consistencyLabelPlaceholder.getChildren().add(titleLabel);
 
         consistencyLabelPlaceholder.setPadding((new Insets(20, 150, 10, 10))); // Adjust the spacing between labels and other nodes
     }
 
-    private double calculateAverageConsistency(List<Integer> listOfTicksOfSameValue) {
-        if (listOfTicksOfSameValue.isEmpty()) {
+
+    private void displayAverageValue(int simulationId,String selectedEntity,String selectedProperty){
+        // Get the histogram data for the selected property
+        DTOSimulationHistogram histogram = engineManager.engine.getValuesForPropertyHistogram(simulationId, selectedProperty,selectedEntity);
+        // Add the Label to the propertyDisplayTypePlaceholder VBox
+        VBox averageValueLabelPlaceholder = (VBox) simulationResultsMainTanPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
+        averageValueLabelPlaceholder.setPadding((new Insets(20, 150, 10, 10))); // Adjust the spacing between labels and other nodes
+        // Populate the series with data from the histogram
+        for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()) {
+            Object verifyNumericValue = entry.getKey();
+            if(!(verifyNumericValue instanceof Double) && !(verifyNumericValue instanceof Integer)){
+                // Display the average consistency
+                String consistencyText = "The property '" + selectedProperty + "' is not numeric";
+                Label titleLabel = new Label(consistencyText);
+                averageValueLabelPlaceholder.getChildren().add(titleLabel);
+                return;
+            }
+            break;
+        }
+        List<Double> listNumericValues = new ArrayList<>();
+        // Populate the series with data from the histogram
+        for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()) {
+            Double value = Double.valueOf(entry.getKey().toString());
+            listNumericValues.add(value);
+        }
+        // Calculate the average value
+        double averageValue = calculateAverage(listNumericValues);
+
+        String consistencyText = "Average Value for '" + selectedProperty + "': " + averageValue;
+        Label titleLabel = new Label(consistencyText);
+        averageValueLabelPlaceholder.getChildren().add(titleLabel);
+    }
+
+    private double calculateAverage(List<Double> listOfValues) {
+        if (listOfValues.isEmpty()) {
             return 0.0;
         }
 
-        int totalConsistency = 0;
+        double totalConsistency = 0;
         int valueCount = 0;
 
-        for (Integer tickOfSameValue : listOfTicksOfSameValue) {
+        for (Double tickOfSameValue : listOfValues) {
             totalConsistency += tickOfSameValue;
             valueCount++;
         }
-        return (double) totalConsistency / valueCount;
+        return totalConsistency / valueCount;
     }
 
-    private void displayAverageValue(int simulationId,String selectedEntity,String selectedProperty){
-
-    }
     private void actionSimulationPause(ActionEvent actionEvent) {
         engineManager.pauseSimulation(selectedSimulation.get().getId());
     }

@@ -42,5 +42,5 @@ public interface EngineInterface {
 
     void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);
 
-    Collection<Integer> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
+    Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
 }
