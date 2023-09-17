@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}PRD-population"/>
  *         &lt;element ref="{}PRD-properties"/>
  *       &lt;/sequence>
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -32,34 +31,15 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "prdPopulation",
     "prdProperties"
 })
 @XmlRootElement(name = "PRD-entity")
 public class PRDEntity {
 
-    @XmlElement(name = "PRD-population")
-    protected int prdPopulation;
     @XmlElement(name = "PRD-properties", required = true)
     protected PRDProperties prdProperties;
     @XmlAttribute(name = "name", required = true)
     protected String name;
-
-    /**
-     * Gets the value of the prdPopulation property.
-     * 
-     */
-    public int getPRDPopulation() {
-        return prdPopulation;
-    }
-
-    /**
-     * Sets the value of the prdPopulation property.
-     * 
-     */
-    public void setPRDPopulation(int value) {
-        this.prdPopulation = value;
-    }
 
     /**
      * Gets the value of the prdProperties property.

@@ -126,12 +126,7 @@ public class ResultsController {
             result = "Simulation is still running...";
         } else {
             result = "Simulation result:\n" + "Id: " + simulationResult.getId() + "\nTermination reason:";
-            if (simulationResult.isBySeconds()) {
-                result += " by seconds\n";
-            }
-            if (simulationResult.isByTicks()) {
-                result += " by ticks\n";
-            }
+            result += " by " + simulationResult.getTerminationReason().getName() + "\n";
 
             for (DTOEntityPopulation entityPopulation : engineManager.engine.getDetailsByEntityCount(simulationResult.getId())) {
                 result += "\nEntity Name: " + entityPopulation.getEntity().getName();

@@ -4,10 +4,11 @@ import engine.simulation.world.expression.Expression;
 import engine.simulation.world.Context;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
+import engine.simulation.world.rule.action.SecondaryEntity;
 
 public class ActionDivide extends ActionCalc {
 
-    public ActionDivide(EntityDefinition primaryEntity, EntityDefinition secondaryEntity, String resultPropertyName, Expression arg1, Expression arg2) {
+    public ActionDivide(EntityDefinition primaryEntity, SecondaryEntity secondaryEntity, String resultPropertyName, Expression arg1, Expression arg2) {
         super(primaryEntity, secondaryEntity, resultPropertyName, arg1, arg2);
     }
 

@@ -97,8 +97,8 @@ public class DetailView {
 
         //this.loadedObject = object;
         labelTitle.setText("Property");
-        ticks.set(object.getTicks());
-        seconds.set(object.getSeconds());
+        ticks.set((Long) object.getCondition("TICKS").getCondition());
+        seconds.set((Long) object.getCondition("SECONDS").getCondition());
     }
 
     private void resetVisibility() {

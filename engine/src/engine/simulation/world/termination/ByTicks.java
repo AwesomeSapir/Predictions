@@ -1,21 +1,18 @@
 package engine.simulation.world.termination;
 
-import java.io.Serializable;
+public class ByTicks extends ByNumberTermination<Integer> {
 
-public class ByTicks implements TerminationCondition, Serializable {
-    protected final long count;
-
-    public ByTicks(int count) {
-        this.count = count;
+    public ByTicks(int max) {
+        super(max);
     }
 
     @Override
-    public boolean isMet(long compareTo) {
-        return compareTo >= count;
+    public boolean isMet() {
+        return value >= max;
     }
 
     @Override
-    public long getCount() {
-        return count;
+    public Termination.Type getType() {
+        return Termination.Type.TICKS;
     }
 }

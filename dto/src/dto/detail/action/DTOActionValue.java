@@ -5,8 +5,8 @@ public class DTOActionValue extends DTOAction{
     protected final String propertyName;
     protected final String value;
 
-    public DTOActionValue(String type, String entityName, String propertyName, String value) {
-        super(type, entityName);
+    public DTOActionValue(String type, String entityName, DTOSecondaryEntity secondaryEntity, String propertyName, String value) {
+        super(type, entityName, secondaryEntity);
         this.propertyName = propertyName;
         this.value = value;
     }

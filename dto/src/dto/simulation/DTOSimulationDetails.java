@@ -1,6 +1,7 @@
 package dto.simulation;
 
 import dto.detail.DTOEntity;
+import dto.detail.DTOGrid;
 import dto.detail.DTORule;
 import dto.detail.DTOTermination;
 
@@ -11,13 +12,13 @@ public class DTOSimulationDetails {
     private final Collection<DTOEntity> entities;
     private final Collection<DTORule> rules;
     private final DTOTermination termination;
-    private final int spaceSize;
+    private final DTOGrid grid;
 
-    public DTOSimulationDetails(Collection<DTOEntity> entities, Collection<DTORule> rules, DTOTermination termination, int spaceSize) {
+    public DTOSimulationDetails(Collection<DTOEntity> entities, Collection<DTORule> rules, DTOTermination termination, DTOGrid grid) {
         this.entities = entities;
         this.rules = rules;
         this.termination = termination;
-        this.spaceSize = spaceSize;
+        this.grid = grid;
     }
 
     public Collection<DTOEntity> getEntities() {
@@ -32,7 +33,7 @@ public class DTOSimulationDetails {
         return termination;
     }
 
-    public int getSpaceSize() {
-        return spaceSize;
+    public DTOGrid getGrid() {
+        return grid;
     }
 }

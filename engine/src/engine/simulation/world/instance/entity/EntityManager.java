@@ -1,6 +1,8 @@
 package engine.simulation.world.instance.entity;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.definition.entity.EntityDefinition;
+import engine.simulation.world.rule.action.SecondaryEntity;
 
 import java.util.*;
 
@@ -42,12 +44,22 @@ public class EntityManager {
         return entityInstances.get(entityDefinition);
     }
 
-    public Collection<EntityInstance> getEntityInstances(EntityDefinition entityDefinition, int count) {
-        List<EntityInstance> entityInstances = new ArrayList<>(getEntityInstances(entityDefinition));
+    public Collection<EntityInstance> getEntityInstances(SecondaryEntity secondaryEntity, Context context) {
+        List<EntityInstance> entityInstances = new ArrayList<>(getEntityInstances(secondaryEntity.getEntityDefinition()));
+
+        if(secondaryEntity.isAll()){
+            return entityInstances;
+        }
+
+        int count = Math.min(secondaryEntity.getSelectionCount(), entityInstances.size());
         List<EntityInstance> result = new ArrayList<>();
-        count = Math.min(count, entityInstances.size());
-        for (int i=0; i<count; i++){
-            result.add(entityInstances.get(i));
+        for (EntityInstance entityInstance : entityInstances){
+            if(result.size() > count){
+                return result;
+            }
+            if(secondaryEntity.getCondition().evaluate(entityInstance, context)){
+                result.add(entityInstance);
+            }
         }
         return result;
     }

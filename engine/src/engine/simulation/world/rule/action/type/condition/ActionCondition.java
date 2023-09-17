@@ -5,6 +5,7 @@ import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
+import engine.simulation.world.rule.action.SecondaryEntity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +17,7 @@ public class ActionCondition extends Action {
     protected final List<Action> actionsThen = new ArrayList<>();
     protected final List<Action> actionsElse = new ArrayList<>();
 
-    public ActionCondition(EntityDefinition primaryEntity, EntityDefinition secondaryEntity, MultiCondition conditions, Collection<Action> actionsThen, Collection<Action> actionsElse) {
+    public ActionCondition(EntityDefinition primaryEntity, SecondaryEntity secondaryEntity, MultiCondition conditions, Collection<Action> actionsThen, Collection<Action> actionsElse) {
         super(ActionType.condition, primaryEntity, secondaryEntity);
         this.conditions = conditions;
         this.actionsThen.addAll(actionsThen);

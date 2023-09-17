@@ -52,12 +52,12 @@ public class MainController {
         filePathTextField.textProperty().bind(engineManager.simulationPathProperty());
 
         //TODO deltetetetetete before submitting
-        File selectedFile = new File("C:\\Users\\melch\\Downloads\\master-ex1.xml");
+        File selectedFile = new File("C:\\Users\\melch\\Downloads\\master-ex2.xml");
         if(selectedFile.exists()){
             System.out.println("sapir exists");
             engineManager.loadSimulation(selectedFile);
         } else {
-            selectedFile = new File("C:\\Users\\micha\\Downloads\\master-ex1.xml");
+            selectedFile = new File("C:\\Users\\micha\\Downloads\\master-ex2.xml");
             if (selectedFile.exists()) {
                 System.out.println("tal exists");
                 engineManager.loadSimulation(selectedFile);

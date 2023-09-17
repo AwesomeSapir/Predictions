@@ -3,43 +3,44 @@ package engine.simulation.world.termination;
 import com.sun.istack.internal.Nullable;
 
 import java.io.Serializable;
+import java.util.*;
 
 public class Termination implements Serializable {
 
-    private final @Nullable BySecond bySecond;
-    private final @Nullable ByTicks byTicks;
+    private final Map<Type, TerminationCondition> terminationConditions = new HashMap<>();
+    private TerminationCondition reason;
 
-    private boolean isMetByTicks = false;
-    private boolean isMetBySeconds = false;
-
-    public Termination(@Nullable ByTicks byTicks, @Nullable BySecond bySecond) {
-        this.bySecond = bySecond;
-        this.byTicks = byTicks;
-    }
-
-    public boolean isMet(int ticks, long seconds){
-        if(bySecond != null){
-            isMetBySeconds = bySecond.isMet(seconds);
+    public Termination(TerminationCondition... terminationConditions) {
+        for (TerminationCondition terminationCondition : terminationConditions){
+            if(terminationCondition != null) {
+                this.terminationConditions.put(terminationCondition.getType(), terminationCondition);
+            }
         }
-        if(byTicks != null){
-            isMetByTicks = byTicks.isMet(ticks);
+    }
+
+    public boolean isMet(){
+        for (TerminationCondition terminationCondition : terminationConditions.values()){
+            if(terminationCondition.isMet()){
+                reason = terminationCondition;
+                return true;
+            }
         }
-        return isMetBySeconds || isMetByTicks;
+        return false;
     }
 
-    public boolean isMetByTicks() {
-        return isMetByTicks;
+    public Collection<TerminationCondition> getTerminationConditions() {
+        return terminationConditions.values();
     }
 
-    public boolean isMetBySeconds() {
-        return isMetBySeconds;
+    public @Nullable TerminationCondition getTerminationCondition(Type type){
+        return terminationConditions.get(type);
     }
 
-    public @Nullable BySecond getBySecond() {
-        return bySecond;
+    public TerminationCondition getReason() {
+        return reason;
     }
 
-    public @Nullable ByTicks getByTicks() {
-        return byTicks;
+    public enum Type {
+        SECONDS, TICKS, USER
     }
 }

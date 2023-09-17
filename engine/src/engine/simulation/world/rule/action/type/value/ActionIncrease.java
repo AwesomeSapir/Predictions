@@ -6,10 +6,11 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.Context;
 import engine.simulation.world.rule.action.ActionType;
+import engine.simulation.world.rule.action.SecondaryEntity;
 
 public class ActionIncrease extends ActionValue {
 
-    public ActionIncrease(EntityDefinition primaryEntity, EntityDefinition secondaryEntity, String propertyName, Expression value) {
+    public ActionIncrease(EntityDefinition primaryEntity, SecondaryEntity secondaryEntity, String propertyName, Expression value) {
         super(ActionType.increase, primaryEntity, secondaryEntity, propertyName, value);
     }
 

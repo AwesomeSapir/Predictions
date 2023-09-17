@@ -10,15 +10,12 @@ public abstract class Action implements Serializable {
 
     protected final ActionType type;
     protected final EntityDefinition primaryEntity;
-    protected final EntityDefinition secondaryEntity;
+    protected final SecondaryEntity secondaryEntity;
 
-    protected final int selectionCount;
-
-    public Action(ActionType type, EntityDefinition primaryEntity, EntityDefinition secondaryEntity) {
+    public Action(ActionType type, EntityDefinition primaryEntity, SecondaryEntity secondaryEntity) {
         this.type = type;
         this.primaryEntity = primaryEntity;
         this.secondaryEntity = secondaryEntity;
-        this.selectionCount = 0; //TODO
     }
 
     public abstract void execute(EntityInstance entityInstance, Context context);
@@ -33,11 +30,7 @@ public abstract class Action implements Serializable {
         return primaryEntity;
     }
 
-    public EntityDefinition getSecondaryEntity() {
+    public SecondaryEntity getSecondaryEntity() {
         return secondaryEntity;
-    }
-
-    public int getSelectionCount() {
-        return selectionCount;
     }
 }

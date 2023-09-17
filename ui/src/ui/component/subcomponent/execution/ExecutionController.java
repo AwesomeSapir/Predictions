@@ -55,7 +55,7 @@ public class ExecutionController {
             System.out.println("simulation loaded changed to: " + newValue);
             if (newValue) {
                 DTOSimulationDetails simulationDetails = engineManager.getSimulationDetails();
-                populationMax.setValue(simulationDetails.getSpaceSize());
+                populationMax.setValue(simulationDetails.getGrid().getRows() * simulationDetails.getGrid().getCols());
                 populateVBox(vboxEntityPopulation, simulationDetails.getEntities());
                 populateVBox(vboxEnvVariables, engineManager.getEnvironmentDefinitions());
             }

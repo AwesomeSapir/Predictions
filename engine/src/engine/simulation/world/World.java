@@ -20,14 +20,16 @@ public class World implements Context, Serializable {
     protected final Map<String, Rule> rules;
     protected final Termination termination;
     protected final SpaceManager spaceManager;
+    protected final int threadCount;
 
-    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityManager entityManager, Map<String, Rule> rules, Termination termination, SpaceManager spaceManager) {
+    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityManager entityManager, Map<String, Rule> rules, Termination termination, SpaceManager spaceManager, int threadCount) {
         this.environmentManager = environmentManager;
         this.activeEnvironment = activeEnvironment;
         this.entityManager = entityManager;
         this.rules = rules;
         this.termination = termination;
         this.spaceManager = spaceManager;
+        this.threadCount = threadCount;
     }
 
     public Map<String, Rule> getRules() {
@@ -62,5 +64,10 @@ public class World implements Context, Serializable {
     @Override
     public SpaceManager getSpaceManager() {
         return spaceManager;
+    }
+
+    @Override
+    public int getThreadCount() {
+        return threadCount;
     }
 }

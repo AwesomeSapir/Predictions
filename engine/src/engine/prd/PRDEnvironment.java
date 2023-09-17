@@ -33,8 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "", propOrder = {
     "prdEnvProperty"
 })
-@XmlRootElement(name = "PRD-evironment")
-public class PRDEvironment {
+@XmlRootElement(name = "PRD-environment")
+public class PRDEnvironment {
 
     @XmlElement(name = "PRD-env-property", required = true)
     protected List<PRDEnvProperty> prdEnvProperty;

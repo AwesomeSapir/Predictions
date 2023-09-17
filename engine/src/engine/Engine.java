@@ -1,10 +1,7 @@
 package engine;
 
 import dto.detail.*;
-import dto.detail.action.DTOAction;
-import dto.detail.action.DTOActionCalc;
-import dto.detail.action.DTOActionCondition;
-import dto.detail.action.DTOActionValue;
+import dto.detail.action.*;
 import dto.simulation.*;
 import engine.simulation.Simulation;
 import engine.simulation.SimulationInterface;
@@ -19,15 +16,15 @@ import engine.simulation.world.rule.action.type.calculation.ActionCalc;
 import engine.simulation.world.rule.action.type.condition.ActionCondition;
 import engine.simulation.world.rule.action.type.value.ActionValue;
 import engine.simulation.world.space.SpaceManager;
-import engine.simulation.world.termination.BySecond;
-import engine.simulation.world.termination.ByTicks;
-import engine.simulation.world.termination.Termination;
+import engine.simulation.world.termination.*;
 import javafx.util.Pair;
 import translation.xml.Translator;
 import translation.xml.XmlTranslator;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,13 +35,13 @@ public class Engine implements EngineInterface, Serializable {
     private SimulationInterface simulation = null;
     private String filepath;
     private int idCounter = 1;
-    private final ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(10); //TODO get from xml
-
+    private ThreadPoolExecutor threadPool;
 
     @Override
     public void loadXml(String filepath) {
         try {
             simulation = new Simulation(getWorldFromFile(filepath));
+            threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(simulation.getWorld().getThreadCount());
             this.filepath = filepath;
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Could not find a suitable XML file at path '" + filepath + "'");
@@ -167,7 +164,7 @@ public class Engine implements EngineInterface, Serializable {
             return null;
         }
         Termination termination = pastSimulations.get(id).getTermination();
-        return new DTOSimulationResult(termination.isMetBySeconds(), termination.isMetByTicks(), id);
+        return new DTOSimulationResult(id, getDTOTerminationCondition(termination.getReason()));
     }
 
     @Override
@@ -188,27 +185,57 @@ public class Engine implements EngineInterface, Serializable {
             rules.add(new DTORule(rule.getName(), rule.getActivation().getTicks(), rule.getActivation().getProbability(), getActions(rule.getActions())));
         }
 
-        DTOTermination termination = new DTOTermination(
-                Optional.ofNullable(simulation.getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
-                Optional.ofNullable(simulation.getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
-        return new DTOSimulationDetails(getEntities(simulation), rules, termination, simulation.getWorld().getSpaceManager().getTotalSize());
+        DTOTermination termination = getSimulationTermination(simulation);
+        DTOGrid grid = new DTOGrid(simulation.getWorld().getSpaceManager().getRows(), simulation.getWorld().getSpaceManager().getCols());
+        return new DTOSimulationDetails(getEntities(simulation), rules, termination, grid);
     }
 
     private Collection<DTOAction> getActions(Collection<Action> actions){
         List<DTOAction> result = new ArrayList<>();
         for (Action action : actions) {
             DTOAction dtoAction;
+            DTOSecondaryEntity secondaryEntity = null;
+            if(action.getSecondaryEntity() != null){
+                String count = action.getSecondaryEntity().isAll() ? "ALL" : String.valueOf(action.getSecondaryEntity().getSelectionCount());
+                 secondaryEntity = new DTOSecondaryEntity(
+                         action.getSecondaryEntity().getEntityDefinition().getName(),
+                         count,
+                         action.getSecondaryEntity().getCondition().toString());
+            }
             if(action instanceof ActionValue){
                 ActionValue actionValue = (ActionValue) action;
-                dtoAction = new DTOActionValue(actionValue.getType().toString(), actionValue.getPrimaryEntity().getName(), actionValue.getPropertyName(), actionValue.getValue().toString());
+                dtoAction = new DTOActionValue(
+                        actionValue.getType().toString(),
+                        actionValue.getPrimaryEntity().getName(), secondaryEntity,
+                        actionValue.getPropertyName(),
+                        actionValue.getValue().toString());
+
             } else if(action instanceof ActionCalc){
                 ActionCalc actionCalc = (ActionCalc) action;
-                dtoAction = new DTOActionCalc(actionCalc.getType().toString(), actionCalc.getPrimaryEntity().getName(), actionCalc.getResultPropertyName(), actionCalc.getArg1().toString(), actionCalc.getArg2().toString());
+                dtoAction = new DTOActionCalc(
+                        actionCalc.getType().toString(),
+                        actionCalc.getPrimaryEntity().getName(),
+                        secondaryEntity,
+                        actionCalc.getResultPropertyName(),
+                        actionCalc.getArg1().toString(),
+                        actionCalc.getArg2().toString());
+
             } else if(action instanceof ActionCondition){
                 ActionCondition actionCondition = (ActionCondition) action;
-                dtoAction = new DTOActionCondition(actionCondition.getType().toString(), actionCondition.getPrimaryEntity().getName(), actionCondition.getConditions().toString(), getActions(actionCondition.getActionsThen()), getActions(actionCondition.getActionsElse()));
+                dtoAction = new DTOActionCondition(
+                        actionCondition.getType().toString(),
+                        actionCondition.getPrimaryEntity().getName(),
+                        secondaryEntity,
+                        actionCondition.getConditions().toString(),
+                        getActions(actionCondition.getActionsThen()),
+                        getActions(actionCondition.getActionsElse()));
+
             } else {
-                dtoAction = new DTOAction(action.getType().toString(), action.getPrimaryEntity().getName());
+                dtoAction = new DTOAction(
+                        action.getType().toString(),
+                        action.getPrimaryEntity().getName(),
+                        secondaryEntity);
+
             }
             result.add(dtoAction);
         }
@@ -232,7 +259,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void saveToFile(String filepath) {
-        try (ObjectOutputStream encoder = new ObjectOutputStream(new FileOutputStream(filepath.concat(".file")))){
+        try (ObjectOutputStream encoder = new ObjectOutputStream(Files.newOutputStream(Paths.get(filepath.concat(".file"))))){
             encoder.writeObject(this);
             encoder.flush();
         } catch (Exception e) {
@@ -242,7 +269,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void loadFromFile(String filepath) {
-        try (ObjectInputStream decoder = new ObjectInputStream(new FileInputStream(filepath.concat(".file")))){
+        try (ObjectInputStream decoder = new ObjectInputStream(Files.newInputStream(Paths.get(filepath.concat(".file"))))){
             Engine engine = (Engine) decoder.readObject();
             this.pastSimulations.putAll(engine.pastSimulations);
             this.simulation = engine.simulation;
@@ -263,11 +290,22 @@ public class Engine implements EngineInterface, Serializable {
         return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString());
     }
 
+    private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition){
+        return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
+    }
+
+    private DTOTermination getSimulationTermination(SimulationInterface simulation){
+        Termination termination = simulation.getTermination();
+        List<DTOTerminationCondition<?>> conditions = new ArrayList<>();
+        for (TerminationCondition condition : termination.getTerminationConditions()){
+            conditions.add(getDTOTerminationCondition(condition));
+        }
+        return new DTOTermination(conditions);
+    }
+
     @Override
     public DTOTermination getSimulationTermination(int id) {
-        return new DTOTermination(
-                Optional.ofNullable(pastSimulations.get(id).getTermination().getBySecond()).map(BySecond::getCount).orElse(null),
-                Optional.ofNullable(pastSimulations.get(id).getTermination().getByTicks()).map(ByTicks::getCount).orElse(null));
+        return getSimulationTermination(pastSimulations.get(id));
     }
 
     @Override

@@ -1,21 +1,23 @@
 package dto.detail;
 
+import java.util.*;
+
 public class DTOTermination extends DTOObject{
 
-    private final Long seconds;
-    private final Long ticks;
+    private final Map<String, DTOTerminationCondition<?>> conditions = new HashMap<>();
 
-    public DTOTermination(Long seconds, Long ticks) {
+    public DTOTermination(Collection<DTOTerminationCondition<?>> conditions) {
         super("");
-        this.seconds = seconds;
-        this.ticks = ticks;
+        for (DTOTerminationCondition<?> condition : conditions){
+            this.conditions.put(condition.getName(), condition);
+        }
     }
 
-    public Long getSeconds() {
-        return seconds;
+    public Collection<DTOTerminationCondition<?>> getConditions() {
+        return conditions.values();
     }
 
-    public Long getTicks() {
-        return ticks;
+    public DTOTerminationCondition<?> getCondition(String type){
+        return conditions.get(type);
     }
 }

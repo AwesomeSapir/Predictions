@@ -6,6 +6,9 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
+import engine.simulation.world.termination.BySecond;
+import engine.simulation.world.termination.ByTicks;
+import engine.simulation.world.termination.ByUser;
 import engine.simulation.world.termination.Termination;
 
 import java.io.Serializable;
@@ -41,8 +44,17 @@ public class Simulation implements SimulationInterface, Serializable {
         }
     }
 
+    public void updateTermination() {
+        if (getTermination().getTerminationCondition(Termination.Type.TICKS) != null) {
+            ((ByTicks) getTermination().getTerminationCondition(Termination.Type.TICKS)).setValue(tick);
+        }
+        if (getTermination().getTerminationCondition(Termination.Type.SECONDS) != null) {
+            ((BySecond) getTermination().getTerminationCondition(Termination.Type.SECONDS)).setValue(totalDuration / 1000);
+        }
+    }
+
     public void tick() {
-        if (world.getTermination().isMet(tick, totalDuration / 1000)) {
+        if (world.getTermination().isMet()) {
             status = Status.STOPPED;
             return;
         }
@@ -54,7 +66,7 @@ public class Simulation implements SimulationInterface, Serializable {
         List<Action> validActions = new ArrayList<>();
 
         for (EntityInstance entityInstance : entityInstances) {
-            for(PropertyInstance propertyInstance : entityInstance.getPropertyInstances()){
+            for (PropertyInstance propertyInstance : entityInstance.getPropertyInstances()) {
                 propertyInstance.updateTicksOfSameValue();
                 //System.out.println("Property '" + propertyInstance.getPropertyDefinition().getName() +"' didn't change for '" +propertyInstance.getTicksOfSameValue() + "' ticks");
             }
@@ -72,8 +84,7 @@ public class Simulation implements SimulationInterface, Serializable {
                 if (action.getPrimaryEntity().equals(entityDefinition)) {
                     for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(entityDefinition)) {
                         if (action.getSecondaryEntity() != null) {
-                            for (EntityInstance secondaryEntity :
-                                    world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), action.getSelectionCount())) {
+                            for (EntityInstance secondaryEntity : world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), world)) {
                                 action.execute(entityInstance, secondaryEntity, world);
                             }
                         } else {
@@ -89,6 +100,7 @@ public class Simulation implements SimulationInterface, Serializable {
         world.getEntityManager().createEntities();
 
         totalDuration += Duration.between(begin, LocalDateTime.now()).toMillis();
+        updateTermination();
     }
 
     @Override
@@ -118,8 +130,8 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
-    public void initSpace(){
-        for (EntityInstance entityInstance : world.getEntityManager().getAllEntityInstances()){
+    public void initSpace() {
+        for (EntityInstance entityInstance : world.getEntityManager().getAllEntityInstances()) {
             world.getSpaceManager().putEntity(entityInstance);
         }
     }
@@ -171,17 +183,20 @@ public class Simulation implements SimulationInterface, Serializable {
     public void stop() {
         if (status == Status.RUNNING || status == Status.PAUSED) {
             status = Status.STOPPED;
+            if (getTermination().getTerminationCondition(Termination.Type.USER) != null) {
+                ((ByUser) getTermination().getTerminationCondition(Termination.Type.USER)).stop();
+            }
         } else {
             throw new RuntimeException("Simulation isn't running.");
         }
     }
 
     @Override
-    public void next(){
-        if(status != Status.STOPPED){
+    public void next() {
+        if (status != Status.STOPPED) {
             status = Status.RUNNING;
             tick();
-            if(status != Status.STOPPED){
+            if (status != Status.STOPPED) {
                 status = Status.PAUSED;
             }
         } else {

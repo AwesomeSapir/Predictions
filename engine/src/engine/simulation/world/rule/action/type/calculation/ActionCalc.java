@@ -4,6 +4,7 @@ import engine.simulation.world.expression.Expression;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
+import engine.simulation.world.rule.action.SecondaryEntity;
 
 public abstract class ActionCalc extends Action {
 
@@ -11,7 +12,7 @@ public abstract class ActionCalc extends Action {
     protected final Expression arg1;
     protected final Expression arg2;
 
-    public ActionCalc(EntityDefinition primaryEntity, EntityDefinition secondaryEntity, String resultPropertyName, Expression arg1, Expression arg2) {
+    public ActionCalc(EntityDefinition primaryEntity, SecondaryEntity secondaryEntity, String resultPropertyName, Expression arg1, Expression arg2) {
         super(ActionType.calculation, primaryEntity, secondaryEntity);
         this.resultPropertyName = resultPropertyName;
         this.arg1 = arg1;

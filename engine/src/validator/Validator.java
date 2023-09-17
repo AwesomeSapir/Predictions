@@ -68,6 +68,18 @@ public class Validator implements Serializable {
         return this;
     }
 
+    public Validator isPositive(){
+        if(isDouble().isValid()){
+            double value = Double.parseDouble(input);
+            if(value <= 0){
+                isValid = false;
+            }
+        } else {
+            isValid = false;
+        }
+        return this;
+    }
+
     public Validator isInRange(Range range){
         if (isDouble().isValid) {
             double value = Double.parseDouble(input);

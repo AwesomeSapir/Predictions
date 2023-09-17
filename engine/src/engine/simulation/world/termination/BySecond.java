@@ -1,22 +1,18 @@
 package engine.simulation.world.termination;
 
-import java.io.Serializable;
+public class BySecond extends ByNumberTermination<Long> {
 
-public class BySecond implements TerminationCondition, Serializable {
-
-    protected final long count;
-
-    public BySecond(int count) {
-        this.count = count;
+    public BySecond(long max) {
+        super(max);
     }
 
     @Override
-    public boolean isMet(long compareTo) {
-        return compareTo >= count;
+    public boolean isMet() {
+        return value >= max;
     }
 
     @Override
-    public long getCount() {
-        return count;
+    public Termination.Type getType() {
+        return Termination.Type.SECONDS;
     }
 }

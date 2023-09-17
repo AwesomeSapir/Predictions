@@ -93,13 +93,8 @@ public class DetailsController {
         }
 
         DTOTermination termination = simulationDetails.getTermination();
-
-        if (termination.getTicks() != null) {
-            TreeItem<Object> itemTermination = new TreeItem<>("Ticks");
-            branchTermination.getChildren().add(itemTermination);
-        }
-        if (termination.getSeconds() != null) {
-            TreeItem<Object> itemTermination = new TreeItem<>("Seconds");
+        for (DTOTerminationCondition<?> condition : termination.getConditions()){
+            TreeItem<Object> itemTermination = new TreeItem<>(condition.getName());
             branchTermination.getChildren().add(itemTermination);
         }
 

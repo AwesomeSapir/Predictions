@@ -18,4 +18,5 @@ public interface Context {
 
     SpaceManager getSpaceManager();
 
+    int getThreadCount();
 }
