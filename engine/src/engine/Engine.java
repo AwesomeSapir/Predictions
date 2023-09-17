@@ -115,6 +115,16 @@ public class Engine implements EngineInterface, Serializable {
         }
         return new DTOSimulationHistogram(values, propertyName);
     }
+    @Override
+    public Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) {
+        List<Double> values = new ArrayList<>();
+        World world = pastSimulations.get(id).getWorld();
+        for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
+            double ticksOfSameValue = entityInstance.getPropertyByName(propertyName).getTicksOfSameValue();
+            values.add(ticksOfSameValue);
+        }
+        return values;
+    }
 
     @Override
     public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException{
