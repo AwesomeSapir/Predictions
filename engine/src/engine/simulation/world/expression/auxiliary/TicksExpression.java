@@ -19,7 +19,7 @@ public class TicksExpression extends AbstractExpression {
 
     @Override
     public Object getValue(EntityInstance entityInstance) {
-        return entityInstance.getPropertyByName(propertyDefinition.getName()).getTicksOfSameValue();
+        return entityInstance.getPropertyByName(propertyDefinition.getName()).getTicksSinceChange();
     }
 
     @Override

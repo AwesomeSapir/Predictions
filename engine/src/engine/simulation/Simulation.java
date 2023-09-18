@@ -69,7 +69,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
         for (EntityInstance entityInstance : entityInstances) {
             for (PropertyInstance propertyInstance : entityInstance.getPropertyInstances()) {
-                propertyInstance.updateTicksOfSameValue();
+                propertyInstance.incrementTicksOfSameValue();
                 //System.out.println("Property '" + propertyInstance.getPropertyDefinition().getName() +"' didn't change for '" +propertyInstance.getTicksOfSameValue() + "' ticks");
             }
             world.getSpaceManager().moveEntity(entityInstance);

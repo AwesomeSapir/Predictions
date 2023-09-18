@@ -123,8 +123,18 @@ public class Engine implements EngineInterface, Serializable {
         List<Double> values = new ArrayList<>();
         World world = pastSimulations.get(id).getWorld();
         for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
-            double ticksOfSameValue = entityInstance.getPropertyByName(propertyName).getTicksOfSameValue();
+            double ticksOfSameValue = entityInstance.getPropertyByName(propertyName).getTicksSinceChange();
             values.add(ticksOfSameValue);
+        }
+        return values;
+    }
+
+    @Override
+    public Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName) {
+        List<Double> values = new ArrayList<>();
+        World world = pastSimulations.get(id).getWorld();
+        for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
+            values.add(entityInstance.getPropertyByName(propertyName).getConsistency());
         }
         return values;
     }

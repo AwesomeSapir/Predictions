@@ -9,19 +9,28 @@ public class PropertyInstance implements Serializable {
 
     private final PropertyDefinition propertyDefinition;
     private Object value;
-    private int ticksOfSameValue = 0;
+    private int ticksSinceChange = 0;
+    private int tickSum = 0;
+    private int changeCounter = 0;
 
     public PropertyInstance(PropertyDefinition propertyDefinition){
         this.propertyDefinition = propertyDefinition;
         this.value = propertyDefinition.generateValue();
     }
 
-    public void updateTicksOfSameValue() {
-        ticksOfSameValue++;
+    public void copy(PropertyInstance old){
+        this.value = old.value;
+        this.changeCounter = old.changeCounter;
+        this.tickSum = old.tickSum;
+        this.ticksSinceChange = old.ticksSinceChange;
     }
 
-    public int getTicksOfSameValue() {
-        return ticksOfSameValue;
+    public void incrementTicksOfSameValue() {
+        ticksSinceChange++;
+    }
+
+    public int getTicksSinceChange() {
+        return ticksSinceChange;
     }
 
     public PropertyDefinition getPropertyDefinition() {
@@ -40,7 +49,17 @@ public class PropertyInstance implements Serializable {
         }
         if(this.value != value) {
             this.value = value;
-            ticksOfSameValue = 0;
+            tickSum += ticksSinceChange;
+            changeCounter++;
+            ticksSinceChange = 0;
+        }
+    }
+
+    public double getConsistency(){
+        if(changeCounter == 0){
+            return ticksSinceChange;
+        } else {
+            return (double)tickSum / (double)changeCounter;
         }
     }
 }
