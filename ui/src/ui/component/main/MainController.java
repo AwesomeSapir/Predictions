@@ -2,17 +2,24 @@ package ui.component.main;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import ui.Notify;
 import ui.component.subcomponent.detail.DetailsController;
 import ui.component.subcomponent.execution.ExecutionController;
+import ui.component.subcomponent.queue.QueueController;
 import ui.component.subcomponent.result.ResultsController;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
+import ui.style.StyleManager;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainController {
 
@@ -31,9 +38,36 @@ public class MainController {
     @FXML public Tab tabDetailsID;
     @FXML public Tab tabExecutionID;
 
+    private final Stage queueStage = new Stage();
+
     @FXML
     void showQueue(ActionEvent event){
-        Notify.getInstance().showAlertBar("Simulation finished!");
+        showQueueWindow();
+    }
+
+    public void initQueueWindow(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/component/subcomponent/queue/screenQueue.fxml"));
+            Parent root = loader.load();
+            QueueController queueController = loader.getController();
+            queueController.setQueue(engineManager.getQueue());
+            Scene scene = new Scene(root);
+            queueStage.setTitle("Queue");
+            queueStage.setScene(scene);
+            queueStage.setOnCloseRequest(value -> StyleManager.unregister(scene));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showQueueWindow(){
+        StyleManager.register(queueStage.getScene());
+        if(!queueStage.isShowing()){
+            queueStage.show();
+        } else {
+            queueStage.setIconified(false);
+            queueStage.toFront();
+        }
     }
 
     @FXML
@@ -70,6 +104,7 @@ public class MainController {
                 engineManager.loadSimulation(selectedFile);
             }
         }
+        initQueueWindow();
     }
 
     @FXML

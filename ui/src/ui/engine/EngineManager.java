@@ -1,10 +1,7 @@
 package ui.engine;
 
 import dto.detail.DTOEnvironmentVariable;
-import dto.simulation.DTOSimulation;
-import dto.simulation.DTOSimulationDetails;
-import dto.simulation.DTOSpace;
-import dto.simulation.DTOStatus;
+import dto.simulation.*;
 import engine.Engine;
 import engine.EngineInterface;
 import javafx.application.Platform;
@@ -30,8 +27,8 @@ public class EngineManager {
     private final ObservableList<Simulation> simulationsList = FXCollections.observableArrayList();
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
-
     private final Timer simulationUpdater = new Timer();
+    private final Queue queue = new Queue();
 
     public EngineManager() {
         engine = new Engine();
@@ -39,6 +36,9 @@ public class EngineManager {
             @Override
             public void run() {
                 for (Simulation simulation : simulationsList){
+                    Platform.runLater(() -> {
+                        updateQueue();
+                    });
                     if(simulation.getStatus() != Status.STOPPED) {
                         Platform.runLater(() -> {
                             updateSimulationProgress(simulation);
@@ -48,6 +48,19 @@ public class EngineManager {
                 }
             }
         }, 0, 200);
+    }
+
+    public Queue getQueue() {
+        return queue;
+    }
+
+    public void updateQueue(){
+        DTOQueueDetails queueDetails = engine.getQueueDetails();
+        queue.setCapacity(queueDetails.getCapacity());
+        queue.setActive(queueDetails.getActive());
+        queue.setRunning(queueDetails.getRunning());
+        queue.setPaused(queueDetails.getPaused());
+        queue.setStopped(queueDetails.getStopped());
     }
 
     public void loadSimulation(File file){

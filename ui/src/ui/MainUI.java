@@ -6,7 +6,6 @@ public interface MainUI {
     // TODO custom exceptions and handling in ui
     // TODO consistency
     // TODO swap graph xy
-    // TODO queue management
     // TODO rerun simulation
     // TODO settings screen
     // TODO font size change
@@ -19,4 +18,5 @@ public interface MainUI {
     // TODO add buttons for incrementing NumericRangedInput
     // TODO simulation past !bonus!
     // TODO refactor resultcontroller
+    // TODO show which simulations are paused/stopped etc
 }

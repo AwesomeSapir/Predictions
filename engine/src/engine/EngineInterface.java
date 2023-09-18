@@ -43,4 +43,6 @@ public interface EngineInterface {
     void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);
 
     Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
+
+    DTOQueueDetails getQueueDetails();
 }

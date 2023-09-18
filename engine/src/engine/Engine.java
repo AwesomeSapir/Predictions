@@ -37,6 +37,7 @@ public class Engine implements EngineInterface, Serializable {
     private String filepath;
     private int idCounter = 1;
     private ThreadPoolExecutor threadPool;
+    private int threadCount;
 
     @Override
     public void loadXml(String filepath) {
@@ -375,5 +376,24 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public void stopSimulation(int id) {
         pastSimulations.get(id).stop();
+    }
+
+    @Override
+    public DTOQueueDetails getQueueDetails(){
+        int active = threadPool.getActiveCount();
+        int total = threadPool.getMaximumPoolSize();
+        int paused = 0;
+        int stopped = 0;
+        int running = 0;
+        for (SimulationInterface simulation : pastSimulations.values()){
+            if(simulation.getStatus() == Status.PAUSED){
+                paused++;
+            } else if(simulation.getStatus() == Status.STOPPED){
+                stopped++;
+            } else if(simulation.getStatus() == Status.RUNNING){
+                running++;
+            }
+        }
+        return new DTOQueueDetails(total, active, paused, stopped, running);
     }
 }
