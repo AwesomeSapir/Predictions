@@ -20,10 +20,17 @@ public class EvaluateExpression extends AbstractExpression {
 
     @Override
     public Object getValue(EntityInstance entityInstance) {
-        if(entityInstance.getEntityDefinition().equals(entityDefinition)){
-            return entityInstance.getPropertyByName(propertyDefinition.getName()).getValue();
+        return entityInstance.getPropertyByName(propertyDefinition.getName()).getValue();
+    }
+
+    @Override
+    public Object getValue(EntityInstance... entityInstances) {
+        for (EntityInstance entityInstance : entityInstances){
+            if(entityDefinition.equals(entityInstance.getEntityDefinition())){
+                return getValue(entityInstance);
+            }
         }
-        return null;
+        throw new RuntimeException("Entity instances don't match defined definition");
     }
 
     @Override

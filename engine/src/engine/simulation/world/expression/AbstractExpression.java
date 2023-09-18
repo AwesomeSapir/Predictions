@@ -16,7 +16,11 @@ public abstract class AbstractExpression implements Expression, Serializable {
     public ExpressionType getType() {
         return type;
     }
+    @Override
     public abstract Object getValue(EntityInstance entityInstance);
+    @Override
+    public abstract Object getValue(EntityInstance... entityInstances);
+
     @Override
     public abstract ValueType getValueType();
 }

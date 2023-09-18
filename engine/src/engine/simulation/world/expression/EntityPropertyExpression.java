@@ -15,7 +15,19 @@ public class EntityPropertyExpression extends AbstractExpression{
 
     @Override
     public Object getValue(EntityInstance entityInstance) {
-        return entityInstance.getPropertyByName(property.getName()).getValue();
+        return entityInstance.getPropertyIfExists(property.getName()).getValue();
+    }
+
+    @Override
+    public Object getValue(EntityInstance... entityInstances) { //TODO ask aviad
+        for (EntityInstance entityInstance : entityInstances){
+            try {
+                return getValue(entityInstance);
+            } catch (NullPointerException e){
+
+            }
+        }
+        throw new RuntimeException("Entity instances don't match defined definition");
     }
 
     @Override

@@ -23,4 +23,16 @@ public class ActionDivide extends ActionCalc {
             throw new IllegalArgumentException("Can't divide by zero");
         }
     }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        double val1 = Double.parseDouble(arg1.getValue(primaryEntity, secondaryEntity).toString());
+        double val2 = Double.parseDouble(arg2.getValue(primaryEntity, secondaryEntity).toString());
+        if(val2 != 0){
+            double result = val1 / val2;
+            primaryEntity.getPropertyByName(resultPropertyName).setValue(result);
+        } else {
+            throw new IllegalArgumentException("Can't divide by zero");
+        }
+    }
 }

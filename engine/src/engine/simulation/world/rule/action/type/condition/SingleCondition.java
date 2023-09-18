@@ -22,6 +22,17 @@ public class SingleCondition implements Condition, Serializable {
     public boolean evaluate(EntityInstance entityInstance, Context context){
         Object argValue = arg.getValue(entityInstance);
         Object expValue = value.getValue(entityInstance);
+        return compare(argValue, expValue);
+    }
+
+    @Override
+    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        Object argValue = arg.getValue(primaryEntity, secondaryEntity);
+        Object expValue = value.getValue(primaryEntity, secondaryEntity);
+        return compare(argValue, expValue);
+    }
+
+    public boolean compare(Object argValue, Object expValue){
         if(Validator.validate(argValue.toString()).isDouble().isValid() && Validator.validate(expValue.toString()).isDouble().isValid()){
             double numEntityValue = Double.parseDouble(argValue.toString());
             double numExpValue = Double.parseDouble(expValue.toString());

@@ -6,4 +6,5 @@ import engine.simulation.world.Context;
 public interface Condition {
 
     boolean evaluate(EntityInstance entityInstance, Context context);
+    boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context);
 }

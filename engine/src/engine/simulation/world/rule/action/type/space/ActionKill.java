@@ -17,4 +17,9 @@ public class ActionKill extends Action {
     public void execute(EntityInstance entityInstance, Context context) {
         context.removeEntity(entityInstance);
     }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        execute(primaryEntity, context);
+    }
 }

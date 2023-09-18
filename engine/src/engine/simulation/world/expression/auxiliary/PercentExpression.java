@@ -19,15 +19,25 @@ public class PercentExpression extends AbstractExpression {
 
     @Override
     public Object getValue(EntityInstance entityInstance) {
-        try {
-            double argValue = (double) arg.getValue(entityInstance);
-            double percentageValue = (double) percentage.getValue(entityInstance);
-
+        Object argObj = arg.getValue(entityInstance);
+        Object percentageObj = percentage.getValue(entityInstance);
+        if(argObj!= null && percentageObj != null) {
+            double argValue = (double) argObj;
+            double percentageValue = (double) percentageObj;
             return argValue * percentageValue / 100;
-        } catch (NullPointerException e){
-            System.out.println("null");
-            return null;
         }
+        return null;
+    }
+
+    @Override
+    public Object getValue(EntityInstance... entityInstances) {
+        for (EntityInstance entityInstance : entityInstances){
+            Object result = getValue(entityInstance);
+            if(result != null){
+                return result;
+            }
+        }
+        throw new RuntimeException("Entity instances don't match defined definition");
     }
 
     @Override

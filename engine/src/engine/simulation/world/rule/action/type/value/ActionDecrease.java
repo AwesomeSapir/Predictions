@@ -23,4 +23,14 @@ public class ActionDecrease extends ActionValue {
 
         propertyInstance.setValue(result);
     }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        double by = Double.parseDouble(value.getValue(primaryEntity, secondaryEntity).toString());
+        PropertyInstance propertyInstance = primaryEntity.getPropertyByName(propertyName);
+        double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
+        double result = propertyValue - by;
+
+        propertyInstance.setValue(result);
+    }
 }

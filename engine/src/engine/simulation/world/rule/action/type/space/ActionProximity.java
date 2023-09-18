@@ -26,13 +26,18 @@ public class ActionProximity extends Action {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        if(entityInstance.getEntityDefinition().equals(primaryEntity)){
+        if (entityInstance.getEntityDefinition().equals(primaryEntity)) {
             EntityInstance entityInProximity = context.getSpaceManager().getEntityInProximity(entityInstance.getPoint(), targetEntity, (Integer) depth.getValue(entityInstance));
-            if(entityInProximity != null) {
+            if (entityInProximity != null) {
                 for (Action action : actions) {
-                    action.execute(entityInstance, context);
+                    action.execute(entityInstance, entityInProximity, context);
                 }
             }
         }
+    }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        execute(primaryEntity, context);
     }
 }

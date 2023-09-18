@@ -39,6 +39,26 @@ public class MultiCondition implements Condition, Serializable {
     }
 
     @Override
+    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        Boolean overallResult = null;
+        for (Condition condition : subConditions){
+            boolean result = condition.evaluate(primaryEntity, secondaryEntity, context);
+            if (overallResult == null){
+                overallResult = result;
+            }
+            switch (logical){
+                case and:
+                    overallResult = overallResult && result;
+                    break;
+                case or:
+                    overallResult = overallResult || result;
+                    break;
+            }
+        }
+        return overallResult;
+    }
+
+    @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
         String logicalStr = "";

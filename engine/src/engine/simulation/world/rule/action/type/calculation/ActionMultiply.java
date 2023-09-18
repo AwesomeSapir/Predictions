@@ -20,4 +20,13 @@ public class ActionMultiply extends ActionCalc {
 
         entityInstance.getPropertyByName(resultPropertyName).setValue(result);
     }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        double val1 = Double.parseDouble(arg1.getValue(primaryEntity, secondaryEntity).toString());
+        double val2 = Double.parseDouble(arg2.getValue(primaryEntity, secondaryEntity).toString());
+        double result = val1 * val2;
+
+        primaryEntity.getPropertyByName(resultPropertyName).setValue(result);
+    }
 }

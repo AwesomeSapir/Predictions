@@ -20,7 +20,7 @@ public abstract class Action implements Serializable {
 
     public abstract void execute(EntityInstance entityInstance, Context context);
 
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context){} //TODO make abstact
+    public abstract void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context);
 
     public ActionType getType() {
         return type;

@@ -46,4 +46,9 @@ public class ActionReplace extends Action {
             context.getSpaceManager().replaceEntity(entityInstance, created);
         }
     }
+
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        execute(primaryEntity, context);
+    }
 }

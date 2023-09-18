@@ -92,7 +92,6 @@ public class Simulation implements SimulationInterface, Serializable {
                         }
                     }
                 }
-
             }
         }
 

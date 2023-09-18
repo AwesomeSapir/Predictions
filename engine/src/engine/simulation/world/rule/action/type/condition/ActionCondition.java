@@ -37,6 +37,19 @@ public class ActionCondition extends Action {
         }
     }
 
+    @Override
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+        if(conditions.evaluate(primaryEntity, secondaryEntity, context)){
+            for (Action action : actionsThen) {
+                action.execute(primaryEntity, secondaryEntity, context);
+            }
+        } else {
+            for (Action action : actionsElse) {
+                action.execute(primaryEntity, secondaryEntity, context);
+            }
+        }
+    }
+
     public MultiCondition getConditions() {
         return conditions;
     }

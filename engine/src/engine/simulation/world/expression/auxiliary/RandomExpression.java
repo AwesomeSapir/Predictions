@@ -22,6 +22,11 @@ public class RandomExpression extends AbstractExpression {
     }
 
     @Override
+    public Object getValue(EntityInstance... entityInstances) {
+        return random.nextInt(arg + 1);
+    }
+
+    @Override
     public ExpressionType getType() {
         return ExpressionType.AUXILIARY_FUNCTION;
     }

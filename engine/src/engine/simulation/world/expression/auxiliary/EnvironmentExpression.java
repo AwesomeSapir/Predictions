@@ -20,6 +20,11 @@ public class EnvironmentExpression extends AbstractExpression {
     }
 
     @Override
+    public Object getValue(EntityInstance... entityInstances) {
+        return envPropertyInstance.getValue();
+    }
+
+    @Override
     public ValueType getValueType() {
         return envPropertyInstance.getPropertyDefinition().getType();
     }

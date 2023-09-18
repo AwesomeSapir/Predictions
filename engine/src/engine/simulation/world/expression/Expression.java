@@ -6,5 +6,6 @@ import engine.simulation.world.instance.entity.EntityInstance;
 public interface Expression {
     ExpressionType getType();
     Object getValue(EntityInstance entityInstance);
+    Object getValue(EntityInstance... entityInstances);
     ValueType getValueType();
 }

@@ -19,6 +19,11 @@ public class FreeValueExpression extends AbstractExpression {
     }
 
     @Override
+    public Object getValue(EntityInstance... entityInstances) {
+        return value;
+    }
+
+    @Override
     public ValueType getValueType() {
         return type;
     }
