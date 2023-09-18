@@ -1,5 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.definition.property.PropertyType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -7,6 +8,7 @@ import engine.simulation.world.instance.property.PropertyInstance;
 
 public class EnvironmentExpression extends AbstractExpression {
     private final PropertyInstance envPropertyInstance;
+
     public EnvironmentExpression(PropertyInstance propertyInstance){
         super(ExpressionType.AUXILIARY_FUNCTION);
         this.envPropertyInstance = propertyInstance;
@@ -15,6 +17,11 @@ public class EnvironmentExpression extends AbstractExpression {
     @Override
     public Object getValue(EntityInstance entityInstance) throws IllegalArgumentException {
         return envPropertyInstance.getValue();
+    }
+
+    @Override
+    public PropertyType getValueType() {
+        return envPropertyInstance.getPropertyDefinition().getType();
     }
 
     @Override

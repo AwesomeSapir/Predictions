@@ -7,19 +7,20 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
-import engine.simulation.world.rule.action.SecondaryEntity;
 
 public class ActionReplace extends Action {
 
     protected final ReplaceMode mode;
+    protected final EntityDefinition createEntity;
 
     /*
     * primary = kill
     * secondary = create
     */
-    public ActionReplace(EntityDefinition primaryEntity, SecondaryEntity secondaryEntity, ReplaceMode mode) {
-        super(ActionType.replace, primaryEntity, secondaryEntity);
+    public ActionReplace(EntityDefinition primaryEntity, EntityDefinition secondaryEntity, ReplaceMode mode) {
+        super(ActionType.replace, primaryEntity, null);
         this.mode = mode;
+        this.createEntity = secondaryEntity;
     }
 
     private void derived(EntityInstance oldEntity, EntityInstance newEntity){
@@ -36,7 +37,7 @@ public class ActionReplace extends Action {
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
         if(entityInstance.getEntityDefinition().equals(primaryEntity)){
-            EntityInstance created = new EntityInstance(secondaryEntity.getEntityDefinition());
+            EntityInstance created = new EntityInstance(createEntity);
             created.initProperties();
             if(mode == ReplaceMode.DERIVED){
                 derived(entityInstance, created);

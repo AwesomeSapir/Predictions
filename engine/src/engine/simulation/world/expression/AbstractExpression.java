@@ -1,5 +1,6 @@
 package engine.simulation.world.expression;
 
+import engine.simulation.world.definition.property.PropertyType;
 import engine.simulation.world.instance.entity.EntityInstance;
 
 import java.io.Serializable;
@@ -16,4 +17,6 @@ public abstract class AbstractExpression implements Expression, Serializable {
         return type;
     }
     public abstract Object getValue(EntityInstance entityInstance);
+    @Override
+    public abstract PropertyType getValueType();
 }

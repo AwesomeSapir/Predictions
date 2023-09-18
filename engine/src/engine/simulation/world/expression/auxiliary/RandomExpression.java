@@ -1,5 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.definition.property.PropertyType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -23,6 +24,11 @@ public class RandomExpression extends AbstractExpression {
     @Override
     public ExpressionType getType() {
         return ExpressionType.AUXILIARY_FUNCTION;
+    }
+
+    @Override
+    public PropertyType getValueType() {
+        return PropertyType.DECIMAL;
     }
 
     @Override

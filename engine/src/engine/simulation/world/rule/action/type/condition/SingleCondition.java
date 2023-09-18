@@ -3,26 +3,27 @@ package engine.simulation.world.rule.action.type.condition;
 import engine.simulation.world.expression.Expression;
 import engine.simulation.world.Context;
 import engine.simulation.world.instance.entity.EntityInstance;
+import validator.Validator;
 
 import java.io.Serializable;
 
 public class SingleCondition implements Condition, Serializable {
 
     protected final Operator operator;
-    protected final String propertyName;
+    protected final Expression arg;
     protected final Expression value;
 
-    public SingleCondition(Operator operator, String propertyName, Expression value) {
+    public SingleCondition(Operator operator, Expression arg, Expression value) {
         this.operator = operator;
-        this.propertyName = propertyName;
+        this.arg = arg;
         this.value = value;
     }
 
     public boolean evaluate(EntityInstance entityInstance, Context context){
-        Object entityValue = entityInstance.getPropertyByName(propertyName).getValue();
+        Object argValue = arg.getValue(entityInstance);
         Object expValue = value.getValue(entityInstance);
-        if(entityInstance.getEntityDefinition().getProperties().get(propertyName).isNumeric()){
-            double numEntityValue = Double.parseDouble(entityValue.toString());
+        if(Validator.validate(argValue.toString()).isDouble().isValid() && Validator.validate(expValue.toString()).isDouble().isValid()){
+            double numEntityValue = Double.parseDouble(argValue.toString());
             double numExpValue = Double.parseDouble(expValue.toString());
             switch (operator){
                 case neq:
@@ -37,9 +38,9 @@ public class SingleCondition implements Condition, Serializable {
         } else {
             switch (operator){
                 case neq:
-                    return !entityValue.equals(expValue);
+                    return !argValue.equals(expValue);
                 case eq:
-                    return entityValue.equals(expValue);
+                    return argValue.equals(expValue);
                 default:
                     throw new UnsupportedOperationException("Operator " + operator.getOperator() + " not supported");
             }
@@ -64,6 +65,6 @@ public class SingleCondition implements Condition, Serializable {
                 operatorStr = "<";
                 break;
         }
-        return propertyName + operatorStr + value.toString();
+        return arg.toString() + operatorStr + value.toString();
     }
 }

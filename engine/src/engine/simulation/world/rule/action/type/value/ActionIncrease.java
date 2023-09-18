@@ -16,11 +16,15 @@ public class ActionIncrease extends ActionValue {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
-        double by = Double.parseDouble(value.getValue(entityInstance).toString());
-        PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
-        double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
-        double result = propertyValue + by;
+        try {
+            double by = Double.parseDouble(value.getValue(entityInstance).toString());
+            PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
+            double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
+            double result = propertyValue + by;
 
-        propertyInstance.setValue(result);
+            propertyInstance.setValue(result);
+        } catch (NullPointerException e) {
+            System.out.println("null");
+        }
     }
 }

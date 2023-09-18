@@ -1,5 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.definition.property.PropertyType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.Expression;
 import engine.simulation.world.expression.ExpressionType;
@@ -22,9 +23,15 @@ public class PercentExpression extends AbstractExpression {
             double argValue = (double) arg.getValue(entityInstance);
             double percentageValue = (double) percentage.getValue(entityInstance);
 
-            return argValue*percentageValue/100;
-        } catch (Exception e){
-            throw new RuntimeException("PercentExpression received non numeric values");
+            return argValue * percentageValue / 100;
+        } catch (NullPointerException e){
+            System.out.println("null");
+            return null;
         }
+    }
+
+    @Override
+    public PropertyType getValueType() {
+        return PropertyType.FLOAT;
     }
 }

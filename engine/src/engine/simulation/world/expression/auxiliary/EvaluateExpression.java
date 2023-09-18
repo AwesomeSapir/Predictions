@@ -2,6 +2,7 @@ package engine.simulation.world.expression.auxiliary;
 
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.PropertyDefinition;
+import engine.simulation.world.definition.property.PropertyType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -23,6 +24,11 @@ public class EvaluateExpression extends AbstractExpression {
             return entityInstance.getPropertyByName(propertyDefinition.getName()).getValue();
         }
         return null;
+    }
+
+    @Override
+    public PropertyType getValueType() {
+        return propertyDefinition.getType();
     }
 
     @Override

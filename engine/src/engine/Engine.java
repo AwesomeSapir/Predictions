@@ -301,7 +301,11 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition){
-        return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
+        try {
+            return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
+        } catch (Exception e){
+            throw e;
+        }
     }
 
     private DTOTermination getSimulationTermination(SimulationInterface simulation){

@@ -5,9 +5,7 @@ import engine.prd.*;
 import engine.simulation.world.World;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.*;
-import engine.simulation.world.expression.EntityPropertyExpression;
-import engine.simulation.world.expression.Expression;
-import engine.simulation.world.expression.FreeValueExpression;
+import engine.simulation.world.expression.*;
 import engine.simulation.world.expression.auxiliary.*;
 import engine.simulation.world.instance.entity.EntityManager;
 import engine.simulation.world.instance.environment.ActiveEnvironment;
@@ -23,6 +21,9 @@ import engine.simulation.world.rule.action.type.calculation.ActionDivide;
 import engine.simulation.world.rule.action.type.calculation.ActionMultiply;
 import engine.simulation.world.rule.action.type.condition.*;
 import engine.simulation.world.rule.action.type.space.ActionKill;
+import engine.simulation.world.rule.action.type.space.ActionProximity;
+import engine.simulation.world.rule.action.type.space.ActionReplace;
+import engine.simulation.world.rule.action.type.space.ReplaceMode;
 import engine.simulation.world.rule.action.type.value.ActionDecrease;
 import engine.simulation.world.rule.action.type.value.ActionIncrease;
 import engine.simulation.world.rule.action.type.value.ActionSet;
@@ -42,6 +43,8 @@ import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.util.*;
+
+import static engine.simulation.world.expression.ExpressionType.FREE_VALUE;
 
 public class XmlTranslator implements Translator {
 
@@ -162,25 +165,21 @@ public class XmlTranslator implements Translator {
         String expressionString = prdObject.getProperty();
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
 
-        Expression expression = getExpression(expressionString, entity);
+        Expression expression = getExpression(expressionString, entity, PropertyType.STRING, false);
+        Expression value = getExpression(prdObject.getValue(), entity, expression.getValueType());
 
-        PropertyDefinition propertyDefinition = entity.getProperties().get(propertyName);
-        if (propertyDefinition == null) {
-            throw new IllegalArgumentException("Property '" + propertyName + "' referenced in SingleCondition does not exist.");
-        }
-        Expression value = getExpression(prdObject.getValue(), entity, propertyDefinition);
-        return new SingleCondition(operator, propertyName, value);
+        return new SingleCondition(operator, expression, value);
     }
 
     public ActionIncrease getActionIncrease(PRDAction prdObject, EntityDefinition primaryEntity, SecondaryEntity secondaryEntity) throws InvalidClassException {
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getBy(), primaryEntity, primaryEntity.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getBy(), primaryEntity, primaryEntity.getProperties().get(propertyName).getType());
         return new ActionIncrease(primaryEntity, secondaryEntity, propertyName, value);
     }
 
     public ActionDecrease getActionDecrease(PRDAction prdObject, EntityDefinition primaryEntity, SecondaryEntity secondaryEntity) throws InvalidClassException {
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getBy(), primaryEntity, primaryEntity.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getBy(), primaryEntity, primaryEntity.getProperties().get(propertyName).getType());
         return new ActionDecrease(primaryEntity, secondaryEntity, propertyName, value);
     }
 
@@ -192,14 +191,15 @@ public class XmlTranslator implements Translator {
         ActionCalc action;
         String resultPropertyName = prdObject.getResultProp();
         PropertyDefinition propertyDefinition = primaryEntity.getProperties().get(resultPropertyName);
+        PropertyType type = propertyDefinition.getType();
 
         if (prdObject.getPRDMultiply() != null) {
-            Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), primaryEntity, propertyDefinition);
-            Expression arg2 = getExpression(prdObject.getPRDMultiply().getArg2(), primaryEntity, propertyDefinition);
+            Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), primaryEntity, type);
+            Expression arg2 = getExpression(prdObject.getPRDMultiply().getArg2(), primaryEntity, type);
             action = new ActionMultiply(primaryEntity, secondaryEntity, resultPropertyName, arg1, arg2);
         } else if (prdObject.getPRDDivide() != null) {
-            Expression arg1 = getExpression(prdObject.getPRDDivide().getArg1(), primaryEntity, propertyDefinition);
-            Expression arg2 = getExpression(prdObject.getPRDDivide().getArg2(), primaryEntity, propertyDefinition);
+            Expression arg1 = getExpression(prdObject.getPRDDivide().getArg1(), primaryEntity, type);
+            Expression arg2 = getExpression(prdObject.getPRDDivide().getArg2(), primaryEntity, type);
             action = new ActionDivide(primaryEntity, secondaryEntity, resultPropertyName, arg1, arg2);
         } else {
             throw new IllegalArgumentException("CalculationAction has no multiply or divide objects");
@@ -210,10 +210,153 @@ public class XmlTranslator implements Translator {
 
     public ActionSet getActionSet(PRDAction prdObject, EntityDefinition primaryEntity, SecondaryEntity secondaryEntity) throws InvalidClassException {
         String propertyName = prdObject.getProperty();
-        Expression value = getExpression(prdObject.getValue(), primaryEntity, primaryEntity.getProperties().get(propertyName));
+        Expression value = getExpression(prdObject.getValue(), primaryEntity, primaryEntity.getProperties().get(propertyName).getType());
         return new ActionSet(primaryEntity, secondaryEntity, propertyName, value);
     }
 
+    public ExpressionType getExpressionType(String expression, EntityDefinition entityDefinition) {
+        RawExpression rawExpression = convertToRawExpression(expression);
+        if (!rawExpression.getSubexpressions().isEmpty()) { // function
+            return ExpressionType.AUXILIARY_FUNCTION;
+        } else {
+            if (entityDefinition.getProperties().containsKey(expression)) {
+                return ExpressionType.ENTITY_PROPERTY;
+            }
+        }
+        return FREE_VALUE;
+    }
+
+    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyType valueType) throws InvalidClassException {
+        return getExpression(expressionString, entityDefinition, valueType, true);
+    }
+
+    public RawExpression convertToRawExpression(String expression){
+        RawExpression result;
+        if(expression.charAt(expression.length()-1) == ')'){
+            int index = expression.indexOf('(');
+            result = new RawExpression(expression.substring(0, index));
+            String substring = expression.substring(index + 1, expression.length() - 1);
+            if(result.getValue().equals("percent")) {
+                String[] subexpressions = substring.split(",");
+                for (String sub : subexpressions) {
+                    result.addExpression(sub);
+                }
+            } else {
+                result.addExpression(substring);
+            }
+        } else {
+            result = new RawExpression(expression);
+        }
+        return result;
+    }
+
+    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyType valueType, boolean compatibilityCheck) throws InvalidClassException {
+        ExpressionType type = getExpressionType(expressionString, entityDefinition);
+        switch (type) {
+            case AUXILIARY_FUNCTION: {
+                RawExpression rawExpression = convertToRawExpression(expressionString);
+                FunctionType functionType = FunctionType.valueOf(rawExpression.getValue().toUpperCase());
+                String arg = rawExpression.getSubexpressions().get(0);
+                String[] subwords;
+                switch (functionType) {
+                    case ENVIRONMENT:
+                        PropertyInstance envProperty = activeEnvironment.getProperty(arg);
+                        if (compatibilityCheck && !Validator
+                                .validate(envProperty.getPropertyDefinition().getType().toString())
+                                .isCompatibleWith(valueType, arg)
+                                .isValid()) {
+                            throw new InvalidClassException("Properties not of same type: " + envProperty.getPropertyDefinition().getType() + " - " + valueType);
+                        }
+                        return new EnvironmentExpression(envProperty);
+                    case RANDOM:
+                        int range;
+                        try {
+                            range = Integer.parseInt(arg);
+                        } catch (NumberFormatException e) {
+                            throw new UnsupportedOperationException("The auxiliary function Random must get only integer values.");
+                        }
+                        return new RandomExpression(range);
+                    case EVALUATE: {
+                        subwords = arg.split("\\.");
+                        if (subwords.length != 2) {
+                            throw new InvalidClassException("Invalid structure of arguments for function Evaluate");
+                        }
+                        String entityName = subwords[0];
+                        String propertyName = subwords[1];
+
+                        if (entityManager.containsEntityDefinition(entityName)) {
+                            if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
+                                return new EvaluateExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                            }
+                            throw new InvalidClassException("Property " + propertyName + " for " + entityName + " in function Evaluate doesn't exist.");
+                        }
+                        throw new InvalidClassException("Entity " + entityName + " in function Evaluate doesn't exist.");
+                    }
+                    case PERCENT: {
+                        if (rawExpression.getSubexpressions().size() != 2) {
+                            throw new InvalidClassException("Invalid structure of arguments for function Percent");
+                        }
+                        String argExpression = rawExpression.getSubexpressions().get(0);
+                        String percentageExpression = rawExpression.getSubexpressions().get(1);
+                        Expression argExp = getExpression(argExpression, entityDefinition, valueType, compatibilityCheck);
+                        Expression percentage = getExpression(percentageExpression, entityDefinition, valueType, compatibilityCheck);
+                        return new PercentExpression(argExp, percentage);
+                    }
+                    case TICKS: {
+                        subwords = arg.split("\\.");
+                        if (subwords.length != 2) {
+                            throw new InvalidClassException("Invalid structure of arguments for function Ticks");
+                        }
+                        String entityName = subwords[0];
+                        String propertyName = subwords[1];
+
+                        if (entityManager.containsEntityDefinition(entityName)) {
+                            if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
+                                return new TicksExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                            }
+                            throw new InvalidClassException("Property " + propertyName + " for " + entityName + " in function Tick doesn't exist.");
+                        }
+                        throw new InvalidClassException("Entity " + entityName + " in function Tick doesn't exist.");
+                    }
+                    default:
+                        throw new UnsupportedOperationException("Function type not supported");
+                }
+            }
+            case ENTITY_PROPERTY: {
+                if (entityDefinition.getProperties().containsKey(expressionString)) {
+                    if (compatibilityCheck && !Validator
+                            .validate(entityDefinition.getProperties().get(expressionString).getType().toString())
+                            .isCompatibleWith(valueType, expressionString)
+                            .isValid()) {
+                        throw new InvalidClassException("Properties not of same type: " + entityDefinition.getProperties().get(expressionString).getType() + " - " + valueType);
+                    }
+                    return new EntityPropertyExpression(entityDefinition.getProperties().get(expressionString));
+                }
+                break;
+            }
+            case FREE_VALUE: {
+                switch (valueType) {
+                    case DECIMAL:
+                        return new FreeValueExpression(Integer.parseInt(expressionString), valueType);
+                    case BOOLEAN:
+                        return new FreeValueExpression(Boolean.parseBoolean(expressionString), valueType);
+                    case FLOAT:
+                        return new FreeValueExpression(Double.parseDouble(expressionString), valueType);
+                    case STRING:
+                        if (Validator.validate(expressionString).isValidString().isValid()) {
+                            return new FreeValueExpression(expressionString, valueType);
+                        }
+                        break;
+                }
+                throw new IllegalArgumentException("Property type and free value expression type don't match");
+            }
+            default:
+                throw new InvalidClassException("Fatal error occurred when creating expression: " + expressionString);
+        }
+        throw new InvalidClassException("Fatal error occurred when creating expression: " + expressionString);
+    }
+
+    /*
     public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyDefinition propertyDefinition) throws InvalidClassException {
         try {
             String[] words = expressionString.split("\\(");
@@ -294,39 +437,39 @@ public class XmlTranslator implements Translator {
                         .isValid()) {
                     throw new InvalidClassException("Properties not of same type: " + entityDefinition.getProperties().get(expressionString).getType() + " - " + propertyDefinition.getType());
                 }
-                return new EntityPropertyExpression(expressionString);
+                return new EntityPropertyExpression(entityDefinition.getProperties().get(expressionString));
             } else {
                 PropertyType type = propertyDefinition.getType();
                 switch (type) {
                     case DECIMAL:
-                        return new FreeValueExpression(Integer.parseInt(expressionString));
+                        return new FreeValueExpression(Integer.parseInt(expressionString), PropertyType.DECIMAL);
                     case BOOLEAN:
-                        return new FreeValueExpression(Boolean.parseBoolean(expressionString));
+                        return new FreeValueExpression(Boolean.parseBoolean(expressionString), PropertyType.BOOLEAN);
                     case FLOAT:
-                        return new FreeValueExpression(Double.parseDouble(expressionString));
+                        return new FreeValueExpression(Double.parseDouble(expressionString), PropertyType.FLOAT);
                     case STRING:
                         if (Validator.validate(expressionString).isValidString().isValid()) {
-                            return new FreeValueExpression(expressionString);
+                            return new FreeValueExpression(expressionString, PropertyType.STRING);
                         }
                         break;
                 }
                 throw new IllegalArgumentException("Property type and free value expression type don't match");
             }
         }
-    }
+    }*/
 
-    public SecondaryEntity getSecondaryEntity(PRDAction.PRDSecondaryEntity prdObject) throws InvalidClassException{
-        if(prdObject == null){
+    public SecondaryEntity getSecondaryEntity(PRDAction.PRDSecondaryEntity prdObject) throws InvalidClassException {
+        if (prdObject == null) {
             return null;
         }
         EntityDefinition entityDefinition = entityManager.getEntityDefinition(prdObject.getEntity());
         PRDAction.PRDSecondaryEntity.PRDSelection prdSelection = prdObject.getPRDSelection();
-        if(prdSelection.getCount().equals("ALL")){
+        if (prdSelection.getCount().equals("ALL")) {
             return new SecondaryEntity(entityDefinition);
         } else {
-            if(Validator.validate(prdSelection.getCount()).isInteger().isPositive().isValid()){
+            if (Validator.validate(prdSelection.getCount()).isInteger().isPositive().isValid()) {
                 MultiCondition condition;
-                if(prdSelection.getPRDCondition() == null){
+                if (prdSelection.getPRDCondition() == null) {
                     condition = null;
                 } else {
                     condition = getMultiCondition(prdSelection.getPRDCondition());
@@ -338,20 +481,42 @@ public class XmlTranslator implements Translator {
         }
     }
 
+    public ActionReplace getActionReplace(PRDAction prdObject){
+        EntityDefinition killEntity = entityManager.getEntityDefinition(prdObject.getKill());
+        EntityDefinition createEntity = entityManager.getEntityDefinition(prdObject.getCreate());
+        ReplaceMode mode = ReplaceMode.valueOf(prdObject.getMode().toUpperCase());
+        return new ActionReplace(killEntity, createEntity, mode);
+    }
+
+    public ActionProximity getActionProximity(PRDAction prdObject) throws InvalidClassException{
+        EntityDefinition primaryEntity = entityManager.getEntityDefinition(prdObject.getPRDBetween().getSourceEntity());
+        EntityDefinition secondary = entityManager.getEntityDefinition(prdObject.getPRDBetween().getTargetEntity());
+        Expression depth = getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, PropertyType.DECIMAL);
+        List<Action> actions = new ArrayList<>();
+        for (PRDAction action : prdObject.getPRDActions().getPRDAction()){
+            actions.add(getAction(action));
+        }
+        return new ActionProximity(primaryEntity, secondary, depth, actions);
+    }
+
     public Action getAction(PRDAction prdObject) throws InvalidClassException {
         ActionType type = ActionType.valueOf(prdObject.getType());
         String primaryEntityName = prdObject.getEntity();
         SecondaryEntity secondaryEntity = getSecondaryEntity(prdObject.getPRDSecondaryEntity());
-        EntityDefinition primaryEntity = entityManager.getEntityDefinition(primaryEntityName);
-        PropertyDefinition propertyDefinition;
-        if (!type.toString().equals("condition") && !type.toString().equals("kill")) {
-            if (!type.toString().equals("calculation")) {
-                propertyDefinition = primaryEntity.getProperties().get(prdObject.getProperty());
-            } else {
-                propertyDefinition = primaryEntity.getProperties().get(prdObject.getResultProp());
-            }
-            if (propertyDefinition == null) {
-                throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");
+        EntityDefinition primaryEntity = null;
+        if (type != ActionType.proximity && type != ActionType.replace) {
+            primaryEntity = entityManager.getEntityDefinition(primaryEntityName);
+
+            PropertyDefinition propertyDefinition;
+            if (!type.toString().equals("condition") && !type.toString().equals("kill")) {
+                if (!type.toString().equals("calculation")) {
+                    propertyDefinition = primaryEntity.getProperties().get(prdObject.getProperty());
+                } else {
+                    propertyDefinition = primaryEntity.getProperties().get(prdObject.getResultProp());
+                }
+                if (propertyDefinition == null) {
+                    throw new IllegalArgumentException("Property '" + prdObject.getProperty() + "' referenced in '" + type + "' action does not exist.");
+                }
             }
         }
         Action action = null;
@@ -373,6 +538,12 @@ public class XmlTranslator implements Translator {
                 break;
             case set:
                 action = getActionSet(prdObject, primaryEntity, secondaryEntity);
+                break;
+            case replace:
+                action = getActionReplace(prdObject);
+                break;
+            case proximity:
+                action = getActionProximity(prdObject);
                 break;
         }
         return action;
@@ -475,7 +646,7 @@ public class XmlTranslator implements Translator {
         ByTicks byTicks = null;
         BySecond bySecond = null;
 
-        if(prdObject.getPRDByUser() != null){
+        if (prdObject.getPRDByUser() != null) {
             byUser = new ByUser();
         }
 
@@ -486,7 +657,7 @@ public class XmlTranslator implements Translator {
                 bySecond = getBySecond((PRDBySecond) terminationCondition);
             }
         }
-        if(byUser!=null && (byTicks!= null || bySecond!=null)){
+        if (byUser != null && (byTicks != null || bySecond != null)) {
             throw new IllegalArgumentException("Termination must be configured with either byUser or (byTicks & bySeconds).");
         }
         return new Termination(byUser, byTicks, bySecond);

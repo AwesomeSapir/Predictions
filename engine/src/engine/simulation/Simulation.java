@@ -185,6 +185,7 @@ public class Simulation implements SimulationInterface, Serializable {
             status = Status.STOPPED;
             if (getTermination().getTerminationCondition(Termination.Type.USER) != null) {
                 ((ByUser) getTermination().getTerminationCondition(Termination.Type.USER)).stop();
+                world.getTermination().isMet();
             }
         } else {
             throw new RuntimeException("Simulation isn't running.");
