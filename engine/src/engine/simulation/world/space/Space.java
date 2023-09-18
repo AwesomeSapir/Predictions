@@ -97,8 +97,6 @@ public class Space {
 
                 Tile tile = getTile(new Point(mx, my));
                 if(tile.isTaken()){
-                    System.out.println("tile at " + tile.getX() + "," + tile.getY() + " is taken");
-                    System.out.println("entity is at " + tile.getEntity().getX() + "," + tile.getEntity().getY());
                     entityInstances.add(tile.getEntity());
                 }
             }

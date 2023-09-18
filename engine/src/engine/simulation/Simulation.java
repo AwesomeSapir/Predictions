@@ -216,6 +216,10 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public void run() {
-        loop();
+        if (status == Status.PAUSED) {
+            next();
+        } else {
+            loop();
+        }
     }
 }

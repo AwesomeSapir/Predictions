@@ -26,6 +26,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -333,10 +334,12 @@ public class Engine implements EngineInterface, Serializable {
         return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
 
+    private final ExecutorService tickExecutor = Executors.newSingleThreadExecutor();
+
     @Override
-    public void tickSimulation(int id){
+    public void tickSimulation(int id){ //TODO ask aviad
         SimulationInterface simulation = pastSimulations.get(id);
-        simulation.next();
+        tickExecutor.submit(simulation);
     }
 
     @Override

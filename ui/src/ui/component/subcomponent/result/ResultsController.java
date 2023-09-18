@@ -6,6 +6,7 @@ import dto.simulation.DTOSimulationHistogram;
 import dto.simulation.DTOSimulationResult;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -69,6 +70,7 @@ public class ResultsController {
     private EngineManager engineManager;
 
     //TODO replace with thread
+    private final Timer updateTimer = new Timer();
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
         engineManager.updateSimulationProgress(selectedSimulation.get());
         populateEntityTable(selectedSimulation.get().getId());
@@ -77,21 +79,33 @@ public class ResultsController {
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
-            updater.stop();
+            //updater.stop();
             showSimulationResult(engineManager.engine.getSimulationResult(selectedSimulation.get().getId()));
-            engineManager.updateSimulationProgress(selectedSimulation.get());
+            //engineManager.updateSimulationProgress(selectedSimulation.get());
         } else {
-            updater.play();
+            //updater.play();
         }
     };
 
     public ResultsController() {
-        updater.setCycleCount(Timeline.INDEFINITE);
+        //updater.setCycleCount(Timeline.INDEFINITE);
+
     }
 
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
         listExecution.setItems(engineManager.getSimulationsList());
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(selectedSimulation.get() != null) {
+                    Platform.runLater(() -> {
+                        engineManager.updateSimulationProgress(selectedSimulation.get());
+                        populateEntityTable(selectedSimulation.get().getId());
+                    });
+                }
+            }
+        }, 0, 200);
         entityAmountByTicks.setTitle("Quantity as a function of ticks");
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             gridSeconds.setProgress(newValue.getProgressSeconds());
@@ -171,7 +185,7 @@ public class ResultsController {
                 selectedStatus.isNotEqualTo(Status.RUNNING),
                 selectedStatus.isNotEqualTo(Status.PAUSED)));
         buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
-        buttonNext.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+        buttonNext.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
 
         listExecution.setCellFactory(new Callback<ListView<Simulation>, ListCell<Simulation>>() {
             @Override
@@ -198,7 +212,7 @@ public class ResultsController {
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
 
-        updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
+        //updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
         // Add a listener to the entityComboBox selection
          entityComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -415,7 +429,6 @@ public class ResultsController {
 
     private void actionSimulationNext(ActionEvent actionEvent){
         engineManager.tickSimulation(selectedSimulation.get().getId());
-        engineManager.updateSimulationProgress(selectedSimulation.get());
     }
 
     private void populateEntityTable(int simulationId) {
