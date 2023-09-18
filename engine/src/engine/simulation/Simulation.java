@@ -6,6 +6,7 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
+import engine.simulation.world.rule.action.ActionType;
 import engine.simulation.world.termination.BySecond;
 import engine.simulation.world.termination.ByTicks;
 import engine.simulation.world.termination.ByUser;
@@ -24,6 +25,7 @@ public class Simulation implements SimulationInterface, Serializable {
     private int tick = 0;
     private long totalDuration = 0;
     private LocalDateTime date;
+    private boolean singleTick = false;
 
     private Status status;
 
@@ -83,6 +85,9 @@ public class Simulation implements SimulationInterface, Serializable {
             for (Action action : validActions) {
                 if (action.getPrimaryEntity().equals(entityDefinition)) {
                     for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(entityDefinition)) {
+                        if(action.getType() == ActionType.set){
+                            System.out.println("VACCINATING");
+                        }
                         if (action.getSecondaryEntity() != null) {
                             for (EntityInstance secondaryEntity : world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), world)) {
                                 action.execute(entityInstance, secondaryEntity, world);
@@ -193,15 +198,21 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public void next() {
-        if (status != Status.STOPPED) {
+        if (status == Status.PAUSED) {
             status = Status.RUNNING;
             tick();
+            singleTick = false;
             if (status != Status.STOPPED) {
                 status = Status.PAUSED;
             }
         } else {
             throw new RuntimeException("Simulation is stopped.");
         }
+    }
+
+    @Override
+    public void singleTick(){
+        singleTick = true;
     }
 
     @Override
@@ -216,7 +227,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
     @Override
     public void run() {
-        if (status == Status.PAUSED) {
+        if (singleTick) {
             next();
         } else {
             loop();

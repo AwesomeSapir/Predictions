@@ -38,7 +38,9 @@ public class PropertyInstance implements Serializable {
                 return;
             }
         }
-        this.value = value;
-        ticksOfSameValue = 0;
+        if(this.value != value) {
+            this.value = value;
+            ticksOfSameValue = 0;
+        }
     }
 }

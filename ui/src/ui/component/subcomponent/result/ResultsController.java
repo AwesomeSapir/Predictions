@@ -416,7 +416,6 @@ public class ResultsController {
     private void actionShowBoard(ActionEvent actionEvent){
         Stage stage = new Stage();
         BoardView boardView = new BoardView(engineManager, selectedSimulation.get());
-        boardView.setSize(100, 100);
         Scene scene = new Scene(boardView);
         StyleManager.register(scene);
         stage.setScene(scene);
@@ -428,6 +427,7 @@ public class ResultsController {
     }
 
     private void actionSimulationNext(ActionEvent actionEvent){
+        selectedSimulation.get().setStatus(Status.RUNNING);
         engineManager.tickSimulation(selectedSimulation.get().getId());
     }
 

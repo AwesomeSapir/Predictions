@@ -1,6 +1,7 @@
 package ui.component.custom.board;
 
 import dto.detail.DTOEntity;
+import dto.detail.DTOGrid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
@@ -43,7 +44,6 @@ public class BoardView extends VBox {
         updater.setCycleCount(Timeline.INDEFINITE);
         this.engineManager = engineManager;
         this.simulation = simulation;
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/component/custom/board/viewBoard.fxml"));
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(this);
@@ -92,6 +92,9 @@ public class BoardView extends VBox {
 
     @FXML
     public void initialize() {
+        DTOGrid grid = engineManager.engine.getGrid(simulation.getId());
+        setSize(grid.getRows(), grid.getCols());
+
         simulation.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == Status.STOPPED) {
                 updater.stop();

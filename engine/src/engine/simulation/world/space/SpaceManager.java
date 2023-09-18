@@ -45,7 +45,7 @@ public class SpaceManager {
         space.placeEntity(entity, point);
     }
 
-    public EntityInstance getEntityInProximity(Point source, EntityDefinition target, int depth){
+    public EntityInstance getEntityInProximity(Point source, EntityDefinition target, double depth){
         for (EntityInstance entityInstance : space.getEntitiesInProximity(source, depth)){
             if(entityInstance.getEntityDefinition().equals(target)){
                 return entityInstance;

@@ -35,6 +35,8 @@ public interface SimulationInterface extends Runnable {
 
     void stop();
 
+    void singleTick();
+
     Status getStatus();
 
     void pause();

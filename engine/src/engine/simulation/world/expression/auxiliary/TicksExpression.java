@@ -34,7 +34,7 @@ public class TicksExpression extends AbstractExpression {
 
     @Override
     public ValueType getValueType() {
-        return ValueType.DECIMAL;
+        return ValueType.FLOAT;
     }
 
     @Override

@@ -16,7 +16,8 @@ import engine.simulation.world.rule.action.type.calculation.ActionCalc;
 import engine.simulation.world.rule.action.type.condition.ActionCondition;
 import engine.simulation.world.rule.action.type.value.ActionValue;
 import engine.simulation.world.space.SpaceManager;
-import engine.simulation.world.termination.*;
+import engine.simulation.world.termination.Termination;
+import engine.simulation.world.termination.TerminationCondition;
 import javafx.util.Pair;
 import translation.xml.Translator;
 import translation.xml.XmlTranslator;
@@ -26,7 +27,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -62,7 +62,7 @@ public class Engine implements EngineInterface, Serializable {
         World world = pastSimulations.get(id).getWorld();
         List<DTOEntityPopulation> entityPopulations = new ArrayList<>();
 
-        for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()){
+        for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()) {
             entityPopulations.add(new DTOEntityPopulation(
                     entityDefinition.getPopulation(),
                     world.getEntityManager().getEntityInstances(entityDefinition).size(),
@@ -79,7 +79,7 @@ public class Engine implements EngineInterface, Serializable {
     private Collection<DTOEntity> getEntities(SimulationInterface simulation) {
         List<DTOEntity> result = new ArrayList<>();
         List<EntityDefinition> entityDefinitions = new ArrayList<>(simulation.getAllEntityDefinitions());
-        for (EntityDefinition entityDefinition : entityDefinitions){
+        for (EntityDefinition entityDefinition : entityDefinitions) {
             result.add(getEntity(entityDefinition));
         }
         return result;
@@ -116,6 +116,7 @@ public class Engine implements EngineInterface, Serializable {
         }
         return new DTOSimulationHistogram(values, propertyName);
     }
+
     @Override
     public Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) {
         List<Double> values = new ArrayList<>();
@@ -128,7 +129,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException{
+    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException {
         isSimulationLoaded();
         List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
         for (PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()) {
@@ -145,7 +146,7 @@ public class Engine implements EngineInterface, Serializable {
     public Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException {
         isSimulationLoaded();
         List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
-        for(PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()){
+        for (PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()) {
             Object value = simulation.getEnvironmentValue(propertyDefinition.getName());
             environmentVariables.add(new DTOEnvironmentVariable(propertyDefinition.getName(), value));
         }
@@ -153,7 +154,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException{
+    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException {
         isSimulationLoaded();
         for (Pair<String, Object> envVar : envValues) {
             simulation.setEnvironmentValue(envVar.getKey(), envVar.getValue());
@@ -170,8 +171,8 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulationResult getSimulationResult(int id){
-        if(pastSimulations.get(id).getStatus() != Status.STOPPED){
+    public DTOSimulationResult getSimulationResult(int id) {
+        if (pastSimulations.get(id).getStatus() != Status.STOPPED) {
             return null;
         }
         Termination termination = pastSimulations.get(id).getTermination();
@@ -188,6 +189,12 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
+    public DTOGrid getGrid(int id) {
+        SimulationInterface simulation = pastSimulations.get(id);
+        return new DTOGrid(simulation.getWorld().getSpaceManager().getRows(), simulation.getWorld().getSpaceManager().getCols());
+    }
+
+    @Override
     public DTOSimulationDetails getSimulationDetails() throws NullPointerException {
         isSimulationLoaded();
 
@@ -201,19 +208,19 @@ public class Engine implements EngineInterface, Serializable {
         return new DTOSimulationDetails(getEntities(simulation), rules, termination, grid);
     }
 
-    private Collection<DTOAction> getActions(Collection<Action> actions){
+    private Collection<DTOAction> getActions(Collection<Action> actions) {
         List<DTOAction> result = new ArrayList<>();
         for (Action action : actions) {
             DTOAction dtoAction;
             DTOSecondaryEntity secondaryEntity = null;
-            if(action.getSecondaryEntity() != null){
+            if (action.getSecondaryEntity() != null) {
                 String count = action.getSecondaryEntity().isAll() ? "ALL" : String.valueOf(action.getSecondaryEntity().getSelectionCount());
-                 secondaryEntity = new DTOSecondaryEntity(
-                         action.getSecondaryEntity().getEntityDefinition().getName(),
-                         count,
-                         action.getSecondaryEntity().getCondition().toString());
+                secondaryEntity = new DTOSecondaryEntity(
+                        action.getSecondaryEntity().getEntityDefinition().getName(),
+                        count,
+                        action.getSecondaryEntity().getCondition().toString());
             }
-            if(action instanceof ActionValue){
+            if (action instanceof ActionValue) {
                 ActionValue actionValue = (ActionValue) action;
                 dtoAction = new DTOActionValue(
                         actionValue.getType().toString(),
@@ -221,7 +228,7 @@ public class Engine implements EngineInterface, Serializable {
                         actionValue.getPropertyName(),
                         actionValue.getValue().toString());
 
-            } else if(action instanceof ActionCalc){
+            } else if (action instanceof ActionCalc) {
                 ActionCalc actionCalc = (ActionCalc) action;
                 dtoAction = new DTOActionCalc(
                         actionCalc.getType().toString(),
@@ -231,7 +238,7 @@ public class Engine implements EngineInterface, Serializable {
                         actionCalc.getArg1().toString(),
                         actionCalc.getArg2().toString());
 
-            } else if(action instanceof ActionCondition){
+            } else if (action instanceof ActionCondition) {
                 ActionCondition actionCondition = (ActionCondition) action;
                 dtoAction = new DTOActionCondition(
                         actionCondition.getType().toString(),
@@ -270,7 +277,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void saveToFile(String filepath) {
-        try (ObjectOutputStream encoder = new ObjectOutputStream(Files.newOutputStream(Paths.get(filepath.concat(".file"))))){
+        try (ObjectOutputStream encoder = new ObjectOutputStream(Files.newOutputStream(Paths.get(filepath.concat(".file"))))) {
             encoder.writeObject(this);
             encoder.flush();
         } catch (Exception e) {
@@ -280,7 +287,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void loadFromFile(String filepath) {
-        try (ObjectInputStream decoder = new ObjectInputStream(Files.newInputStream(Paths.get(filepath.concat(".file"))))){
+        try (ObjectInputStream decoder = new ObjectInputStream(Files.newInputStream(Paths.get(filepath.concat(".file"))))) {
             Engine engine = (Engine) decoder.readObject();
             this.pastSimulations.putAll(engine.pastSimulations);
             this.simulation = engine.simulation;
@@ -296,23 +303,19 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOStatus getSimulationStatus(int id){
+    public DTOStatus getSimulationStatus(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
         return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString());
     }
 
-    private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition){
-        try {
-            return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
-        } catch (Exception e){
-            throw e;
-        }
+    private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition) {
+        return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
     }
 
-    private DTOTermination getSimulationTermination(SimulationInterface simulation){
+    private DTOTermination getSimulationTermination(SimulationInterface simulation) {
         Termination termination = simulation.getTermination();
         List<DTOTerminationCondition<?>> conditions = new ArrayList<>();
-        for (TerminationCondition condition : termination.getTerminationConditions()){
+        for (TerminationCondition condition : termination.getTerminationConditions()) {
             conditions.add(getDTOTerminationCondition(condition));
         }
         return new DTOTermination(conditions);
@@ -330,16 +333,17 @@ public class Engine implements EngineInterface, Serializable {
         archiveSimulation();
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.run(id);
+        simulation.pause();
+        simulation.singleTick();
         threadPool.execute(simulation);
         return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }
 
-    private final ExecutorService tickExecutor = Executors.newSingleThreadExecutor();
-
     @Override
-    public void tickSimulation(int id){ //TODO ask aviad
+    public void tickSimulation(int id) { //TODO ask aviad
         SimulationInterface simulation = pastSimulations.get(id);
-        tickExecutor.submit(simulation);
+        simulation.singleTick();
+        threadPool.execute(simulation);
     }
 
     @Override
@@ -359,7 +363,7 @@ public class Engine implements EngineInterface, Serializable {
         SimulationInterface simulation = pastSimulations.get(id);
         SpaceManager spaceManager = simulation.getWorld().getSpaceManager();
         DTOSpace result = new DTOSpace(spaceManager.getRows(), spaceManager.getCols());
-        for (EntityInstance entityInstance : simulation.getWorld().getEntityManager().getAllEntityInstances()){
+        for (EntityInstance entityInstance : simulation.getWorld().getEntityManager().getAllEntityInstances()) {
             result.setTile(
                     entityInstance.getEntityDefinition().getName(),
                     entityInstance.getX(),
@@ -369,5 +373,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void stopSimulation(int id) { pastSimulations.get(id).stop(); }
+    public void stopSimulation(int id) {
+        pastSimulations.get(id).stop();
+    }
 }

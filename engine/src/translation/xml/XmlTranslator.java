@@ -492,7 +492,7 @@ public class XmlTranslator implements Translator {
     public ActionProximity getActionProximity(PRDAction prdObject) throws InvalidClassException{
         EntityDefinition primaryEntity = entityManager.getEntityDefinition(prdObject.getPRDBetween().getSourceEntity());
         EntityDefinition secondary = entityManager.getEntityDefinition(prdObject.getPRDBetween().getTargetEntity());
-        Expression depth = getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, ValueType.DECIMAL);
+        Expression depth = getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, ValueType.FLOAT);
         List<Action> actions = new ArrayList<>();
         for (PRDAction action : prdObject.getPRDActions().getPRDAction()){
             actions.add(getAction(action));

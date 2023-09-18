@@ -83,11 +83,12 @@ public class Space {
         return tiles;
     }
 
-    public Collection<EntityInstance> getEntitiesInProximity(Point source, int depth){
+    public Collection<EntityInstance> getEntitiesInProximity(Point source, double depth){
         Set<EntityInstance> entityInstances = new HashSet<>();
+        int roundedDepth = (int) Math.round(depth);
 
-        for (int x = source.x()-depth; x <= source.x()+depth; x++) {
-            for (int y = source.y()-depth; y <= source.y()+depth; y++) {
+        for (int x = source.x()-roundedDepth; x <= source.x()+depth; x++) {
+            for (int y = source.y()-roundedDepth; y <= source.y()+depth; y++) {
                 int mx = ((x%rows) + rows);
                 int my = ((y%cols) + cols);
 

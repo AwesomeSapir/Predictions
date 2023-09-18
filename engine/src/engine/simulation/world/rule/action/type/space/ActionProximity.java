@@ -27,7 +27,7 @@ public class ActionProximity extends Action {
     @Override
     public void execute(EntityInstance entityInstance, Context context) {
         if (entityInstance.getEntityDefinition().equals(primaryEntity)) {
-            EntityInstance entityInProximity = context.getSpaceManager().getEntityInProximity(entityInstance.getPoint(), targetEntity, (Integer) depth.getValue(entityInstance));
+            EntityInstance entityInProximity = context.getSpaceManager().getEntityInProximity(entityInstance.getPoint(), targetEntity, (Double) depth.getValue(entityInstance));
             if (entityInProximity != null) {
                 for (Action action : actions) {
                     action.execute(entityInstance, entityInProximity, context);

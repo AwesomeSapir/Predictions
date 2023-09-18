@@ -41,6 +41,9 @@ public class ActionCondition extends Action {
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
         if(conditions.evaluate(primaryEntity, secondaryEntity, context)){
             for (Action action : actionsThen) {
+                if(action.getType() == ActionType.condition){
+                    System.out.println("HEALING");
+                }
                 action.execute(primaryEntity, secondaryEntity, context);
             }
         } else {

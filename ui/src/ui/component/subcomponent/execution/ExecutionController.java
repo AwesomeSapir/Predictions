@@ -119,9 +119,8 @@ public class ExecutionController {
             engineManager.setEntityPopulations(getEntityPopulations());
             engineManager.setEnvironmentValues(getEnvironmentValues());
 
-            engineManager.runSimulation();
-
             mainController.switchToResultsTab();
+            engineManager.runSimulation();
         } else {
             showAlert("Invalid input!", errorMessage, Alert.AlertType.ERROR);
         }

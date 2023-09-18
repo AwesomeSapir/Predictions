@@ -1,9 +1,6 @@
 package engine;
 
-import dto.detail.DTOEntity;
-import dto.detail.DTOEnvironmentVariable;
-import dto.detail.DTOProperty;
-import dto.detail.DTOTermination;
+import dto.detail.*;
 import dto.simulation.*;
 import javafx.util.Pair;
 
@@ -24,6 +21,9 @@ public interface EngineInterface {
     DTOSimulationResult getSimulationResult(int id);
 
     Collection<DTOSimulation> getPastSimulations();
+
+    DTOGrid getGrid(int id);
+
     DTOSimulationDetails getSimulationDetails() throws NullPointerException;
     void saveToFile(String filepath);
     void loadFromFile(String filepath);
