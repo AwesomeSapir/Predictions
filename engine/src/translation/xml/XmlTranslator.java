@@ -2,6 +2,7 @@ package translation.xml;
 
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
+import engine.simulation.world.ValueType;
 import engine.simulation.world.World;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.*;
@@ -165,7 +166,7 @@ public class XmlTranslator implements Translator {
         String expressionString = prdObject.getProperty();
         EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
 
-        Expression expression = getExpression(expressionString, entity, PropertyType.STRING, false);
+        Expression expression = getExpression(expressionString, entity, ValueType.STRING, false);
         Expression value = getExpression(prdObject.getValue(), entity, expression.getValueType());
 
         return new SingleCondition(operator, expression, value);
@@ -191,7 +192,7 @@ public class XmlTranslator implements Translator {
         ActionCalc action;
         String resultPropertyName = prdObject.getResultProp();
         PropertyDefinition propertyDefinition = primaryEntity.getProperties().get(resultPropertyName);
-        PropertyType type = propertyDefinition.getType();
+        ValueType type = propertyDefinition.getType();
 
         if (prdObject.getPRDMultiply() != null) {
             Expression arg1 = getExpression(prdObject.getPRDMultiply().getArg1(), primaryEntity, type);
@@ -226,7 +227,7 @@ public class XmlTranslator implements Translator {
         return FREE_VALUE;
     }
 
-    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyType valueType) throws InvalidClassException {
+    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, ValueType valueType) throws InvalidClassException {
         return getExpression(expressionString, entityDefinition, valueType, true);
     }
 
@@ -250,7 +251,7 @@ public class XmlTranslator implements Translator {
         return result;
     }
 
-    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, PropertyType valueType, boolean compatibilityCheck) throws InvalidClassException {
+    public Expression getExpression(String expressionString, EntityDefinition entityDefinition, ValueType valueType, boolean compatibilityCheck) throws InvalidClassException {
         ExpressionType type = getExpressionType(expressionString, entityDefinition);
         switch (type) {
             case AUXILIARY_FUNCTION: {
@@ -439,17 +440,17 @@ public class XmlTranslator implements Translator {
                 }
                 return new EntityPropertyExpression(entityDefinition.getProperties().get(expressionString));
             } else {
-                PropertyType type = propertyDefinition.getType();
+                ValueType type = propertyDefinition.getType();
                 switch (type) {
                     case DECIMAL:
-                        return new FreeValueExpression(Integer.parseInt(expressionString), PropertyType.DECIMAL);
+                        return new FreeValueExpression(Integer.parseInt(expressionString), ValueType.DECIMAL);
                     case BOOLEAN:
-                        return new FreeValueExpression(Boolean.parseBoolean(expressionString), PropertyType.BOOLEAN);
+                        return new FreeValueExpression(Boolean.parseBoolean(expressionString), ValueType.BOOLEAN);
                     case FLOAT:
-                        return new FreeValueExpression(Double.parseDouble(expressionString), PropertyType.FLOAT);
+                        return new FreeValueExpression(Double.parseDouble(expressionString), ValueType.FLOAT);
                     case STRING:
                         if (Validator.validate(expressionString).isValidString().isValid()) {
-                            return new FreeValueExpression(expressionString, PropertyType.STRING);
+                            return new FreeValueExpression(expressionString, ValueType.STRING);
                         }
                         break;
                 }
@@ -491,7 +492,7 @@ public class XmlTranslator implements Translator {
     public ActionProximity getActionProximity(PRDAction prdObject) throws InvalidClassException{
         EntityDefinition primaryEntity = entityManager.getEntityDefinition(prdObject.getPRDBetween().getSourceEntity());
         EntityDefinition secondary = entityManager.getEntityDefinition(prdObject.getPRDBetween().getTargetEntity());
-        Expression depth = getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, PropertyType.DECIMAL);
+        Expression depth = getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, ValueType.DECIMAL);
         List<Action> actions = new ArrayList<>();
         for (PRDAction action : prdObject.getPRDActions().getPRDAction()){
             actions.add(getAction(action));
@@ -570,7 +571,7 @@ public class XmlTranslator implements Translator {
             if (properties.get(name) != null) {
                 throw new IllegalArgumentException("Duplicate environment variable name '" + name + "'.");
             }
-            PropertyType type = PropertyType.valueOf(prdProperty.getType().toUpperCase());
+            ValueType type = ValueType.valueOf(prdProperty.getType().toUpperCase());
             Range range;
             if (prdProperty.getPRDRange() != null) {
                 range = getRange(prdProperty.getPRDRange());
@@ -589,7 +590,7 @@ public class XmlTranslator implements Translator {
 
     public PropertyDefinition getPropertyDefinition(PRDProperty prdObject) {
         String propertyName = prdObject.getPRDName();
-        PropertyType type = PropertyType.valueOf(prdObject.getType().toUpperCase());
+        ValueType type = ValueType.valueOf(prdObject.getType().toUpperCase());
         String init = prdObject.getPRDValue().getInit();
         Range range;
         if (prdObject.getPRDRange() != null) {
@@ -602,7 +603,7 @@ public class XmlTranslator implements Translator {
         return getPropertyDefinitionByType(propertyName, type, init, range, isRandomInit);
     }
 
-    public PropertyDefinition getPropertyDefinitionByType(String name, PropertyType type, String init, Range range, boolean isRandomInit) {
+    public PropertyDefinition getPropertyDefinitionByType(String name, ValueType type, String init, Range range, boolean isRandomInit) {
         PropertyDefinition propertyDefinition;
         switch (type) {
             case DECIMAL: {

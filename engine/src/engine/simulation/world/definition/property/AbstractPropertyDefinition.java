@@ -1,5 +1,6 @@
 package engine.simulation.world.definition.property;
 
+import engine.simulation.world.ValueType;
 import engine.simulation.world.type.Range;
 import engine.simulation.world.value.generator.ValueGenerator;
 
@@ -8,12 +9,12 @@ import java.io.Serializable;
 public abstract class AbstractPropertyDefinition<T> implements PropertyDefinition, Serializable {
 
     private final String name;
-    private final PropertyType type;
+    private final ValueType type;
     private final ValueGenerator<T> valueGenerator;
 
     private final boolean isRandomInit;
 
-    public AbstractPropertyDefinition(String name, PropertyType type, ValueGenerator<T> valueGenerator, boolean isRandomInit) {
+    public AbstractPropertyDefinition(String name, ValueType type, ValueGenerator<T> valueGenerator, boolean isRandomInit) {
         this.name = name;
         this.type = type;
         this.valueGenerator = valueGenerator;
@@ -24,7 +25,7 @@ public abstract class AbstractPropertyDefinition<T> implements PropertyDefinitio
         return name;
     }
 
-    public PropertyType getType() {
+    public ValueType getType() {
         return type;
     }
 

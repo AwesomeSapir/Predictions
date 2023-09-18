@@ -1,6 +1,6 @@
 package validator;
 
-import engine.simulation.world.definition.property.PropertyType;
+import engine.simulation.world.ValueType;
 import engine.simulation.world.type.Range;
 
 import java.io.Serializable;
@@ -106,7 +106,7 @@ public class Validator implements Serializable {
         return this;
     }
 
-    public Validator isCompatibleWith(PropertyType typeCompareWith, String expToCompare){
+    public Validator isCompatibleWith(ValueType typeCompareWith, String expToCompare){
         if(input.equals(typeCompareWith.toString())) {
             return this;
         }
@@ -122,7 +122,7 @@ public class Validator implements Serializable {
                 }
                 break;
             case FLOAT:
-                if(!input.equals(PropertyType.DECIMAL.toString())){
+                if(!input.equals(ValueType.DECIMAL.toString())){
                     isValid = false;
                 }
                 break;

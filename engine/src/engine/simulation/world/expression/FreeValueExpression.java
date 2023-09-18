@@ -1,13 +1,13 @@
 package engine.simulation.world.expression;
 
-import engine.simulation.world.definition.property.PropertyType;
+import engine.simulation.world.ValueType;
 import engine.simulation.world.instance.entity.EntityInstance;
 
 public class FreeValueExpression extends AbstractExpression {
     private final Object value;
-    private final PropertyType type;
+    private final ValueType type;
 
-    public FreeValueExpression(Object value, PropertyType type) {
+    public FreeValueExpression(Object value, ValueType type) {
         super(ExpressionType.FREE_VALUE);
         this.value = value;
         this.type = type;
@@ -19,7 +19,7 @@ public class FreeValueExpression extends AbstractExpression {
     }
 
     @Override
-    public PropertyType getValueType() {
+    public ValueType getValueType() {
         return type;
     }
 

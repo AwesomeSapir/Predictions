@@ -1,6 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
-import engine.simulation.world.definition.property.PropertyType;
+import engine.simulation.world.ValueType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.Expression;
 import engine.simulation.world.expression.ExpressionType;
@@ -31,7 +31,7 @@ public class PercentExpression extends AbstractExpression {
     }
 
     @Override
-    public PropertyType getValueType() {
-        return PropertyType.FLOAT;
+    public ValueType getValueType() {
+        return ValueType.FLOAT;
     }
 }

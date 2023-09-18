@@ -1,5 +1,6 @@
 package engine.simulation.world.definition.property;
 
+import engine.simulation.world.ValueType;
 import engine.simulation.world.type.Range;
 import engine.simulation.world.value.generator.ValueGenerator;
 
@@ -7,7 +8,7 @@ public class AbstractNumericPropertyDefinition<T> extends AbstractPropertyDefini
 
     private final Range range;
 
-    public AbstractNumericPropertyDefinition(String name, PropertyType type, Range range, ValueGenerator<T> valueGenerator, boolean isRandomInit) {
+    public AbstractNumericPropertyDefinition(String name, ValueType type, Range range, ValueGenerator<T> valueGenerator, boolean isRandomInit) {
         super(name, type, valueGenerator, isRandomInit);
         this.range = range;
     }

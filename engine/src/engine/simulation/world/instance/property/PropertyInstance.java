@@ -1,7 +1,7 @@
 package engine.simulation.world.instance.property;
 
 import engine.simulation.world.definition.property.PropertyDefinition;
-import engine.simulation.world.definition.property.PropertyType;
+import engine.simulation.world.ValueType;
 
 import java.io.Serializable;
 
@@ -33,7 +33,7 @@ public class PropertyInstance implements Serializable {
     }
 
     public void setValue(Object value) {
-        if(propertyDefinition.getType() == PropertyType.DECIMAL || propertyDefinition.getType() == PropertyType.FLOAT){
+        if(propertyDefinition.getType() == ValueType.DECIMAL || propertyDefinition.getType() == ValueType.FLOAT){
             if(propertyDefinition.getRange() != null && !propertyDefinition.getRange().isInRange(Double.parseDouble(value.toString()))){
                 return;
             }

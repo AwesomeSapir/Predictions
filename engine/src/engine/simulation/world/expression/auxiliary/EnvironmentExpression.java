@@ -1,6 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
-import engine.simulation.world.definition.property.PropertyType;
+import engine.simulation.world.ValueType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -20,7 +20,7 @@ public class EnvironmentExpression extends AbstractExpression {
     }
 
     @Override
-    public PropertyType getValueType() {
+    public ValueType getValueType() {
         return envPropertyInstance.getPropertyDefinition().getType();
     }
 
