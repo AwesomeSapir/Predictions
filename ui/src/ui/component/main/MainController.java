@@ -109,7 +109,6 @@ public class MainController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/component/subcomponent/settings/settingsScreen.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
-            StyleManager.register(scene);
             settingsStage.setTitle("Settings");
             settingsStage.setScene(scene);
             settingsStage.setOnCloseRequest(value -> StyleManager.unregister(scene));
@@ -119,6 +118,7 @@ public class MainController {
     }
 
     public void showSettingsWindow(){
+        StyleManager.register(settingsStage.getScene());
         if(!settingsStage.isShowing()){
             settingsStage.show();
         } else {
