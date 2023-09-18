@@ -4,6 +4,7 @@ public class ByTicks extends ByNumberTermination<Integer> {
 
     public ByTicks(int max) {
         super(max);
+        value = 0;
     }
 
     @Override

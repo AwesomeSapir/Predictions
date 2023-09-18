@@ -6,6 +6,8 @@
 .all,
 .root,
 .list-view,
+NotificationPane,
+.notification-bar,
 AnchorPane,
 VBox,
 .scroll-pane,
@@ -22,6 +24,13 @@ VBox,
 .tree-view,
 .tree-cell {
     -fx-background-color: -primary-background;
+    -fx-border-color: transparent;
+}
+
+.notification-bar > .pane {
+    -fx-background-color: -primary-accent-gradient;
+    -fx-padding: 0 8 0 8;
+    -fx-background-radius: 16px;
     -fx-border-color: transparent;
 }
 

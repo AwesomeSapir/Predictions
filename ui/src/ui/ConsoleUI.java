@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ConsoleUI extends Application implements MainUI{
-
     private EngineManager engineManager = new EngineManager();
 
     @Override
@@ -29,7 +28,7 @@ public class ConsoleUI extends Application implements MainUI{
         MainController mainController = loader.getController();
         mainController.setEngineManager(engineManager);
 
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(Notify.init(root), 600, 400);
         loadFonts();
         StyleManager.register(scene);
         primaryStage.setScene(scene);

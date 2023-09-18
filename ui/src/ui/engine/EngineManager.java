@@ -7,6 +7,7 @@ import dto.simulation.DTOSpace;
 import dto.simulation.DTOStatus;
 import engine.Engine;
 import engine.EngineInterface;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,9 +16,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.util.Pair;
+import ui.Notify;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EngineManager {
 
@@ -27,8 +31,23 @@ public class EngineManager {
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
 
+    private final Timer simulationUpdater = new Timer();
+
     public EngineManager() {
         engine = new Engine();
+        simulationUpdater.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                for (Simulation simulation : simulationsList){
+                    if(simulation.getStatus() != Status.STOPPED) {
+                        Platform.runLater(() -> {
+                            updateSimulationProgress(simulation);
+                            //populateEntityTable(selectedSimulation.get().getId());
+                        });
+                    }
+                }
+            }
+        }, 0, 200);
     }
 
     public void loadSimulation(File file){
@@ -63,7 +82,7 @@ public class EngineManager {
 
     public void stopSimulation(int id){
         engine.stopSimulation(id);
-        simulations.get(id).setStatus(Status.STOPPED);
+        //simulations.get(id).setStatus(Status.STOPPED);
     }
 
     public void updateSimulationProgress(Simulation simulation) {
@@ -71,6 +90,9 @@ public class EngineManager {
         simulation.getProgressSeconds().setValue(status.getMillis() / 1000.0);
         simulation.getProgressTicks().setValue(status.getTicks());
         simulation.setStatus(Status.valueOf(status.getStatus()));
+        if(simulation.getStatus() == Status.STOPPED){
+            Notify.getInstance().showAlertBar("Simulation #" + simulation.getId() + " finished.");
+        }
     }
 
     public DTOSpace getSimulationSpace(Simulation simulation){

@@ -4,6 +4,7 @@ public class BySecond extends ByNumberTermination<Long> {
 
     public BySecond(long max) {
         super(max);
+        value = 0L;
     }
 
     @Override

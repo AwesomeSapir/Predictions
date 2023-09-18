@@ -18,8 +18,8 @@ public class Simulation {
     public Simulation(int id, LocalDateTime runDate, DTOTermination termination) {
         this.id = id;
         this.runDate = runDate;
-        progressSeconds = new Progress(termination.getCondition("SECONDS")!=null ? (Integer) termination.getCondition("SECONDS").getCondition() : null);
-        progressTicks = new Progress(termination.getCondition("TICKS")!=null ? (Integer) termination.getCondition("TICKS").getCondition() : null);
+        progressSeconds = new Progress(termination.getCondition("SECONDS")!=null ? ((Long) termination.getCondition("SECONDS").getCondition()).intValue() : null);
+        progressTicks = new Progress(termination.getCondition("TICKS")!=null ? ((Long) termination.getCondition("TICKS").getCondition()).intValue() : null);
     }
 
     public int getId() {

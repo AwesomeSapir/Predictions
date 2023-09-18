@@ -6,7 +6,6 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
-import engine.simulation.world.rule.action.ActionType;
 import engine.simulation.world.termination.BySecond;
 import engine.simulation.world.termination.ByTicks;
 import engine.simulation.world.termination.ByUser;
@@ -61,6 +60,7 @@ public class Simulation implements SimulationInterface, Serializable {
             return;
         }
         tick++;
+        System.out.println("Simulation " + id + ": " + tick);
 
         LocalDateTime begin = LocalDateTime.now();
 
@@ -85,9 +85,6 @@ public class Simulation implements SimulationInterface, Serializable {
             for (Action action : validActions) {
                 if (action.getPrimaryEntity().equals(entityDefinition)) {
                     for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(entityDefinition)) {
-                        if(action.getType() == ActionType.set){
-                            System.out.println("VACCINATING");
-                        }
                         if (action.getSecondaryEntity() != null) {
                             for (EntityInstance secondaryEntity : world.getEntityManager().getEntityInstances(action.getSecondaryEntity(), world)) {
                                 action.execute(entityInstance, secondaryEntity, world);

@@ -4,9 +4,6 @@ import dto.detail.DTOProperty;
 import dto.simulation.DTOEntityPopulation;
 import dto.simulation.DTOSimulationHistogram;
 import dto.simulation.DTOSimulationResult;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -21,7 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import ui.component.custom.board.BoardView;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
@@ -65,17 +61,7 @@ public class ResultsController {
     //Preparing the data points for the line1
     private Map<Integer, Map<String,XYChart.Series>> seriesMap = new HashMap<>();
 
-
-
     private EngineManager engineManager;
-
-    //TODO replace with thread
-    private final Timer updateTimer = new Timer();
-    private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(100), event -> {
-        engineManager.updateSimulationProgress(selectedSimulation.get());
-        populateEntityTable(selectedSimulation.get().getId());
-        //selectedSimulation.get().setStatus(Status.valueOf(engineManager.engine.getSimulationStatus(selectedSimulation.get().getId()).getStatus()));
-    }));
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
@@ -95,17 +81,6 @@ public class ResultsController {
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
         listExecution.setItems(engineManager.getSimulationsList());
-        updateTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if(selectedSimulation.get() != null) {
-                    Platform.runLater(() -> {
-                        engineManager.updateSimulationProgress(selectedSimulation.get());
-                        populateEntityTable(selectedSimulation.get().getId());
-                    });
-                }
-            }
-        }, 0, 200);
         entityAmountByTicks.setTitle("Quantity as a function of ticks");
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             gridSeconds.setProgress(newValue.getProgressSeconds());

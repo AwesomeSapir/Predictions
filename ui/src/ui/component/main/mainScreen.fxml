@@ -31,7 +31,7 @@
             </Button>
          </left>
          <right>
-            <Button fx:id="queueManagementButton" mnemonicParsing="false" text="QUEUE" BorderPane.alignment="CENTER">
+            <Button fx:id="queueManagementButton" onAction="#showQueue" mnemonicParsing="false" text="QUEUE" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="8.0" />
                </BorderPane.margin>

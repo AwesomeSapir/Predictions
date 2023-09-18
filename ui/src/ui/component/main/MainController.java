@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import ui.Notify;
 import ui.component.subcomponent.detail.DetailsController;
 import ui.component.subcomponent.execution.ExecutionController;
 import ui.component.subcomponent.result.ResultsController;
@@ -31,6 +32,11 @@ public class MainController {
     @FXML public Tab tabExecutionID;
 
     @FXML
+    void showQueue(ActionEvent event){
+        Notify.getInstance().showAlertBar("Simulation finished!");
+    }
+
+    @FXML
     void chooseXMLFile(ActionEvent event){
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
@@ -41,6 +47,7 @@ public class MainController {
         }
 
         engineManager.loadSimulation(selectedFile);
+        Notify.getInstance().showAlertBar("File loaded successfully");
     }
 
     public void setEngineManager(EngineManager engineManager) {
