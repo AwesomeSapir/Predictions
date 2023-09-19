@@ -3,7 +3,7 @@ package ui.component.custom.input.generic;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import org.controlsfx.control.ToggleSwitch;
+import ui.component.custom.node.ToggleSwitch;
 
 import java.util.Arrays;
 import java.util.Collection;

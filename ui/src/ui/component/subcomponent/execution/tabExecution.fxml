@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.*?>
-
+<?import ui.component.custom.node.IconButton?>
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.execution.ExecutionController">
 
     <bottom>
-        <AnchorPane minHeight="-Infinity" prefHeight="64.0" prefWidth="599.0" BorderPane.alignment="CENTER">
-            <Button fx:id="buttonClear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="CLEAR"
-                    AnchorPane.leftAnchor="14.0"/>
-            <Button fx:id="buttonStart" styleClass="button-full" layoutX="544.0" layoutY="19.0" mnemonicParsing="false"
+        <AnchorPane minHeight="-Infinity" prefHeight="64.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <IconButton fx:id="buttonClear" icon="icon-clear" layoutX="14.0" layoutY="19.0" mnemonicParsing="false" text="CLEAR"
+                        AnchorPane.leftAnchor="14.0"/>
+            <IconButton fx:id="buttonStart" icon="icon-play" styleClass="button-full" layoutX="544.0" layoutY="19.0" mnemonicParsing="false"
                     onMouseClicked="#startClicked" text="START" AnchorPane.rightAnchor="14.400000000000091"/>
         </AnchorPane>
     </bottom>

@@ -4,7 +4,8 @@ import dto.detail.DTOEntity;
 import dto.detail.DTOEnvironmentVariable;
 import dto.detail.DTOObject;
 import dto.simulation.DTOSimulationDetails;
-import javafx.application.Platform;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import ui.Notify;
 import ui.component.custom.input.generic.InputItemView;
@@ -24,8 +26,11 @@ import ui.component.custom.input.simulation.EnvironmentVariableView;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
 import ui.style.Animations;
+import ui.style.StyleManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ExecutionController {
     @FXML
@@ -173,21 +178,15 @@ public class ExecutionController {
         return true;
     }
 
-    private Timer timer;
+    private Timeline buttonStartAniamtion = new Timeline(new KeyFrame(Duration.millis(10000), event -> {
+        Animations.highlight(buttonStart, 2);
+    }));
 
     public void onFocus() {
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    Animations.highlight(buttonStart, 2);
-                });
-            }
-        }, 500, 5000);
+        buttonStartAniamtion.playFromStart();
     }
 
     public void onUnfocused() {
-        timer.cancel();
+        buttonStartAniamtion.stop();
     }
 }

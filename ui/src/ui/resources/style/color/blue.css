@@ -1,7 +1,7 @@
 * {
     /* Colors for intractable objects */
     -primary-accent: #00B0FF;           /* A400     */
-    -secondary-accent: #01579B;         /* 900      */
+    -secondary-accent: #0091EA;         /* A700     */
     -primary-gradient-accent: #651FFF;  /* A400     */
     -primary-accent-gradient: linear-gradient(to bottom right, -primary-accent, -primary-gradient-accent);
 

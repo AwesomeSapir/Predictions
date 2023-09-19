@@ -1,0 +1,9 @@
+.text-area,
+.text-field,
+.text {
+    -fx-font-family: 'Dancing Script';
+    -fx-font-weight: bold;
+    -fx-font-smoothing-type: gray;
+    -fx-font-style: normal;
+    -fx-font-size: 18px;
+}

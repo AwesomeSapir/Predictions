@@ -7,9 +7,11 @@ import dto.simulation.DTOSimulationDetails;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import ui.component.custom.detail.DetailView;
 import ui.engine.EngineManager;
 import ui.style.Animations;
@@ -39,6 +41,35 @@ public class DetailsController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        treeViewDetails.setCellFactory(new Callback<TreeView<Object>, TreeCell<Object>>() {
+            @Override
+            public TreeCell<Object> call(TreeView<Object> param) {
+                return new TreeCell<Object>(){
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            if(item instanceof DTOObject) {
+                                setText(((DTOObject) item).getName());
+                            } else {
+                                setText(item.toString());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void updateSelected(boolean selected) {
+                        super.updateSelected(selected);
+                        if(selected){
+                            Animations.bounceRight(this);
+                        }
+                    }
+                };
+            }
+        });
 
         treeViewDetails.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue.getValue() instanceof DTOObject) {

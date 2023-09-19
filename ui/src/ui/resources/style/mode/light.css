@@ -3,7 +3,7 @@
     -primary-background: #F5F5F5;       /* 900/100  */
     -secondary-background: #E5E5E5;     /* special  */
 
-    -interact-background: #EEEEEE;      /* 800/200  */
+    -interact-background: #E0E0E0;      /* 800/200  */
 
     /* Colors for text */
     -primary-text: #212121;             /* 100/900  */
@@ -34,4 +34,22 @@
 }
 .icon-prev {
     -fx-image: url("/ui/resources/icon/black/skip_previous/baseline.png");
+}
+.icon-settings {
+    -fx-image: url("/ui/resources/icon/black/settings/baseline.png");
+}
+.icon-clear {
+    -fx-image: url("/ui/resources/icon/black/delete/baseline.png");
+}
+.icon-delete {
+    -fx-image: url("/ui/resources/icon/black/delete/baseline.png");
+}
+.icon-file-open {
+    -fx-image: url("/ui/resources/icon/black/file_upload/baseline.png");
+}
+.icon-queue {
+    -fx-image: url("/ui/resources/icon/black/playlist_play/baseline.png");
+}
+.icon-map {
+    -fx-image: url("/ui/resources/icon/black/person_pin/baseline.png");
 }

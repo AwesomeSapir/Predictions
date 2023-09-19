@@ -1,0 +1,9 @@
+.text-area,
+.text-field,
+.text {
+    -fx-font-family: 'Amatic SC';
+    -fx-font-weight: bold;
+    -fx-font-smoothing-type: lcd;
+    -fx-font-style: normal;
+    -fx-font-size: 20px;
+}

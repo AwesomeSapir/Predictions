@@ -4,6 +4,8 @@ import dto.detail.DTOProperty;
 import dto.simulation.DTOSimulationHistogram;
 import dto.simulation.DTOSimulationResult;
 import javafx.beans.binding.Bindings;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -17,11 +19,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import ui.component.custom.board.BoardView;
+import ui.component.custom.node.IconButton;
+import ui.component.custom.node.ToggleIconButton;
+import ui.component.custom.node.State;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.EntityInfo;
 import ui.engine.Simulation;
 import ui.engine.Status;
+import ui.style.Animations;
 import ui.style.StyleManager;
 
 import java.time.format.DateTimeFormatter;
@@ -32,8 +38,9 @@ import java.util.Map;
 
 public class ResultsController {
     @FXML public ListView<Simulation> listExecution;
+    @FXML public ToggleIconButton buttonPlayPause;
     @FXML public SimulationProgressView gridSeconds, gridTicks;
-    @FXML public Button buttonResume, buttonPause, buttonStop, buttonRerun, buttonBoard, buttonNext;
+    @FXML public Button buttonStop, buttonRerun, buttonBoard, buttonPrev, buttonNext;
     @FXML Label labelStatus, labelTermination;
     @FXML public ScrollPane paneDetails, paneResult;
 
@@ -65,8 +72,11 @@ public class ResultsController {
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
+            buttonPlayPause.setState(State.OFF);
             showSimulationResult(engineManager.getSimulationResult(selectedSimulation.get().getId()));
             updateDisplayData();
+        } else {
+            buttonPlayPause.setState(State.ON);
         }
     };
 
@@ -108,17 +118,14 @@ public class ResultsController {
         }
         labelTermination.textProperty().set(result);
 
-        if(simulationResult != null){
-            //populateGraph(simulationResult.getId());
-        }
     }
 
     @FXML
     public void initialize() {
         selectedSimulation.bind(listExecution.getSelectionModel().selectedItemProperty());
         selectedStatus.addListener(simulationStatusListener);
-        buttonPause.setOnAction(this::actionSimulationPause);
-        buttonResume.setOnAction(this::actionSimulationResume);
+        buttonPlayPause.setOnActionOn(this::actionSimulationResume);
+        buttonPlayPause.setOnActionOff(this::actionSimulationPause);
         buttonStop.setOnAction(this::actionSimulationStop);
         buttonRerun.setOnAction(this::actionSimulationRerun);
         buttonBoard.setOnAction(this::actionShowBoard);
@@ -143,11 +150,8 @@ public class ResultsController {
             updateDisplayData();
         });
 
-        buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
-        buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
-        buttonStop.disableProperty().bind(Bindings.and(
-                selectedStatus.isNotEqualTo(Status.RUNNING),
-                selectedStatus.isNotEqualTo(Status.PAUSED)));
+        buttonPlayPause.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
+        buttonStop.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
         buttonRerun.disableProperty().bind(selectedStatus.isEqualTo(Status.STOPPED).not());
         buttonNext.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
 
@@ -166,6 +170,15 @@ public class ResultsController {
                             setText(null);
                         } else {
                             setText("Simulation #" + item.getId() + "   " + runDate);
+                        }
+                    }
+
+                    @Override
+                    public void updateSelected(boolean selected) {
+                        super.updateSelected(selected);
+
+                        if(selected){
+                            Animations.bounceRight(this);
                         }
                     }
                 };
@@ -236,7 +249,7 @@ public class ResultsController {
 
         // Add the series to the chart
         histogramChart.getData().add(series);
-        
+
         vboxDisplayType.getChildren().add(histogramChart);
     }
 
@@ -299,15 +312,21 @@ public class ResultsController {
     }
 
     private void actionSimulationPause(ActionEvent actionEvent) {
-        engineManager.pauseSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() == Status.RUNNING) {
+            engineManager.pauseSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationStop(ActionEvent actionEvent) {
-        engineManager.stopSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() != Status.STOPPED) {
+            engineManager.stopSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationResume(ActionEvent actionEvent) {
-        engineManager.resumeSimulation(selectedSimulation.get().getId());
+        if(selectedSimulation.get().getStatus() == Status.PAUSED) {
+            engineManager.resumeSimulation(selectedSimulation.get().getId());
+        }
     }
 
     private void actionSimulationRerun(ActionEvent actionEvent) {
@@ -332,46 +351,4 @@ public class ResultsController {
         selectedSimulation.get().setStatus(Status.RUNNING);
         engineManager.tickSimulation(selectedSimulation.get().getId());
     }
-
-    /*
-    private void populateGraph(int id){
-        chartPopulationPerTick.getData().clear();
-        for (EntityInfo entity : selectedSimulation.get().getEntities()){
-            chartPopulationPerTick.getData().add(selectedSimulation.get().getEntityPopulationSeriesMap().get(entity));
-        }
-    }*/
-
-    /*private void populateEntityTable(int simulationId) {
-        // Clear existing items in the table and reset the series
-        entityTable.getItems().clear();
-
-        // Get entity information from the engineManager
-        Collection<DTOEntityPopulation> entityPopulations = engineManager.getDetailsByEntityCount(simulationId);
-
-        // Populate the table with entity information
-        for (DTOEntityPopulation entityPopulation : entityPopulations) {
-            String entityName = entityPopulation.getEntity().getName();
-
-            *//*
-            Map<String, XYChart.Series> stringSeriesMap = seriesMap.computeIfAbsent(simulationId, k -> new HashMap<>());
-            XYChart.Series series = stringSeriesMap.computeIfAbsent(entityName, k -> new XYChart.Series());
-            series.setName(entityName); // Set the name for the series
-
-            double ticks = engineManager.getSimulations().get(simulationId).getProgressTicks().getValue();
-
-             *//*
-            int population = entityPopulation.getFinalPopulation();
-            entityTable.getItems().add(new EntityInfo(entityName, population));
-
-            *//*
-            if (ticks % 10 == 0) {
-                // Add data points to the LineChart series
-                series.getData().add(new XYChart.Data<>(ticks, population));
-                stringSeriesMap.put(entityName, series);
-                seriesMap.put(simulationId, stringSeriesMap);
-            }
-
-             *//*
-        }
-    }*/
 }

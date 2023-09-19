@@ -1,0 +1,10 @@
+* {
+    /* Colors for intractable objects */
+    -primary-accent: #1DE9B6;           /* A400     */
+    -secondary-accent: #00BFA5;         /* 700      */
+    -primary-gradient-accent: #AA00FF;  /* A400     */
+    -primary-accent-gradient: linear-gradient(to bottom right, -primary-accent, -primary-gradient-accent);
+
+    /* Colors for errors */
+    -error: #D50000;                    /* A700     */
+}

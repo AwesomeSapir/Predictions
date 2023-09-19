@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import ui.style.Animations;
 import ui.validation.Validator;
 
 import java.util.Collection;
@@ -30,6 +31,7 @@ public abstract class TextInputItemView<T> extends InputItemView<T> {
     protected void bind() {
         super.bind();
         labelError.visibleProperty().bind(isValid.not());
+        isValid.addListener((observable, oldValue, newValue) -> Animations.shake(labelError));
         labelError.managedProperty().bind(labelError.visibleProperty());
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             isValid.set(newValue.isEmpty() || validator.validate(newValue));

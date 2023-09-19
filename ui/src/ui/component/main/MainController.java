@@ -15,6 +15,8 @@ import ui.component.subcomponent.queue.QueueController;
 import ui.component.subcomponent.result.ResultsController;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
+import ui.style.Animations;
+import ui.style.StyleManager;
 import ui.style.StyleManager;
 
 import java.io.File;
@@ -22,20 +24,32 @@ import java.io.IOException;
 
 public class MainController {
 
-    public TabPane mainTabPane;
+    @FXML public TabPane mainTabPane;
+    @FXML public Button buttonSettings;
     private EngineManager engineManager;
 
-    @FXML private BorderPane mainBorderPane;
-    @FXML private Button chooseFileButton;
-    @FXML private TextField filePathTextField;
-    @FXML private DetailsController tabDetailsController;
-    @FXML private ExecutionController tabExecutionController;
+    @FXML
+    private BorderPane mainBorderPane;
+    @FXML
+    private Button chooseFileButton;
+    @FXML
+    private TextField filePathTextField;
+    @FXML
+    private DetailsController tabDetailsController;
+    @FXML
+    private ExecutionController tabExecutionController;
 
-    @FXML private ResultsController tabResultsController;
+    @FXML
+    private ResultsController tabResultsController;
 
-    @FXML private Tab tabResultsID;
-    @FXML public Tab tabDetailsID;
-    @FXML public Tab tabExecutionID;
+    @FXML
+    private Tab tabResultsID;
+    @FXML
+    public Tab tabDetailsID;
+    @FXML
+    public Tab tabExecutionID;
+
+    private final Stage settingsStage = new Stage();
 
     private final Stage queueStage = new Stage();
 
@@ -70,12 +84,12 @@ public class MainController {
     }
 
     @FXML
-    void chooseXMLFile(ActionEvent event){
+    void chooseXMLFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
 
         File selectedFile = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
-        if(selectedFile == null){
+        if (selectedFile == null) {
             return;
         }
 
@@ -109,19 +123,47 @@ public class MainController {
     public void initialize() {
         tabExecutionController.setMainController(this);
         mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.equals(tabExecutionID)){
+            if (newValue.equals(tabExecutionID)) {
                 tabExecutionController.onFocus();
             }
-            if(oldValue.equals(tabExecutionID)){
+            if (oldValue.equals(tabExecutionID)) {
                 tabExecutionController.onUnfocused();
             }
         });
+
+        initSettingsWindow();
+        buttonSettings.setOnMouseEntered(event -> Animations.spin(buttonSettings, 0, 90).play());
+        buttonSettings.setOnMouseExited(event -> Animations.spin(buttonSettings, 90, -90).play());
+        buttonSettings.setOnAction(event -> showSettingsWindow());
+    }
+
+    public void initSettingsWindow(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/component/subcomponent/settings/settingsScreen.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            settingsStage.setTitle("Settings");
+            settingsStage.setScene(scene);
+            settingsStage.setOnCloseRequest(value -> StyleManager.unregister(scene));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showSettingsWindow(){
+        StyleManager.register(settingsStage.getScene());
+        if(!settingsStage.isShowing()){
+            settingsStage.show();
+        } else {
+            settingsStage.setIconified(false);
+            settingsStage.toFront();
+        }
     }
 
     public void switchToResultsTab() {
         mainTabPane.getSelectionModel().select(tabResultsID); // Switch to tabResultController
         ListView<Simulation> listView = tabResultsController.listExecution;
-        listView.selectionModelProperty().get().select(listView.getItems().size()-1);
+        listView.selectionModelProperty().get().select(listView.getItems().size() - 1);
     }
 
 }

@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import ui.component.custom.node.IconButton?>
 <fx:root hgap="8.0" type="javafx.scene.layout.GridPane" vgap="8.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
          xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -26,10 +27,6 @@
     <TextField fx:id="textField" promptText="Value" GridPane.columnSpan="3" GridPane.rowIndex="1"/>
     <Label fx:id="labelError" text="Error" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.valignment="TOP">
     </Label>
-    <Button fx:id="buttonRandom" styleClass="button-circle" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
-            GridPane.valignment="CENTER">
-        <graphic>
-            <ImageView pickOnBounds="true" preserveRatio="true" styleClass="icon-random"/>
-        </graphic>
-    </Button>
+    <IconButton fx:id="buttonRandom" icon="icon-random" styleClass="button-circle" GridPane.columnIndex="2" GridPane.halignment="RIGHT"
+            GridPane.valignment="CENTER"/>
 </fx:root>
