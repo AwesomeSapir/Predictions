@@ -1,4 +1,4 @@
-package ui.component.subcomponent.result;
+package ui.engine;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

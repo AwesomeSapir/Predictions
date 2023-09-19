@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import ui.component.custom.board.BoardView;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
+import ui.engine.EntityInfo;
 import ui.engine.Simulation;
 import ui.engine.Status;
 import ui.style.StyleManager;

@@ -25,7 +25,6 @@ import javafx.collections.ObservableMap;
 import javafx.scene.control.Alert;
 import javafx.util.Pair;
 import ui.Notify;
-import ui.component.subcomponent.result.EntityInfo;
 
 import java.io.File;
 import java.util.*;
