@@ -27,12 +27,59 @@ VBox,
     -fx-border-color: transparent;
 }
 
-.notification-bar > .pane {
-    -fx-background-color: -primary-accent-gradient;
-    -fx-padding: 0 8 0 8;
-    -fx-background-radius: 16px;
+.notification-bar  > .pane{
+    -fx-background-color: transparent;
+    -fx-border-width: 16px;
     -fx-border-color: transparent;
 }
+
+.notification-bar{
+    -fx-background-color: -primary-accent-gradient;
+    -fx-background-radius: 16px 16px 0px 0px;
+}
+
+.notification-pane {
+    -fx-background-color: -primary-background;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.notification-pane .notification-bar > .pane .close-button:hover {
+    -fx-background-color: -primary-text;
+    -fx-background-radius: 16px;
+}
+
+.notification-pane .notification-bar > .pane .close-button:pressed {
+    -fx-background-color: linear-gradient(#a3a3a3, #8b8b8b 34%, #777777 36%, #777777 63%, #8b8b8b 65%, #adadad);
+}
+
+.notification-pane .notification-bar > .pane .close-button > .graphic {
+    -fx-background-color: -primary-text;;
+    -fx-scale-shape: false;
+    -fx-padding: 4.5 4.5 4.5 4.5; /* Graphic is 9x9 px */
+}
+
+.notification-pane .notification-bar > .pane .close-button:hover > .graphic {
+    -fx-background-color: -primary-accent-gradient;
+}
+
+.notification-pane .notification-bar > .pane .close-button:pressed > .graphic {
+    -fx-background-color: #cfcfcf;
+}
+
+/*
+NotificationPane,
+.notification-pane,
+.notification-pane .notification-bar > .pane,
+.notification-pane.top .notification-bar > .pane,
+.notification-pane.bottom .notification-bar > .pane {
+.notification-pane.light .notification-bar > .pane,
+.notification-pane.dark .notification-bar > .pane {
+    -fx-background-color: -primary-background;
+    -fx-border-color: -primary-background;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-padding: 0;
+}*/
 
 
 .table-view .column-header {

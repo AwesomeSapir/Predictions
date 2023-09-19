@@ -308,7 +308,7 @@ public class ResultsController {
     private void displayConsistency(int simulationId,String selectedEntity,String selectedProperty){
 
         // Get the list of ticksOfSameValue for the selected property
-        List<Double> listOfTicksOfSameValue = (List<Double>) engineManager.engine.getTicksOfSameValueOfPropertyInstances(simulationId, selectedProperty,selectedEntity);
+        List<Double> listOfTicksOfSameValue = (List<Double>) engineManager.engine.getConsistencyOfProperty(simulationId, selectedProperty,selectedEntity);
 
         // Calculate the average consistency
         double averageConsistency = calculateAverage(listOfTicksOfSameValue);
@@ -363,11 +363,10 @@ public class ResultsController {
         }
 
         double totalConsistency = 0;
-        int valueCount = 0;
+        int valueCount = listOfValues.size();
 
-        for (Double tickOfSameValue : listOfValues) {
-            totalConsistency += tickOfSameValue;
-            valueCount++;
+        for (Double consistency : listOfValues) {
+            totalConsistency += consistency;
         }
         return totalConsistency / valueCount;
     }

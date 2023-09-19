@@ -28,7 +28,8 @@ public class ActionReplace extends Action {
             PropertyInstance createdProperty = newEntity.getPropertyIfExists(propertyDefinition.getName());
             if (createdProperty != null){
                 if(createdProperty.getPropertyDefinition().getType().equals(propertyDefinition.getType())){
-                    createdProperty.setValue(oldEntity.getPropertyIfExists(propertyDefinition.getName()).getValue());
+                    PropertyInstance oldProperty = oldEntity.getPropertyIfExists(propertyDefinition.getName());
+                    createdProperty.copy(oldProperty);
                 }
             }
         }

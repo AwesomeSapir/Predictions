@@ -36,6 +36,10 @@ public class Termination implements Serializable {
         return terminationConditions.get(type);
     }
 
+    public void addTerminationCondition(TerminationCondition condition){
+        terminationConditions.put(condition.getType(), condition);
+    }
+
     public TerminationCondition getReason() {
         return reason;
     }

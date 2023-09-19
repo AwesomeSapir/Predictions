@@ -44,5 +44,7 @@ public interface EngineInterface {
 
     Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
 
+    Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName);
+
     DTOQueueDetails getQueueDetails();
 }

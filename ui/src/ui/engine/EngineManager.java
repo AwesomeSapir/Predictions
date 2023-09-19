@@ -16,14 +16,13 @@ import javafx.util.Pair;
 import ui.Notify;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class EngineManager {
 
     public final EngineInterface engine; //TODO make private
     private final ObservableMap<Integer, Simulation> simulations = FXCollections.observableHashMap();
+    private final List<Simulation> simulationsRunning = new ArrayList<>();
     private final ObservableList<Simulation> simulationsList = FXCollections.observableArrayList();
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
@@ -35,17 +34,19 @@ public class EngineManager {
         simulationUpdater.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                for (Simulation simulation : simulationsList){
+                List<Simulation> finished = new ArrayList<>();
+                for (Simulation simulation : simulationsRunning){
                     Platform.runLater(() -> {
                         updateQueue();
+                        updateSimulationProgress(simulation);
+                        //populateEntityTable(selectedSimulation.get().getId());
                     });
-                    if(simulation.getStatus() != Status.STOPPED) {
-                        Platform.runLater(() -> {
-                            updateSimulationProgress(simulation);
-                            //populateEntityTable(selectedSimulation.get().getId());
-                        });
+                    if(simulation.getStatus() == Status.STOPPED) {
+                        finished.add(simulation);
                     }
                 }
+                simulationsRunning.removeAll(finished);
+                finished.clear();
             }
         }, 0, 200);
     }
@@ -82,6 +83,7 @@ public class EngineManager {
                 engine.getSimulationTermination(dtoSimulation.getId()));
         simulations.put(simulation.getId(), simulation);
         simulationsList.add(simulation);
+        simulationsRunning.add(simulation);
     }
 
     public void resumeSimulation(int id){
@@ -102,9 +104,12 @@ public class EngineManager {
         DTOStatus status = engine.getSimulationStatus(simulation.getId());
         simulation.getProgressSeconds().setValue(status.getMillis() / 1000.0);
         simulation.getProgressTicks().setValue(status.getTicks());
-        simulation.setStatus(Status.valueOf(status.getStatus()));
-        if(simulation.getStatus() == Status.STOPPED){
-            Notify.getInstance().showAlertBar("Simulation #" + simulation.getId() + " finished.");
+        Status newStatus = Status.valueOf(status.getStatus());
+        if(simulation.getStatus() != newStatus) {
+            simulation.setStatus(newStatus);
+            if (simulation.getStatus() == Status.STOPPED) {
+                Notify.getInstance().showAlertBar("Simulation #" + simulation.getId() + " finished.");
+            }
         }
     }
 

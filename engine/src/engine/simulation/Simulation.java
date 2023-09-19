@@ -69,7 +69,7 @@ public class Simulation implements SimulationInterface, Serializable {
 
         for (EntityInstance entityInstance : entityInstances) {
             for (PropertyInstance propertyInstance : entityInstance.getPropertyInstances()) {
-                propertyInstance.updateTicksOfSameValue();
+                propertyInstance.incrementTicksOfSameValue();
                 //System.out.println("Property '" + propertyInstance.getPropertyDefinition().getName() +"' didn't change for '" +propertyInstance.getTicksOfSameValue() + "' ticks");
             }
             world.getSpaceManager().moveEntity(entityInstance);
@@ -184,10 +184,11 @@ public class Simulation implements SimulationInterface, Serializable {
     public void stop() {
         if (status == Status.RUNNING || status == Status.PAUSED) {
             status = Status.STOPPED;
-            if (getTermination().getTerminationCondition(Termination.Type.USER) != null) {
-                ((ByUser) getTermination().getTerminationCondition(Termination.Type.USER)).stop();
-                world.getTermination().isMet();
+            if(getTermination().getTerminationCondition(Termination.Type.USER) == null){
+                getTermination().addTerminationCondition(new ByUser());
             }
+            ((ByUser) getTermination().getTerminationCondition(Termination.Type.USER)).stop();
+            world.getTermination().isMet();
         } else {
             throw new RuntimeException("Simulation isn't running.");
         }

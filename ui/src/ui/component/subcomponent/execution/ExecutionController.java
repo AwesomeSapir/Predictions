@@ -17,6 +17,7 @@ import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import ui.Notify;
 import ui.component.custom.input.generic.InputItemView;
 import ui.component.custom.input.simulation.EntityPopulationView;
 import ui.component.custom.input.simulation.EnvironmentVariableView;
@@ -91,6 +92,7 @@ public class ExecutionController {
     public void clearClicked(MouseEvent mouseEvent) {
         clearInputItems(vboxEntityPopulation);
         clearInputItems(vboxEnvVariables);
+        Notify.getInstance().showAlertBar("Cleared.");
     }
 
     private void clearInputItems(VBox container) {
@@ -119,8 +121,8 @@ public class ExecutionController {
             engineManager.setEntityPopulations(getEntityPopulations());
             engineManager.setEnvironmentValues(getEnvironmentValues());
 
-            mainController.switchToResultsTab();
             engineManager.runSimulation();
+            mainController.switchToResultsTab();
         } else {
             showAlert("Invalid input!", errorMessage, Alert.AlertType.ERROR);
         }
