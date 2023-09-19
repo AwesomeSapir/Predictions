@@ -4,6 +4,7 @@ import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.PropertyDefinition;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.space.Point;
+import exception.runtime.IllegalActionException;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -31,9 +32,9 @@ public class EntityInstance implements Serializable {
         return properties.values();
     }
 
-    public PropertyInstance getPropertyByName(String name){
+    public PropertyInstance getPropertyByName(String name) throws IllegalActionException {
         if(!properties.containsKey(name)){
-            throw new IllegalArgumentException("For entity of type " + entityDefinition.getName() + " has no property named " + name);
+            throw new IllegalActionException("For entity of type " + entityDefinition.getName() + " has no property named " + name);
         }
         return properties.get(name);
     }

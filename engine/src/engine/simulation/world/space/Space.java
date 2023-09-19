@@ -1,6 +1,7 @@
 package engine.simulation.world.space;
 
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 import java.util.*;
 
@@ -35,24 +36,24 @@ public class Space {
         availableTiles.put(Point.xy(point.x()%rows, point.y()%cols), getTile(point));
     }
 
-    public void placeEntityRandom(EntityInstance entity){
+    public void placeEntityRandom(EntityInstance entity) throws IllegalActionException {
         if(availableTiles.values().isEmpty()){
-            throw new RuntimeException("No available space.");
+            throw new IllegalActionException("No available space.");
         }
         Point point = getRandomAvailableTile();
         getTile(point).setEntity(entity);
         removeAvailableTile(point);
     }
 
-    public void placeEntity(EntityInstance entity, Point point){
+    public void placeEntity(EntityInstance entity, Point point) throws IllegalActionException {
         if(getTile(point).isTaken()){
-            throw new RuntimeException("Tile " + point.x() + "," + point.y() + " is already taken.");
+            throw new IllegalActionException("Tile " + point.x() + "," + point.y() + " is already taken.");
         }
         getTile(point).setEntity(entity);
         removeAvailableTile(point);
     }
 
-    public void moveEntity(EntityInstance entity, Point newPoint){
+    public void moveEntity(EntityInstance entity, Point newPoint) throws IllegalActionException {
         removeEntity(entity);
         placeEntity(entity, newPoint);
     }

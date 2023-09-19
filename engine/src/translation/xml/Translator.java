@@ -1,9 +1,11 @@
 package translation.xml;
 
 import engine.simulation.world.World;
-
-import java.io.InvalidClassException;
+import exception.FatalException;
+import exception.XMLConfigException;
+import exception.runtime.IllegalActionException;
+import exception.runtime.IncompatibleTypesException;
 
 public interface Translator {
-    World getWorld() throws InvalidClassException;
+    World getWorld() throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException;
 }

@@ -1,9 +1,19 @@
 package ui.engine;
 
 import dto.detail.DTOEnvironmentVariable;
+import dto.detail.DTOGrid;
+import dto.detail.DTOProperty;
 import dto.simulation.*;
 import engine.Engine;
 import engine.EngineInterface;
+import exception.EngineException;
+import exception.FatalException;
+import exception.SimulationMissingException;
+import exception.XMLConfigException;
+import exception.runtime.IllegalActionException;
+import exception.runtime.IllegalUserActionException;
+import exception.runtime.IncompatibleTypesException;
+import exception.runtime.SimulationRuntimeException;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -12,6 +22,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.scene.control.Alert;
 import javafx.util.Pair;
 import ui.Notify;
 
@@ -20,7 +31,7 @@ import java.util.*;
 
 public class EngineManager {
 
-    public final EngineInterface engine; //TODO make private
+    private final EngineInterface engine; //TODO make private
     private final ObservableMap<Integer, Simulation> simulations = FXCollections.observableHashMap();
     private final List<Simulation> simulationsRunning = new ArrayList<>();
     private final ObservableList<Simulation> simulationsList = FXCollections.observableArrayList();
@@ -41,7 +52,7 @@ public class EngineManager {
                         updateSimulationProgress(simulation);
                         //populateEntityTable(selectedSimulation.get().getId());
                     });
-                    if(simulation.getStatus() == Status.STOPPED) {
+                    if(simulation.getStatus() == Status.STOPPED || simulation.getStatus() == Status.ERROR) {
                         finished.add(simulation);
                     }
                 }
@@ -49,6 +60,26 @@ public class EngineManager {
                 finished.clear();
             }
         }, 0, 200);
+    }
+
+    private void alertException(Exception e){
+        if(e instanceof SimulationMissingException){
+            throw new RuntimeException(e);
+        } else if(e instanceof SimulationRuntimeException){
+            alertSimulationRuntimeException((SimulationRuntimeException) e);
+        } else if (e instanceof EngineException) {
+            alertEngineException((EngineException) e);
+        } else {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void alertSimulationRuntimeException(SimulationRuntimeException exception){
+        Notify.getInstance().showAlertDialog(exception.getType(), exception.getSecondaryType(), exception.getMessage(), Alert.AlertType.ERROR);
+    }
+
+    private void alertEngineException(EngineException exception){
+        Notify.getInstance().showAlertDialog(exception.getType(), null, exception.getMessage(), Alert.AlertType.ERROR);
     }
 
     public Queue getQueue() {
@@ -65,18 +96,34 @@ public class EngineManager {
     }
 
     public void loadSimulation(File file){
-        engine.loadXml(file.getAbsolutePath());
+        try {
+            engine.loadXml(file.getAbsolutePath());
+        }catch (IllegalActionException | FatalException | XMLConfigException | IncompatibleTypesException e) {
+            alertException(e);
+            return;
+        }
         isSimulationLoaded.set(false);
         isSimulationLoaded.set(true);
         simulationPath.set(file.getAbsolutePath());
+        Notify.getInstance().showAlertBar("File loaded successfully");
     }
 
     public void setEnvironmentValues(Collection<Pair<String, Object>> values){
-        engine.setEnvironmentValues(values);
+        try {
+            engine.setEnvironmentValues(values);
+        } catch (SimulationMissingException e) {
+            alertEngineException(e);
+        }
     }
 
     public void runSimulation(){
-        DTOSimulation dtoSimulation = engine.runSimulation();
+        DTOSimulation dtoSimulation = null;
+        try {
+            dtoSimulation = engine.runSimulation();
+        } catch (FatalException | SimulationMissingException | IllegalActionException | IllegalUserActionException |
+                 IncompatibleTypesException | XMLConfigException e) {
+            alertException(e);
+        }
         Simulation simulation =  new Simulation(
                 dtoSimulation.getId(),
                 dtoSimulation.getBeginTime(),
@@ -87,16 +134,28 @@ public class EngineManager {
     }
 
     public void resumeSimulation(int id){
-        engine.resumeSimulation(id);
+        try {
+            engine.resumeSimulation(id);
+        } catch (IllegalUserActionException e) {
+            alertException(e);
+        }
         simulations.get(id).setStatus(Status.RUNNING);
     }
 
     public void pauseSimulation(int id){
-        engine.pauseSimulation(id);
+        try {
+            engine.pauseSimulation(id);
+        } catch (IllegalUserActionException e) {
+            alertException(e);
+        }
     }
 
     public void stopSimulation(int id){
-        engine.stopSimulation(id);
+        try {
+            engine.stopSimulation(id);
+        } catch (IllegalUserActionException e) {
+            alertException(e);
+        }
         //simulations.get(id).setStatus(Status.STOPPED);
     }
 
@@ -109,6 +168,8 @@ public class EngineManager {
             simulation.setStatus(newStatus);
             if (simulation.getStatus() == Status.STOPPED) {
                 Notify.getInstance().showAlertBar("Simulation #" + simulation.getId() + " finished.");
+            } else if(simulation.getStatus() == Status.ERROR){
+                Notify.getInstance().showAlertBar("Simulation #" + simulation.getId() + " encountered an error: " + status.getError().getMessage());
             }
         }
     }
@@ -145,20 +206,73 @@ public class EngineManager {
         return simulationsList;
     }
 
+    public Collection<DTOEntityPopulation> getDetailsByEntityCount(int id){
+        return engine.getDetailsByEntityCount(id);
+    }
+
+    public Collection<DTOProperty> getPastEntityProperties(int id, String entity){
+        try {
+            return engine.getPastEntityProperties(id, entity);
+        } catch (IllegalActionException e) {
+            alertException(e);
+        }
+        return null;
+    }
+
+    public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String entity, String property){
+        try {
+            return engine.getValuesForPropertyHistogram(id, property,entity);
+        } catch (IllegalActionException e) {
+            alertException(e);
+        }
+        return null;
+    }
+
+    public Collection<Double> getConsistencyOfProperty(int id, String entity,String property){
+        try {
+            return engine.getConsistencyOfProperty(id, property,entity);
+        } catch (IllegalActionException e) {
+            alertException(e);
+        }
+        return null;
+    }
+
     public DTOSimulationDetails getSimulationDetails(){
-        return engine.getSimulationDetails();
+        try {
+            return engine.getSimulationDetails();
+        } catch (SimulationMissingException e) {
+            alertException(e);
+        }
+        return null;
+    }
+
+    public DTOSimulationResult getSimulationResult(int id){
+        return engine.getSimulationResult(id);
     }
 
     public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions(){
-        return engine.getEnvironmentDefinitions();
+        try {
+            return engine.getEnvironmentDefinitions();
+        } catch (SimulationMissingException e) {
+            alertException(e);
+        }
+        return null;
     }
 
     public void setEntityPopulations(Collection<Pair<String, Integer>> values) {
-        engine.setEntityPopulations(values);
+        try {
+            engine.setEntityPopulations(values);
+        } catch (IllegalActionException | SimulationMissingException e) {
+            alertException(e);
+        }
     }
 
     public void tickSimulation(int id) {
         engine.tickSimulation(id);
         simulations.get(id).setStatus(Status.PAUSED);
+    }
+
+    public DTOGrid getGrid(int id){
+        return engine.getGrid(id);
     }
 }

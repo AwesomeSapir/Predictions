@@ -2,6 +2,7 @@ package engine.simulation.world.space;
 
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +17,11 @@ public class SpaceManager {
         this.space = new Space(rows, cols);
     }
 
-    public void putEntity(EntityInstance entity){
+    public void putEntity(EntityInstance entity) throws IllegalActionException {
         space.placeEntityRandom(entity);
     }
 
-    public void moveEntity(EntityInstance entity){
+    public void moveEntity(EntityInstance entity) throws IllegalActionException {
         Point point = Point.xy(entity.getX(), entity.getY());
         List<Point> availablePoints = new ArrayList<>(space.getAvailableAdjacentTiles(point));
         if(!availablePoints.isEmpty()) {
@@ -41,7 +42,7 @@ public class SpaceManager {
         space.removeEntity(entity);
     }
 
-    private void placeEntity(EntityInstance entity, Point point){
+    private void placeEntity(EntityInstance entity, Point point) throws IllegalActionException {
         space.placeEntity(entity, point);
     }
 
@@ -61,7 +62,7 @@ public class SpaceManager {
         return space.getTotalSize();
     }
 
-    public void replaceEntity(EntityInstance oldEntity, EntityInstance newEntity) {
+    public void replaceEntity(EntityInstance oldEntity, EntityInstance newEntity) throws IllegalActionException {
         Point point = oldEntity.getPoint();
         removeEntity(oldEntity);
         placeEntity(newEntity, point);

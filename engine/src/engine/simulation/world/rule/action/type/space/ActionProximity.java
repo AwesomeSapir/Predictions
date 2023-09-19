@@ -6,6 +6,7 @@ import engine.simulation.world.expression.Expression;
 import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
+import exception.runtime.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class ActionProximity extends Action {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         if (entityInstance.getEntityDefinition().equals(primaryEntity)) {
             EntityInstance entityInProximity = context.getSpaceManager().getEntityInProximity(entityInstance.getPoint(), targetEntity, (Double) depth.getValue(entityInstance));
             if (entityInProximity != null) {
@@ -37,7 +38,7 @@ public class ActionProximity extends Action {
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         execute(primaryEntity, context);
     }
 }

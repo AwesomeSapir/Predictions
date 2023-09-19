@@ -7,6 +7,7 @@ import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.Context;
 import engine.simulation.world.rule.action.ActionType;
 import engine.simulation.world.rule.action.SecondaryEntity;
+import exception.runtime.IllegalActionException;
 
 public class ActionDecrease extends ActionValue {
 
@@ -15,7 +16,7 @@ public class ActionDecrease extends ActionValue {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         double by = Double.parseDouble(value.getValue(entityInstance).toString());
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
         double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
@@ -25,7 +26,7 @@ public class ActionDecrease extends ActionValue {
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         double by = Double.parseDouble(value.getValue(primaryEntity, secondaryEntity).toString());
         PropertyInstance propertyInstance = primaryEntity.getPropertyByName(propertyName);
         double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());

@@ -3,7 +3,7 @@ package ui;
 public interface MainUI {
     void run(String[] args);
 
-    // TODO custom exceptions and handling in ui
+    // TODO show results for paused
     // TODO rerun simulation
     // TODO check error files
 

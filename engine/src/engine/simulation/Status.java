@@ -1,5 +1,5 @@
 package engine.simulation;
 
 public enum Status {
-    RUNNING, PAUSED, STOPPED
+    RUNNING, PAUSED, STOPPED, ERROR
 }

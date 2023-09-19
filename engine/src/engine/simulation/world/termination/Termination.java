@@ -45,6 +45,6 @@ public class Termination implements Serializable {
     }
 
     public enum Type {
-        SECONDS, TICKS, USER
+        SECONDS, TICKS, USER, ERROR
     }
 }

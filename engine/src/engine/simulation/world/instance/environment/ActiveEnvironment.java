@@ -21,9 +21,9 @@ public class ActiveEnvironment implements Serializable {
         }
     }
 
-    public PropertyInstance getProperty(String name) throws UnsupportedOperationException{
+    public PropertyInstance getProperty(String name){
         if(!envVariables.containsKey(name)) {
-            throw new UnsupportedOperationException("Can't find env variable with name " + name);
+            throw new UnsupportedOperationException("Can't find env variable with name " + name); //TODO ILLEGAL
         }
         return envVariables.get(name);
     }

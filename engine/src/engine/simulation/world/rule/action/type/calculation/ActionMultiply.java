@@ -5,6 +5,7 @@ import engine.simulation.world.Context;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.rule.action.SecondaryEntity;
+import exception.runtime.IllegalActionException;
 
 public class ActionMultiply extends ActionCalc {
 
@@ -13,7 +14,7 @@ public class ActionMultiply extends ActionCalc {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         double val1 = Double.parseDouble(arg1.getValue(entityInstance).toString());
         double val2 = Double.parseDouble(arg2.getValue(entityInstance).toString());
         double result = val1 * val2;
@@ -22,7 +23,7 @@ public class ActionMultiply extends ActionCalc {
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         double val1 = Double.parseDouble(arg1.getValue(primaryEntity, secondaryEntity).toString());
         double val2 = Double.parseDouble(arg2.getValue(primaryEntity, secondaryEntity).toString());
         double result = val1 * val2;

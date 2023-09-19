@@ -3,6 +3,7 @@ package engine.simulation.world.expression;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.definition.property.PropertyDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 public class EntityPropertyExpression extends AbstractExpression{
 
@@ -19,15 +20,13 @@ public class EntityPropertyExpression extends AbstractExpression{
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) { //TODO ask aviad
+    public Object getValue(EntityInstance... entityInstances) throws IllegalActionException {
         for (EntityInstance entityInstance : entityInstances){
             try {
                 return getValue(entityInstance);
-            } catch (NullPointerException e){
-
-            }
+            } catch (NullPointerException ignored){}
         }
-        throw new RuntimeException("Entity instances don't match defined definition");
+        throw new IllegalActionException("Entity instances don't match defined definition");
     }
 
     @Override

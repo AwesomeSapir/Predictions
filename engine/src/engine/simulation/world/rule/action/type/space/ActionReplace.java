@@ -7,6 +7,7 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
+import exception.runtime.IllegalActionException;
 
 public class ActionReplace extends Action {
 
@@ -36,7 +37,7 @@ public class ActionReplace extends Action {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         if(entityInstance.getEntityDefinition().equals(primaryEntity)){
             EntityInstance created = new EntityInstance(createEntity);
             created.initProperties();
@@ -49,7 +50,7 @@ public class ActionReplace extends Action {
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         execute(primaryEntity, context);
     }
 }

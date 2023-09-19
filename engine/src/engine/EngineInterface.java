@@ -2,21 +2,27 @@ package engine;
 
 import dto.detail.*;
 import dto.simulation.*;
+import exception.FatalException;
+import exception.SimulationMissingException;
+import exception.XMLConfigException;
+import exception.runtime.IllegalActionException;
+import exception.runtime.IllegalUserActionException;
+import exception.runtime.IncompatibleTypesException;
 import javafx.util.Pair;
 
 import java.util.Collection;
 
 public interface EngineInterface {
 
-    void loadXml(String filepath);
+    void loadXml(String filepath) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException;
     Collection<DTOEntityPopulation> getDetailsByEntityCount(int id);
     Collection<DTOEntity> getPastEntities(int id);
-    Collection<DTOProperty> getPastEntityProperties(int id, String name);
-    DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName);
-    Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException;
-    Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException;
-    void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException;
-    DTOSimulation runSimulation() throws NullPointerException;
+    Collection<DTOProperty> getPastEntityProperties(int id, String name) throws IllegalActionException;
+    DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) throws IllegalActionException;
+    Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws SimulationMissingException;
+    Collection<DTOEnvironmentVariable> getEnvironmentValues() throws SimulationMissingException;
+    void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws SimulationMissingException;
+    DTOSimulation runSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException;
 
     DTOSimulationResult getSimulationResult(int id);
 
@@ -24,27 +30,27 @@ public interface EngineInterface {
 
     DTOGrid getGrid(int id);
 
-    DTOSimulationDetails getSimulationDetails() throws NullPointerException;
+    DTOSimulationDetails getSimulationDetails() throws SimulationMissingException;
     void saveToFile(String filepath);
     void loadFromFile(String filepath);
     int getNextId();
     DTOStatus getSimulationStatus(int id);
     DTOTermination getSimulationTermination(int id);
-    void pauseSimulation(int id);
+    void pauseSimulation(int id) throws IllegalUserActionException;
 
     void tickSimulation(int id);
 
-    void resumeSimulation(int id);
+    void resumeSimulation(int id) throws IllegalUserActionException;
 
     DTOSpace getSimulationSpace(int id);
 
-    void stopSimulation(int id);
+    void stopSimulation(int id) throws IllegalUserActionException;
 
-    void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations);
+    void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) throws IllegalActionException, SimulationMissingException;
 
-    Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName);
+    Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) throws IllegalActionException;
 
-    Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName);
+    Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName) throws IllegalActionException;
 
     DTOQueueDetails getQueueDetails();
 }

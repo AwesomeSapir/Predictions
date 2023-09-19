@@ -26,9 +26,9 @@ public class ConsoleUI extends Application implements MainUI{
         Parent root = loader.load();
 
         MainController mainController = loader.getController();
-        mainController.setEngineManager(engineManager);
 
         Scene scene = new Scene(Notify.init(root), 600, 400);
+        mainController.setEngineManager(engineManager);
         loadFonts();
         StyleManager.register(scene);
         primaryStage.setScene(scene);

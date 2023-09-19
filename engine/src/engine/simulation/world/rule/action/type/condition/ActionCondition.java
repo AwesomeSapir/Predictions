@@ -6,6 +6,7 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.ActionType;
 import engine.simulation.world.rule.action.SecondaryEntity;
+import exception.runtime.IllegalActionException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class ActionCondition extends Action {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         if(conditions.evaluate(entityInstance, context)){
             for (Action action : actionsThen) {
                 action.execute(entityInstance, context);
@@ -38,7 +39,7 @@ public class ActionCondition extends Action {
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         if(conditions.evaluate(primaryEntity, secondaryEntity, context)){
             for (Action action : actionsThen) {
                 action.execute(primaryEntity, secondaryEntity, context);

@@ -3,6 +3,7 @@ package engine.simulation.world.instance.entity;
 import engine.simulation.world.Context;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.rule.action.SecondaryEntity;
+import exception.runtime.IllegalActionException;
 
 import java.util.*;
 
@@ -33,9 +34,9 @@ public class EntityManager {
         killQueue.add(entityInstance);
     }
 
-    public EntityDefinition getEntityDefinition(String name) throws IllegalArgumentException{
+    public EntityDefinition getEntityDefinition(String name) throws IllegalActionException {
         if(!containsEntityDefinition(name)){
-            throw new IllegalArgumentException("Entity '" + name + "' does not exist.");
+            throw new IllegalActionException("Entity '" + name + "' does not exist.");
         }
         return entityDefinitions.get(name);
     }
@@ -44,7 +45,7 @@ public class EntityManager {
         return entityInstances.get(entityDefinition);
     }
 
-    public Collection<EntityInstance> getEntityInstances(SecondaryEntity secondaryEntity, Context context) {
+    public Collection<EntityInstance> getEntityInstances(SecondaryEntity secondaryEntity, Context context) throws IllegalActionException {
         List<EntityInstance> entityInstances = new ArrayList<>(getEntityInstances(secondaryEntity.getEntityDefinition()));
 
         if(secondaryEntity.isAll()){

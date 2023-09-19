@@ -7,6 +7,7 @@ import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.Context;
 import engine.simulation.world.rule.action.ActionType;
 import engine.simulation.world.rule.action.SecondaryEntity;
+import exception.runtime.IllegalActionException;
 
 public class ActionSet extends ActionValue {
 
@@ -15,13 +16,13 @@ public class ActionSet extends ActionValue {
     }
 
     @Override
-    public void execute(EntityInstance entityInstance, Context context) {
+    public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
         propertyInstance.setValue(value.getValue(entityInstance));
     }
 
     @Override
-    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         PropertyInstance propertyInstance = primaryEntity.getPropertyByName(propertyName);
         propertyInstance.setValue(value.getValue(primaryEntity, secondaryEntity));
     }

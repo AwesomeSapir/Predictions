@@ -7,7 +7,7 @@ public class Range implements Serializable {
     protected final double from;
     protected final double to;
 
-    public Range(double from, double to) {
+    public Range(double from, double to) throws IllegalArgumentException{
         if(from > to){
             throw new IllegalArgumentException("Range is invalid, from: '" + from + "' is bigger than to: '" + to + "'");
         }

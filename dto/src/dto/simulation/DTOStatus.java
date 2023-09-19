@@ -5,11 +5,13 @@ public class DTOStatus {
     private int ticks;
     private long millis;
     private String status;
+    private Exception error;
 
-    public DTOStatus(int ticks, long millis, String status) {
+    public DTOStatus(int ticks, long millis, String status, Exception error) {
         this.ticks = ticks;
         this.millis = millis;
         this.status = status;
+        this.error = error;
     }
 
     public int getTicks() {
@@ -22,5 +24,9 @@ public class DTOStatus {
 
     public String getStatus() {
         return status;
+    }
+
+    public Exception getError() {
+        return error;
     }
 }

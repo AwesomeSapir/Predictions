@@ -6,6 +6,7 @@ import engine.simulation.world.ValueType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 public class TicksExpression extends AbstractExpression {
     protected final EntityDefinition entityDefinition;
@@ -18,18 +19,18 @@ public class TicksExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) {
+    public Object getValue(EntityInstance entityInstance) throws IllegalActionException {
         return entityInstance.getPropertyByName(propertyDefinition.getName()).getTicksSinceChange();
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) {
+    public Object getValue(EntityInstance... entityInstances) throws IllegalActionException {
         for (EntityInstance entityInstance : entityInstances){
             if(entityDefinition.equals(entityInstance.getEntityDefinition())){
                 return getValue(entityInstance);
             }
         }
-        throw new RuntimeException("Entity instances don't match defined definition");
+        throw new IllegalActionException("Entity instances don't match defined definition");
     }
 
     @Override

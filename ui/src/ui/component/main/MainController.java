@@ -9,7 +9,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import ui.Notify;
 import ui.component.subcomponent.detail.DetailsController;
 import ui.component.subcomponent.execution.ExecutionController;
 import ui.component.subcomponent.queue.QueueController;
@@ -81,7 +80,6 @@ public class MainController {
         }
 
         engineManager.loadSimulation(selectedFile);
-        Notify.getInstance().showAlertBar("File loaded successfully");
     }
 
     public void setEngineManager(EngineManager engineManager) {

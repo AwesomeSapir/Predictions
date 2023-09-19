@@ -2,6 +2,7 @@ package engine.simulation.world.rule.action.type.condition;
 
 import engine.simulation.world.Context;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class MultiCondition implements Condition, Serializable {
     }
 
     @Override
-    public boolean evaluate(EntityInstance entityInstance, Context context) {
+    public boolean evaluate(EntityInstance entityInstance, Context context) throws IllegalActionException {
         Boolean overallResult = null;
         for (Condition condition : subConditions){
             boolean result = condition.evaluate(entityInstance, context);
@@ -39,7 +40,7 @@ public class MultiCondition implements Condition, Serializable {
     }
 
     @Override
-    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         Boolean overallResult = null;
         for (Condition condition : subConditions){
             boolean result = condition.evaluate(primaryEntity, secondaryEntity, context);

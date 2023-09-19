@@ -92,7 +92,7 @@ public class BoardView extends VBox {
 
     @FXML
     public void initialize() {
-        DTOGrid grid = engineManager.engine.getGrid(simulation.getId());
+        DTOGrid grid = engineManager.getGrid(simulation.getId());
         setSize(grid.getRows(), grid.getCols());
 
         simulation.statusProperty().addListener((observable, oldValue, newValue) -> {

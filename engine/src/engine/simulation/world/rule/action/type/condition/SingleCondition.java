@@ -3,6 +3,7 @@ package engine.simulation.world.rule.action.type.condition;
 import engine.simulation.world.expression.Expression;
 import engine.simulation.world.Context;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 import validator.Validator;
 
 import java.io.Serializable;
@@ -19,20 +20,20 @@ public class SingleCondition implements Condition, Serializable {
         this.value = value;
     }
 
-    public boolean evaluate(EntityInstance entityInstance, Context context){
+    public boolean evaluate(EntityInstance entityInstance, Context context) throws IllegalActionException {
         Object argValue = arg.getValue(entityInstance);
         Object expValue = value.getValue(entityInstance);
         return compare(argValue, expValue);
     }
 
     @Override
-    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) {
+    public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         Object argValue = arg.getValue(primaryEntity, secondaryEntity);
         Object expValue = value.getValue(primaryEntity, secondaryEntity);
         return compare(argValue, expValue);
     }
 
-    public boolean compare(Object argValue, Object expValue){
+    public boolean compare(Object argValue, Object expValue) throws IllegalActionException {
         if(Validator.validate(argValue.toString()).isDouble().isValid() && Validator.validate(expValue.toString()).isDouble().isValid()){
             double numEntityValue = Double.parseDouble(argValue.toString());
             double numExpValue = Double.parseDouble(expValue.toString());
@@ -53,7 +54,7 @@ public class SingleCondition implements Condition, Serializable {
                 case eq:
                     return argValue.equals(expValue);
                 default:
-                    throw new UnsupportedOperationException("Operator " + operator.getOperator() + " not supported");
+                    throw new IllegalActionException("Operator " + operator.getOperator() + " not supported");
             }
         }
         return false;

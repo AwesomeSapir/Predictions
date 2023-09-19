@@ -5,6 +5,7 @@ import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.Expression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
+import exception.runtime.IllegalActionException;
 
 public class PercentExpression extends AbstractExpression {
 
@@ -18,7 +19,7 @@ public class PercentExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) {
+    public Object getValue(EntityInstance entityInstance) throws IllegalActionException {
         Object argObj = arg.getValue(entityInstance);
         Object percentageObj = percentage.getValue(entityInstance);
         if(argObj!= null && percentageObj != null) {
@@ -30,14 +31,14 @@ public class PercentExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) {
+    public Object getValue(EntityInstance... entityInstances) throws IllegalActionException {
         for (EntityInstance entityInstance : entityInstances){
             Object result = getValue(entityInstance);
             if(result != null){
                 return result;
             }
         }
-        throw new RuntimeException("Entity instances don't match defined definition");
+        throw new IllegalActionException("Entity instances don't match defined definition");
     }
 
     @Override

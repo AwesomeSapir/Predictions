@@ -6,10 +6,10 @@ import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
-import engine.simulation.world.termination.BySecond;
-import engine.simulation.world.termination.ByTicks;
-import engine.simulation.world.termination.ByUser;
-import engine.simulation.world.termination.Termination;
+import engine.simulation.world.termination.*;
+import exception.runtime.IllegalActionException;
+import exception.runtime.IllegalUserActionException;
+import exception.runtime.SimulationRuntimeException;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -28,6 +28,8 @@ public class Simulation implements SimulationInterface, Serializable {
 
     private Status status;
 
+    private SimulationRuntimeException exception;
+
     public Simulation(World world) {
         this.world = world;
     }
@@ -39,7 +41,7 @@ public class Simulation implements SimulationInterface, Serializable {
         this.status = Status.RUNNING;
     }
 
-    private void loop() {
+    private void loop() throws IllegalActionException {
         while (status == Status.RUNNING) {
             tick();
         }
@@ -54,7 +56,7 @@ public class Simulation implements SimulationInterface, Serializable {
         }
     }
 
-    public void tick() {
+    public void tick() throws IllegalActionException {
         if (world.getTermination().isMet()) {
             status = Status.STOPPED;
             return;
@@ -125,13 +127,13 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
-    public void setEntityPopulation(String name, int population) {
+    public void setEntityPopulation(String name, int population) throws IllegalActionException {
         EntityDefinition entityDefinition = world.getEntityManager().getEntityDefinition(name);
         world.getEntityManager().setPopulation(entityDefinition, population);
     }
 
     @Override
-    public void initSpace() {
+    public void initSpace() throws IllegalActionException {
         for (EntityInstance entityInstance : world.getEntityManager().getAllEntityInstances()) {
             world.getSpaceManager().putEntity(entityInstance);
         }
@@ -143,7 +145,7 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
-    public EntityDefinition getEntityDefinition(String name) {
+    public EntityDefinition getEntityDefinition(String name) throws IllegalActionException {
         return world.getEntityManager().getEntityDefinition(name);
     }
 
@@ -163,39 +165,39 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     @Override
-    public void pause() {
+    public void pause() throws IllegalUserActionException {
         if (status == Status.RUNNING) {
             status = Status.PAUSED;
         } else {
-            throw new RuntimeException("Simulation isn't running.");
+            throw new IllegalUserActionException("Simulation isn't running.");
         }
     }
 
     @Override
-    public void resume() {
+    public void resume() throws IllegalUserActionException {
         if (status == Status.PAUSED) {
             status = Status.RUNNING;
         } else {
-            throw new RuntimeException("Simulation isn't paused.");
+            throw new IllegalUserActionException("Simulation isn't paused.");
         }
     }
 
     @Override
-    public void stop() {
+    public void stop() throws IllegalUserActionException {
         if (status == Status.RUNNING || status == Status.PAUSED) {
             status = Status.STOPPED;
-            if(getTermination().getTerminationCondition(Termination.Type.USER) == null){
+            if (getTermination().getTerminationCondition(Termination.Type.USER) == null) {
                 getTermination().addTerminationCondition(new ByUser());
             }
             ((ByUser) getTermination().getTerminationCondition(Termination.Type.USER)).stop();
             world.getTermination().isMet();
         } else {
-            throw new RuntimeException("Simulation isn't running.");
+            throw new IllegalUserActionException("Simulation isn't running.");
         }
     }
 
     @Override
-    public void next() {
+    public void next() throws IllegalActionException {
         if (status == Status.PAUSED) {
             status = Status.RUNNING;
             tick();
@@ -203,13 +205,11 @@ public class Simulation implements SimulationInterface, Serializable {
             if (status != Status.STOPPED) {
                 status = Status.PAUSED;
             }
-        } else {
-            throw new RuntimeException("Simulation is stopped.");
         }
     }
 
     @Override
-    public void singleTick(){
+    public void singleTick() {
         singleTick = true;
     }
 
@@ -223,12 +223,28 @@ public class Simulation implements SimulationInterface, Serializable {
         return world.getEntityManager().getAllEntityDefinitions();
     }
 
+    private void runtimeError(SimulationRuntimeException e){
+        status = Status.ERROR;
+        getTermination().addTerminationCondition(new ByError());
+        world.getTermination().isMet();
+        this.exception = e;
+    }
+
+    @Override
+    public SimulationRuntimeException getException() {
+        return exception;
+    }
+
     @Override
     public void run() {
-        if (singleTick) {
-            next();
-        } else {
-            loop();
+        try {
+            if (singleTick) {
+                next();
+            } else {
+                loop();
+            }
+        } catch (IllegalActionException e){
+            runtimeError(e);
         }
     }
 }

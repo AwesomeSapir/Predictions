@@ -18,6 +18,12 @@ import engine.simulation.world.rule.action.type.value.ActionValue;
 import engine.simulation.world.space.SpaceManager;
 import engine.simulation.world.termination.Termination;
 import engine.simulation.world.termination.TerminationCondition;
+import exception.FatalException;
+import exception.SimulationMissingException;
+import exception.XMLConfigException;
+import exception.runtime.IllegalActionException;
+import exception.runtime.IllegalUserActionException;
+import exception.runtime.IncompatibleTypesException;
 import javafx.util.Pair;
 import translation.xml.Translator;
 import translation.xml.XmlTranslator;
@@ -40,20 +46,20 @@ public class Engine implements EngineInterface, Serializable {
     private int threadCount;
 
     @Override
-    public void loadXml(String filepath) {
+    public void loadXml(String filepath) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException {
         try {
             simulation = new Simulation(getWorldFromFile(filepath));
             threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(simulation.getWorld().getThreadCount());
             this.filepath = filepath;
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Could not find a suitable XML file at path '" + filepath + "'");
-        } catch (JAXBException | InvalidClassException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new FatalException("Could not find a suitable XML file at path '" + filepath + "'");
+        } catch (JAXBException e) {
+            throw new XMLConfigException(e.getMessage());
         }
     }
 
-    public World getWorldFromFile(String filepath) throws FileNotFoundException, JAXBException, InvalidClassException {
-        InputStream inputStream = new FileInputStream(filepath);
+    public World getWorldFromFile(String filepath) throws JAXBException, IOException, XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
+        InputStream inputStream = Files.newInputStream(Paths.get(filepath));
         Translator translator = new XmlTranslator(inputStream);
         return translator.getWorld();
     }
@@ -104,12 +110,12 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOProperty> getPastEntityProperties(int id, String name) {
+    public Collection<DTOProperty> getPastEntityProperties(int id, String name) throws IllegalActionException {
         return getProperties(pastSimulations.get(id).getEntityDefinition(name));
     }
 
     @Override
-    public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) {
+    public DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) throws IllegalActionException {
         List<Object> values = new ArrayList<>();
         World world = pastSimulations.get(id).getWorld();
         for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
@@ -119,7 +125,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) {
+    public Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) throws IllegalActionException {
         List<Double> values = new ArrayList<>();
         World world = pastSimulations.get(id).getWorld();
         for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
@@ -130,7 +136,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName) {
+    public Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName) throws IllegalActionException {
         List<Double> values = new ArrayList<>();
         World world = pastSimulations.get(id).getWorld();
         for (EntityInstance entityInstance : world.getEntityManager().getEntityInstances(world.getEntityManager().getEntityDefinition(entityName))) {
@@ -140,7 +146,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws NullPointerException {
+    public Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws SimulationMissingException {
         isSimulationLoaded();
         List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
         for (PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()) {
@@ -154,7 +160,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOEnvironmentVariable> getEnvironmentValues() throws NullPointerException {
+    public Collection<DTOEnvironmentVariable> getEnvironmentValues() throws SimulationMissingException {
         isSimulationLoaded();
         List<DTOEnvironmentVariable> environmentVariables = new ArrayList<>();
         for (PropertyDefinition propertyDefinition : simulation.getWorld().getEnvironmentManager().getVariables()) {
@@ -165,7 +171,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws NullPointerException {
+    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws SimulationMissingException {
         isSimulationLoaded();
         for (Pair<String, Object> envVar : envValues) {
             simulation.setEnvironmentValue(envVar.getKey(), envVar.getValue());
@@ -173,7 +179,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) {
+    public void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) throws IllegalActionException, SimulationMissingException {
         isSimulationLoaded();
         for (Pair<String, Integer> entity : entityPopulations) {
             simulation.setEntityPopulation(entity.getKey(), entity.getValue());
@@ -183,7 +189,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOSimulationResult getSimulationResult(int id) {
-        if (pastSimulations.get(id).getStatus() != Status.STOPPED) {
+        if (pastSimulations.get(id).getStatus() != Status.STOPPED && pastSimulations.get(id).getStatus() != Status.ERROR) {
             return null;
         }
         Termination termination = pastSimulations.get(id).getTermination();
@@ -206,7 +212,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulationDetails getSimulationDetails() throws NullPointerException {
+    public DTOSimulationDetails getSimulationDetails() throws SimulationMissingException {
         isSimulationLoaded();
 
         List<DTORule> rules = new ArrayList<>();
@@ -271,41 +277,43 @@ public class Engine implements EngineInterface, Serializable {
         return result;
     }
 
-    private void archiveSimulation() {
+    private void archiveSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException {
         pastSimulations.put(idCounter++, simulation);
         try {
             simulation = new Simulation(getWorldFromFile(filepath));
-        } catch (FileNotFoundException | JAXBException | InvalidClassException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new FatalException(e.getMessage());
+        } catch (JAXBException e) {
+            throw new XMLConfigException(e.getMessage());
         }
     }
 
-    private void isSimulationLoaded() throws NullPointerException {
+    private void isSimulationLoaded() throws SimulationMissingException {
         if (simulation == null) {
-            throw new NullPointerException("No simulation is loaded.");
+            throw new SimulationMissingException("No simulation is loaded.");
         }
     }
 
     @Override
     public void saveToFile(String filepath) {
-        try (ObjectOutputStream encoder = new ObjectOutputStream(Files.newOutputStream(Paths.get(filepath.concat(".file"))))) {
+        /*try (ObjectOutputStream encoder = new ObjectOutputStream(Files.newOutputStream(Paths.get(filepath.concat(".file"))))) {
             encoder.writeObject(this);
             encoder.flush();
         } catch (Exception e) {
             throw new RuntimeException("Error saving to file: " + e.getMessage());
-        }
+        }*/
     }
 
     @Override
     public void loadFromFile(String filepath) {
-        try (ObjectInputStream decoder = new ObjectInputStream(Files.newInputStream(Paths.get(filepath.concat(".file"))))) {
+        /*try (ObjectInputStream decoder = new ObjectInputStream(Files.newInputStream(Paths.get(filepath.concat(".file"))))) {
             Engine engine = (Engine) decoder.readObject();
             this.pastSimulations.putAll(engine.pastSimulations);
             this.simulation = engine.simulation;
             this.idCounter = engine.idCounter;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Error loading from file: " + e.getMessage());
-        }
+        }*/
     }
 
     @Override
@@ -316,7 +324,7 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public DTOStatus getSimulationStatus(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
-        return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString());
+        return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString(), simulation.getException());
     }
 
     private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition) {
@@ -338,7 +346,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulation runSimulation() throws NullPointerException {
+    public DTOSimulation runSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException {
         isSimulationLoaded();
         int id = idCounter;
         archiveSimulation();
@@ -351,21 +359,21 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void tickSimulation(int id) { //TODO ask aviad
+    public void tickSimulation(int id) {
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.singleTick();
         threadPool.execute(simulation);
     }
 
     @Override
-    public void resumeSimulation(int id) {
+    public void resumeSimulation(int id) throws IllegalUserActionException {
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.resume();
         threadPool.execute(simulation);
     }
 
     @Override
-    public void pauseSimulation(int id) {
+    public void pauseSimulation(int id) throws IllegalUserActionException {
         pastSimulations.get(id).pause();
     }
 
@@ -384,7 +392,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void stopSimulation(int id) {
+    public void stopSimulation(int id) throws IllegalUserActionException {
         pastSimulations.get(id).stop();
     }
 
