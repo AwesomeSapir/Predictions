@@ -25,6 +25,7 @@ import javafx.collections.ObservableMap;
 import javafx.scene.control.Alert;
 import javafx.util.Pair;
 import ui.Notify;
+import ui.component.subcomponent.result.EntityInfo;
 
 import java.io.File;
 import java.util.*;
@@ -50,6 +51,7 @@ public class EngineManager {
                     Platform.runLater(() -> {
                         updateQueue();
                         updateSimulationProgress(simulation);
+                        updateEntityPopulations(simulation.getId());
                         //populateEntityTable(selectedSimulation.get().getId());
                     });
                     if(simulation.getStatus() == Status.STOPPED || simulation.getStatus() == Status.ERROR) {
@@ -131,6 +133,21 @@ public class EngineManager {
         simulations.put(simulation.getId(), simulation);
         simulationsList.add(simulation);
         simulationsRunning.add(simulation);
+        createEntityPopulations(simulation.getId());
+    }
+
+    private void createEntityPopulations(int id){
+        for (DTOEntityPopulation entity : engine.getEntityPopulations(id).values()){
+            EntityInfo entityInfo = new EntityInfo(entity.getEntity().getName(), entity.getInitialPopulation());
+            simulations.get(id).getEntities().add(entityInfo);
+        }
+    }
+
+    public void updateEntityPopulations(int id){
+        Map<String, DTOEntityPopulation> entityPopulationMap = engine.getEntityPopulations(id);
+        for (EntityInfo entity : simulations.get(id).getEntities()){
+            entity.setInstanceCount(entityPopulationMap.get(entity.getEntityName()).getFinalPopulation());
+        }
     }
 
     public void resumeSimulation(int id){
@@ -206,8 +223,8 @@ public class EngineManager {
         return simulationsList;
     }
 
-    public Collection<DTOEntityPopulation> getDetailsByEntityCount(int id){
-        return engine.getDetailsByEntityCount(id);
+    public Map<String, DTOEntityPopulation> getDetailsByEntityCount(int id){
+        return engine.getEntityPopulations(id);
     }
 
     public Collection<DTOProperty> getPastEntityProperties(int id, String entity){

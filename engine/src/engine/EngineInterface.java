@@ -11,12 +11,13 @@ import exception.runtime.IncompatibleTypesException;
 import javafx.util.Pair;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface EngineInterface {
 
     void loadXml(String filepath) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException;
-    Collection<DTOEntityPopulation> getDetailsByEntityCount(int id);
-    Collection<DTOEntity> getPastEntities(int id);
+    Map<String, DTOEntityPopulation> getEntityPopulations(int id);
+    Collection<DTOEntity> getEntities(int id);
     Collection<DTOProperty> getPastEntityProperties(int id, String name) throws IllegalActionException;
     DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) throws IllegalActionException;
     Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws SimulationMissingException;

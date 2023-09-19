@@ -3,6 +3,9 @@ package ui.engine;
 import dto.detail.DTOTermination;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import ui.component.subcomponent.result.EntityInfo;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +17,7 @@ public class Simulation {
     private final Progress progressSeconds;
     private final Progress progressTicks;
     private final ObjectProperty<Status> status = new SimpleObjectProperty<>(Status.RUNNING);
+    private final ObservableList<EntityInfo> entities = FXCollections.observableArrayList();
 
     public Simulation(int id, LocalDateTime runDate, DTOTermination termination) {
         this.id = id;
@@ -48,5 +52,9 @@ public class Simulation {
 
     public void setStatus(Status status) {
         this.status.set(status);
+    }
+
+    public ObservableList<EntityInfo> getEntities() {
+        return entities;
     }
 }

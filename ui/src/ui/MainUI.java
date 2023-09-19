@@ -11,7 +11,7 @@ public interface MainUI {
     // TODO font size change
     // TODO hide second pane in result tab when list is empty
     // TODO work on details tab, add all dtos, show all DTOObjects...
-    // TODO add title for showboard screen
+    // TODO add scrollbars on everything!!!!
 
     //Optional
     // TODO add buttons for incrementing NumericRangedInput

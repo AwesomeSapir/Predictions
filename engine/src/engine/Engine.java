@@ -65,15 +65,19 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOEntityPopulation> getDetailsByEntityCount(int id) {
+    public Map<String, DTOEntityPopulation> getEntityPopulations(int id) {
         World world = pastSimulations.get(id).getWorld();
-        List<DTOEntityPopulation> entityPopulations = new ArrayList<>();
+        Map<String, DTOEntityPopulation> entityPopulations = new LinkedHashMap<>();
 
         for (EntityDefinition entityDefinition : world.getEntityManager().getAllEntityDefinitions()) {
-            entityPopulations.add(new DTOEntityPopulation(
-                    entityDefinition.getPopulation(),
-                    world.getEntityManager().getEntityInstances(entityDefinition).size(),
-                    getEntity(entityDefinition)));
+            entityPopulations.put(
+                    entityDefinition.getName(),
+                    new DTOEntityPopulation(
+                            entityDefinition.getPopulation(),
+                            world.getEntityManager().getEntityInstances(entityDefinition).size(),
+                            getEntity(entityDefinition)
+                    )
+            );
         }
 
         return entityPopulations;
@@ -93,7 +97,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public Collection<DTOEntity> getPastEntities(int id) {
+    public Collection<DTOEntity> getEntities(int id) {
         return getEntities(pastSimulations.get(id));
     }
 
@@ -189,7 +193,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOSimulationResult getSimulationResult(int id) {
-        if (pastSimulations.get(id).getStatus() != Status.STOPPED && pastSimulations.get(id).getStatus() != Status.ERROR) {
+        if (pastSimulations.get(id).getStatus() == Status.RUNNING) {
             return null;
         }
         Termination termination = pastSimulations.get(id).getTermination();
@@ -328,7 +332,11 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition) {
-        return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
+        if(condition != null) {
+            return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
+        } else {
+            return null;
+        }
     }
 
     private DTOTermination getSimulationTermination(SimulationInterface simulation) {

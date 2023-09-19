@@ -13,13 +13,7 @@ VBox,
 .scroll-pane,
 .scroll-pane .viewport,
 .list-cell,
-.tab-pane,
 .text-area,
-.tab-pane > .tab-header-area,
-.tab-pane > .tab-content-area,
-.tab-pane > .tab-header-area > .tab-header-background,
-.tab-pane > .tab-header-area > .headers-region,
-.tab,
 .scroll-pane,
 .tree-view,
 .tree-cell {
@@ -96,7 +90,7 @@ NotificationPane,
 }
 
 .table-view .virtual-flow .scroll-bar {
-    -fx-opacity: 0;
+
 }
 
 .chart-content {
@@ -164,6 +158,16 @@ NotificationPane,
 .text-area{
     -fx-text-fill: -primary-text;
     -fx-background-color: transparent;
+}
+
+.tab-pane > .tab-header-area,
+.tab-pane > .tab-content-area,
+.tab-pane > .tab-header-area > .tab-header-background,
+.tab-pane > .tab-header-area > .headers-region,
+.tab,
+.tab-pane{
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
 
 .tab-pane .tab:selected .focus-indicator {
