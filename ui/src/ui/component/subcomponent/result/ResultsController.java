@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
@@ -42,16 +41,18 @@ public class ResultsController {
     private final ObjectProperty<Status> selectedStatus = new SimpleObjectProperty<>();
 
     private Map<Integer, Map<String, XYChart.Series>> seriesMap = new HashMap<>();
-    @FXML public LineChart entityAmountByTicks;
+    @FXML public LineChart<Integer, Integer> chartPopulationPerTick;
 
-    @FXML
-    public ComboBox propertyComboBox, entityComboBox, propertyDataDisplayComboBox;
+    @FXML public ComboBox<DTOProperty> comboBoxProperty; //TODO Change to PropertyInfo
+    @FXML public ComboBox<EntityInfo> comboBoxEntity;
+    @FXML public ComboBox<DisplayType> comboBoxDisplayType;
+
     @FXML
     public TabPane simulationResultsMainTabPane;
     @FXML
     public Tab chartLineTab, entityPropertyTab;
     @FXML
-    public VBox propertyDisplayTypePlaceholder;
+    public VBox vboxDisplayType;
 
     @FXML
     private TableView<EntityInfo> entityTable;
@@ -64,18 +65,17 @@ public class ResultsController {
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
-            //updater.stop();
             showSimulationResult(engineManager.getSimulationResult(selectedSimulation.get().getId()));
-            //engineManager.updateSimulationProgress(selectedSimulation.get());
-        } else {
-            //updater.play();
+            updateDisplayData();
         }
     };
+
+    private final ChangeListener<Number> simulationTicksListener = (observable, oldValue, newValue) -> updateDisplayData();
 
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
         listExecution.setItems(engineManager.getSimulationsList());
-        entityAmountByTicks.setTitle("Quantity as a function of ticks");
+        chartPopulationPerTick.setTitle("Quantity as a function of ticks");
         selectedSimulation.addListener((observable, oldValue, newValue) -> {
             showSimulationResult(engineManager.getSimulationResult(newValue.getId()));
             gridSeconds.setProgress(newValue.getProgressSeconds());
@@ -84,12 +84,18 @@ public class ResultsController {
             selectedStatus.unbind();
             selectedStatus.bind(newValue.statusProperty());
 
-            entityComboBox.getItems().clear();
-            propertyComboBox.getItems().clear();
-            propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
+            comboBoxEntity.setItems(selectedSimulation.get().getEntities());
+            comboBoxProperty.getItems().clear();
+            vboxDisplayType.getChildren().clear(); // Clear any previous content
+
+            chartPopulationPerTick.setData(selectedSimulation.get().getEntityPopulationSeriesList());
+
+            if (oldValue != null) {
+                oldValue.getProgressTicks().valueProperty().removeListener(simulationTicksListener);
+            }
+            newValue.getProgressTicks().valueProperty().addListener(simulationTicksListener);
 
             entityTable.setItems(newValue.getEntities());
-            populateGraph(newValue.getId());
         });
     }
 
@@ -103,7 +109,7 @@ public class ResultsController {
         labelTermination.textProperty().set(result);
 
         if(simulationResult != null){
-            populateGraph(simulationResult.getId());
+            //populateGraph(simulationResult.getId());
         }
     }
 
@@ -118,6 +124,24 @@ public class ResultsController {
         buttonBoard.setOnAction(this::actionShowBoard);
         buttonNext.setOnAction(this::actionSimulationNext);
         labelStatus.textProperty().bind(selectedStatus.asString());
+
+        comboBoxDisplayType.getItems().setAll(DisplayType.values());
+
+        comboBoxEntity.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            comboBoxProperty.getSelectionModel().clearSelection();
+            if (selectedSimulation.get() != null) {
+                int simulationId = selectedSimulation.get().getId();
+                updatePropertyComboBox(simulationId, newValue);
+            }
+        });
+
+        comboBoxProperty.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            updateDisplayData();
+        });
+
+        comboBoxDisplayType.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            updateDisplayData();
+        });
 
         buttonPause.disableProperty().bind(selectedStatus.isEqualTo(Status.RUNNING).not());
         buttonResume.disableProperty().bind(selectedStatus.isEqualTo(Status.PAUSED).not());
@@ -151,95 +175,40 @@ public class ResultsController {
         // Bind the columns to the EntityInfo properties
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
-
-        //updater.statusProperty().addListener((observable, oldValue, newValue) -> System.out.println("Updater is now " + newValue + " was " + oldValue));
-        // Add a listener to the entityComboBox selection
-        entityComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                // Get the selected entity
-                String selectedEntity = newValue.toString();
-                // Clear and populate the propertyComboBox with entity properties
-                propertyComboBox.getItems().clear();
-                propertyDataDisplayComboBox.getItems().clear();
-                propertyDataDisplayComboBox.getItems().add(0, "Histogram of population");
-                propertyDataDisplayComboBox.getItems().add(1, "Consistency");
-                propertyDataDisplayComboBox.getItems().add(2, "Average value");
-                propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
-
-                // Call the updatePropertyComboBox method with the simulation ID and selected entity
-                if (selectedSimulation.get() != null) {
-                    int simulationId = selectedSimulation.get().getId();
-                    updatePropertyComboBox(simulationId, selectedEntity);
-                }
-            }
-        });
-
-        propertyComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                // Get the selected entity
-                String selectedProperty = newValue.toString();
-                String selectedEntity = (String) entityComboBox.getSelectionModel().getSelectedItem();
-                String selectedDisplayWay = (String) propertyDataDisplayComboBox.getSelectionModel().getSelectedItem();
-
-                // Call the updatePropertyComboBox method with the simulation ID and selected entity
-                if (selectedSimulation.get() != null) {
-                    int simulationId = selectedSimulation.get().getId();
-                    if (selectedEntity != null && selectedDisplayWay != null) {
-                        updatePropertyDataDisplayComboBox(simulationId, selectedEntity, selectedProperty, selectedDisplayWay);
-                    }
-                }
-            }
-        });
-
-        propertyDataDisplayComboBox.getItems().add(0, "Histogram of population");
-        propertyDataDisplayComboBox.getItems().add(1, "Consistency");
-        propertyDataDisplayComboBox.getItems().add(2, "Average value");
-        entityAmountByTicks.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
-        entityComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
-        propertyComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
-        propertyDataDisplayComboBox.visibleProperty().bind(selectedStatus.isEqualTo(Status.STOPPED));
-
-        propertyDataDisplayComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                // Get the selected entity
-                String selectedDisplayWay = newValue.toString();
-
-                // Call the updatePropertyComboBox method with the simulation ID and selected entity
-                if (selectedSimulation.get() != null) {
-                    int simulationId = selectedSimulation.get().getId();
-                    String selectedEntity = (String) entityComboBox.getSelectionModel().getSelectedItem();
-                    String selectedProperty = (String) propertyComboBox.getSelectionModel().getSelectedItem();
-                    if (selectedEntity != null && selectedProperty != null) {
-                        updatePropertyDataDisplayComboBox(simulationId, selectedEntity, selectedProperty, selectedDisplayWay);
-                    }
-                }
-            }
-        });
     }
 
-    private void updatePropertyComboBox(int simulationId, String selectedEntity) {
+    //TODO simulation should hold the properties
+    private void updatePropertyComboBox(int simulationId, EntityInfo selectedEntity) {
         // Get entity properties for the selected entity using simulationId
-        List<DTOProperty> entityProperties = (List<DTOProperty>) engineManager.getPastEntityProperties(simulationId, selectedEntity);
+        List<DTOProperty> entityProperties = (List<DTOProperty>) engineManager.getPastEntityProperties(simulationId, selectedEntity.getEntityName());
 
         // Clear and populate the propertyComboBox with entity properties
-        propertyComboBox.getItems().clear();
+        comboBoxProperty.getItems().clear();
         for (DTOProperty property : entityProperties) {
-            propertyComboBox.getItems().add(property.getName());
+            comboBoxProperty.getItems().add(property);
         }
     }
 
-    private void updatePropertyDataDisplayComboBox(int simulationId, String selectedEntity, String selectedProperty, String selectedDisplayWay) {
-        propertyDisplayTypePlaceholder.getChildren().clear(); // Clear any previous content
-        switch (selectedDisplayWay) {
-            case "Histogram of population":
-                displayHistogram(simulationId, selectedEntity, selectedProperty);
-                break;
-            case "Consistency":
-                displayConsistency(simulationId, selectedEntity, selectedProperty);
-                break;
-            case "Average value":
-                displayAverageValue(simulationId, selectedEntity, selectedProperty);
-            default:
+    private void updateDisplayData() {
+        vboxDisplayType.getChildren().clear(); // Clear any previous content
+        int id = selectedSimulation.get().getId();
+        if(selectedSimulation.get().getStatus() != Status.RUNNING) {
+            DisplayType type = comboBoxDisplayType.getSelectionModel().getSelectedItem();
+            EntityInfo entity = comboBoxEntity.getSelectionModel().getSelectedItem();
+            DTOProperty property = comboBoxProperty.getSelectionModel().getSelectedItem();
+            if (type != null && entity != null && property != null) {
+                switch (type) {
+                    case Histogram:
+                        displayHistogram(id, entity.getEntityName(), property.getName());
+                        break;
+                    case Consistency:
+                        displayConsistency(id, entity.getEntityName(), property.getName());
+                        break;
+                    case Average:
+                        displayAverageValue(id, entity.getEntityName(), property.getName());
+                        break;
+                }
+            }
         }
     }
 
@@ -267,10 +236,8 @@ public class ResultsController {
 
         // Add the series to the chart
         histogramChart.getData().add(series);
-
-        // Add the BarChart to the histogramPlaceholder VBox
-        VBox histogramPlaceholder = (VBox) simulationResultsMainTabPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
-        histogramPlaceholder.getChildren().add(histogramChart);
+        
+        vboxDisplayType.getChildren().add(histogramChart);
     }
 
     private void displayConsistency(int simulationId, String selectedEntity, String selectedProperty) {
@@ -285,19 +252,12 @@ public class ResultsController {
         String consistencyText = "Average Consistency for '" + selectedProperty + "': " + averageConsistency;
         Label titleLabel = new Label(consistencyText);
 
-        // Add the Label to the propertyDisplayTypePlaceholder VBox
-        VBox consistencyLabelPlaceholder = (VBox) simulationResultsMainTabPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
-        consistencyLabelPlaceholder.getChildren().add(titleLabel);
-
-        consistencyLabelPlaceholder.setPadding((new Insets(20, 150, 10, 10))); // Adjust the spacing between labels and other nodes
+        vboxDisplayType.getChildren().add(titleLabel);
     }
 
     private void displayAverageValue(int simulationId, String selectedEntity, String selectedProperty) {
         // Get the histogram data for the selected property
         DTOSimulationHistogram histogram = engineManager.getValuesForPropertyHistogram(simulationId, selectedEntity, selectedProperty);
-        // Add the Label to the propertyDisplayTypePlaceholder VBox
-        VBox averageValueLabelPlaceholder = (VBox) simulationResultsMainTabPane.getTabs().get(1).getContent().lookup("#propertyDisplayTypePlaceholder");
-        averageValueLabelPlaceholder.setPadding((new Insets(20, 150, 10, 10))); // Adjust the spacing between labels and other nodes
         // Populate the series with data from the histogram
         for (Map.Entry<Object, Integer> entry : histogram.getValueToCount().entrySet()) {
             Object verifyNumericValue = entry.getKey();
@@ -305,7 +265,7 @@ public class ResultsController {
                 // Display the average consistency
                 String consistencyText = "The property '" + selectedProperty + "' is not numeric";
                 Label titleLabel = new Label(consistencyText);
-                averageValueLabelPlaceholder.getChildren().add(titleLabel);
+                vboxDisplayType.getChildren().add(titleLabel);
                 return;
             }
             break;
@@ -321,7 +281,7 @@ public class ResultsController {
 
         String consistencyText = "Average Value for '" + selectedProperty + "': " + averageValue;
         Label titleLabel = new Label(consistencyText);
-        averageValueLabelPlaceholder.getChildren().add(titleLabel);
+        vboxDisplayType.getChildren().add(titleLabel);
     }
 
     private double calculateAverage(List<Double> listOfValues) {
@@ -373,18 +333,13 @@ public class ResultsController {
         engineManager.tickSimulation(selectedSimulation.get().getId());
     }
 
+    /*
     private void populateGraph(int id){
-
-
-        // Get or create the series for the current simulation ID
-        entityAmountByTicks.getData().clear();
-        Map<String, XYChart.Series> simulationSeriesMap = seriesMap.get(id);
-        if (simulationSeriesMap != null) {
-            for (XYChart.Series series : simulationSeriesMap.values()) {
-                entityAmountByTicks.getData().add(series);
-            }
+        chartPopulationPerTick.getData().clear();
+        for (EntityInfo entity : selectedSimulation.get().getEntities()){
+            chartPopulationPerTick.getData().add(selectedSimulation.get().getEntityPopulationSeriesMap().get(entity));
         }
-    }
+    }*/
 
     /*private void populateEntityTable(int simulationId) {
         // Clear existing items in the table and reset the series

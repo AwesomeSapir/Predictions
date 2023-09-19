@@ -144,8 +144,10 @@ public class EngineManager {
 
     public void updateEntityPopulations(int id){
         Map<String, DTOEntityPopulation> entityPopulationMap = engine.getEntityPopulations(id);
+
         for (EntityInfo entity : simulations.get(id).getEntities()){
             entity.setInstanceCount(entityPopulationMap.get(entity.getEntityName()).getFinalPopulation());
+            simulations.get(id).logPopulation(entity);
         }
     }
 

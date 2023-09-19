@@ -113,7 +113,7 @@
                         </GridPane>
                         <TabPane fx:id="simulationResultsMainTabPane" tabClosingPolicy="UNAVAILABLE">
                             <Tab fx:id="chartLineTab" text="Graph">
-                                    <LineChart fx:id="entityAmountByTicks" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <LineChart fx:id="chartPopulationPerTick" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                         <xAxis>
                                             <NumberAxis label="Ticks" />
                                         </xAxis>
@@ -126,24 +126,24 @@
                                 <ScrollPane>
                                     <VBox>
                                         <HBox>
-                                            <ComboBox fx:id="entityComboBox" promptText="Select an entity">
+                                            <ComboBox fx:id="comboBoxEntity" promptText="Select an entity">
                                                 <HBox.margin>
                                                     <Insets top="10.0" />
                                                 </HBox.margin>
                                             </ComboBox>
-                                            <ComboBox fx:id="propertyComboBox" promptText="Select a property">
+                                            <ComboBox fx:id="comboBoxProperty" promptText="Select a property">
                                                 <HBox.margin>
                                                     <Insets left="20.0" top="10.0" />
                                                 </HBox.margin>
                                             </ComboBox>
-                                            <ComboBox fx:id="propertyDataDisplayComboBox" promptText="Select a display way">
+                                            <ComboBox fx:id="comboBoxDisplayType" promptText="Select a display way">
                                                 <HBox.margin>
                                                     <Insets left="20.0" top="10.0" />
                                                 </HBox.margin>
                                             </ComboBox>
                                         </HBox>
                                         <!-- Placeholder for the property display type -->
-                                        <VBox fx:id="propertyDisplayTypePlaceholder" />
+                                        <VBox fx:id="vboxDisplayType" />
                                     </VBox>
                                 </ScrollPane>
                             </Tab>
