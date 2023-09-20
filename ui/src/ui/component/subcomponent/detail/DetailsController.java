@@ -124,12 +124,12 @@ public class DetailsController {
         }
 
         DTOTermination termination = simulationDetails.getTermination();
-        for (DTOTerminationCondition<?> condition : termination.getConditions()){
-            TreeItem<Object> itemTermination = new TreeItem<>(condition.getName());
-            branchTermination.getChildren().add(itemTermination);
-        }
+        TreeItem<Object> itemTermination = new TreeItem<>(termination);
 
-        rootItem.getChildren().addAll(branchEnvVars, branchEntities, branchRules, branchTermination);
+        DTOGrid grid = simulationDetails.getGrid();
+        TreeItem<Object> itemGrid = new TreeItem<>(grid);
+
+        rootItem.getChildren().addAll(itemGrid, branchEnvVars, branchEntities, branchRules, itemTermination);
         treeViewDetails.setRoot(rootItem);
     }
 
@@ -142,6 +142,10 @@ public class DetailsController {
             viewDetailController.setRule((DTORule) object);
         } else if (object instanceof DTOEnvironmentVariable){
             viewDetailController.setEnvVariable((DTOEnvironmentVariable) object);
+        } else if (object instanceof DTOTermination) {
+            viewDetailController.setTermination((DTOTermination) object);
+        } else if(object instanceof DTOGrid){
+            viewDetailController.setGrid((DTOGrid) object);
         }
         Animations.expandingCircle(viewDetail);
     }

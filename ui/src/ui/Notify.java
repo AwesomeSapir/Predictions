@@ -17,9 +17,9 @@ public class Notify {
         notificationPane.setShowFromTop(false);
     }
 
-    public static NotificationPane register(Node root) {
-        instance.notificationPane.setContent(root);
-        return instance.notificationPane;
+    public NotificationPane register(Node root) {
+        notificationPane.setContent(root);
+        return notificationPane;
     }
 
     public static Notify getInstance() {

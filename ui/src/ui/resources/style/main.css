@@ -21,6 +21,10 @@ VBox,
     -fx-border-color: transparent;
 }
 
+VBox{
+    -fx-background-color: transparent;
+}
+
 .text-area,
 .text-field,
 .text {

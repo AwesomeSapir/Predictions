@@ -27,7 +27,7 @@ public class ConsoleUI extends Application implements MainUI{
         MainController mainController = loader.getController();
         mainController.setEngineManager(engineManager);
 
-        NotificationPane notificationPane = Notify.register(root);
+        NotificationPane notificationPane = Notify.getInstance().register(root);
         AnchorPane.setTopAnchor(notificationPane, 0.0);
         AnchorPane.setBottomAnchor(notificationPane, 0.0);
         AnchorPane.setLeftAnchor(notificationPane, 0.0);

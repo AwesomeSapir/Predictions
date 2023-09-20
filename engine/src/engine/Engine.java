@@ -14,6 +14,8 @@ import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
 import engine.simulation.world.rule.action.type.calculation.ActionCalc;
 import engine.simulation.world.rule.action.type.condition.ActionCondition;
+import engine.simulation.world.rule.action.type.space.ActionProximity;
+import engine.simulation.world.rule.action.type.space.ActionReplace;
 import engine.simulation.world.rule.action.type.value.ActionValue;
 import engine.simulation.world.space.SpaceManager;
 import engine.simulation.world.termination.Termination;
@@ -24,12 +26,13 @@ import exception.XMLConfigException;
 import exception.runtime.IllegalActionException;
 import exception.runtime.IllegalUserActionException;
 import exception.runtime.IncompatibleTypesException;
-import javafx.util.Pair;
 import translation.xml.Translator;
 import translation.xml.XmlTranslator;
 
 import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -269,12 +272,30 @@ public class Engine implements EngineInterface, Serializable {
                         getActions(actionCondition.getActionsThen()),
                         getActions(actionCondition.getActionsElse()));
 
+            } else if (action instanceof ActionReplace) {
+                ActionReplace actionReplace = (ActionReplace) action;
+                dtoAction = new DTOActionReplace(
+                        actionReplace.getType().toString(),
+                        actionReplace.getPrimaryEntity().getName(),
+                        secondaryEntity,
+                        actionReplace.getCreateEntity().toString(),
+                        actionReplace.getMode().toString()
+                );
+            } else if (action instanceof ActionProximity) {
+                ActionProximity actionProximity = (ActionProximity) action;
+                dtoAction = new DTOActionProximity(
+                        actionProximity.getType().toString(),
+                        actionProximity.getPrimaryEntity().getName(),
+                        secondaryEntity,
+                        actionProximity.getTargetEntity().toString(),
+                        actionProximity.getDepth().toString(),
+                        getActions(actionProximity.getActions())
+                );
             } else {
                 dtoAction = new DTOAction(
                         action.getType().toString(),
                         action.getPrimaryEntity().getName(),
                         secondaryEntity);
-
             }
             result.add(dtoAction);
         }
@@ -332,7 +353,7 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private DTOTerminationCondition<?> getDTOTerminationCondition(TerminationCondition condition) {
-        if(condition != null) {
+        if (condition != null) {
             return new DTOTerminationCondition<>(condition.getType().toString(), condition.getCondition());
         } else {
             return null;
@@ -405,18 +426,18 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOQueueDetails getQueueDetails(){
+    public DTOQueueDetails getQueueDetails() {
         int active = threadPool.getActiveCount();
         int total = threadPool.getMaximumPoolSize();
         int paused = 0;
         int stopped = 0;
         int running = 0;
-        for (SimulationInterface simulation : pastSimulations.values()){
-            if(simulation.getStatus() == Status.PAUSED){
+        for (SimulationInterface simulation : pastSimulations.values()) {
+            if (simulation.getStatus() == Status.PAUSED) {
                 paused++;
-            } else if(simulation.getStatus() == Status.STOPPED){
+            } else if (simulation.getStatus() == Status.STOPPED) {
                 stopped++;
-            } else if(simulation.getStatus() == Status.RUNNING){
+            } else if (simulation.getStatus() == Status.RUNNING) {
                 running++;
             }
         }
@@ -425,6 +446,8 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void shutdown() {
-        threadPool.shutdownNow();
+        if (threadPool != null) {
+            threadPool.shutdownNow();
+        }
     }
 }

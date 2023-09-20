@@ -53,4 +53,12 @@ public class ActionReplace extends Action {
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         execute(primaryEntity, context);
     }
+
+    public ReplaceMode getMode() {
+        return mode;
+    }
+
+    public EntityDefinition getCreateEntity() {
+        return createEntity;
+    }
 }

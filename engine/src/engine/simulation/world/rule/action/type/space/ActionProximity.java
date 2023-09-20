@@ -41,4 +41,16 @@ public class ActionProximity extends Action {
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         execute(primaryEntity, context);
     }
+
+    public EntityDefinition getTargetEntity() {
+        return targetEntity;
+    }
+
+    public Expression getDepth() {
+        return depth;
+    }
+
+    public List<Action> getActions() {
+        return actions;
+    }
 }

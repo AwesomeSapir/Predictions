@@ -234,13 +234,13 @@ public class XmlTranslator implements Translator {
         return getExpression(expressionString, entityDefinition, valueType, true);
     }
 
-    public RawExpression convertToRawExpression(String expression){
+    public RawExpression convertToRawExpression(String expression) {
         RawExpression result;
-        if(expression.charAt(expression.length()-1) == ')'){
+        if (expression.charAt(expression.length() - 1) == ')') {
             int index = expression.indexOf('(');
             result = new RawExpression(expression.substring(0, index));
             String substring = expression.substring(index + 1, expression.length() - 1);
-            if(result.getValue().equals("percent")) {
+            if (result.getValue().equals("percent")) {
                 String[] subexpressions = substring.split(",");
                 for (String sub : subexpressions) {
                     result.addExpression(sub);
@@ -338,22 +338,28 @@ public class XmlTranslator implements Translator {
                 }
                 break;
             }
+
             case FREE_VALUE: {
-                switch (valueType) {
-                    case DECIMAL:
-                        return new FreeValueExpression(Integer.parseInt(expressionString), valueType);
-                    case BOOLEAN:
-                        return new FreeValueExpression(Boolean.parseBoolean(expressionString), valueType);
-                    case FLOAT:
-                        return new FreeValueExpression(Double.parseDouble(expressionString), valueType);
-                    case STRING:
-                        if (Validator.validate(expressionString).isValidString().isValid()) {
-                            return new FreeValueExpression(expressionString, valueType);
-                        }
-                        break;
+                try {
+                    switch (valueType) {
+                        case DECIMAL:
+                            return new FreeValueExpression(Integer.parseInt(expressionString), valueType);
+                        case BOOLEAN:
+                            return new FreeValueExpression(Boolean.parseBoolean(expressionString), valueType);
+                        case FLOAT:
+                            return new FreeValueExpression(Double.parseDouble(expressionString), valueType);
+                        case STRING:
+                            if (Validator.validate(expressionString).isValidString().isValid()) {
+                                return new FreeValueExpression(expressionString, valueType);
+                            }
+                            break;
+                    }
+                    throw new IncompatibleTypesException("Property type and free value expression type don't match");
+                } catch (NumberFormatException e) {
+                    throw new IncompatibleTypesException("Type " + valueType + " is incompatible with value " + expressionString);
                 }
-                throw new IncompatibleTypesException("Property type and free value expression type don't match");
             }
+
             default:
                 throw new FatalException("Fatal error occurred when creating expression: " + expressionString);
         }
@@ -396,7 +402,7 @@ public class XmlTranslator implements Translator {
         Expression depth =
                 getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, ValueType.FLOAT);
         List<Action> actions = new ArrayList<>();
-        for (PRDAction action : prdObject.getPRDActions().getPRDAction()){
+        for (PRDAction action : prdObject.getPRDActions().getPRDAction()) {
             actions.add(getAction(action));
         }
         return new ActionProximity(primaryEntity, secondary, depth, actions);
@@ -489,7 +495,7 @@ public class XmlTranslator implements Translator {
     public Range getRange(@NotNull PRDRange prdObject) throws XMLConfigException {
         try {
             return new Range(prdObject.getFrom(), prdObject.getTo());
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             throw new XMLConfigException(e.getMessage());
         }
     }

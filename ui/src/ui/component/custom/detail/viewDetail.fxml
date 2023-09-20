@@ -129,7 +129,77 @@
 
     </GridPane>
 
+    <GridPane fx:id="gridAction" hgap="8.0" vgap="8.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+
+        <Label text="Type" GridPane.rowIndex="0" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="labelActionType" text="Type Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Probability" GridPane.rowIndex="1">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="labelRuleProbability" text="Probability Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Actions" GridPane.rowIndex="2">
+            <font>
+                <Font name="System Bold" size="12.0" />
+            </font>
+        </Label>
+        <Label fx:id="labelRuleActions" text="Actions Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+    </GridPane>
+
     <GridPane fx:id="gridTermination" hgap="8.0" vgap="8.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+
+        <Label text="Ticks" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" />
+            </font>
+        </Label>
+        <Label fx:id="labelTerminationTicks" text="Ticks Value" wrapText="true" GridPane.columnIndex="1" />
+
+        <Label text="Seconds" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" />
+            </font>
+        </Label>
+        <Label fx:id="labelTerminationSeconds" text="Seconds Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="User" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+            <font>
+                <Font name="System Bold" />
+            </font>
+        </Label>
+        <Label fx:id="labelTerminationUser" text="User Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+    </GridPane>
+
+    <GridPane fx:id="gridGrid" hgap="8.0" vgap="8.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" percentWidth="50.0" prefWidth="100.0" />
@@ -139,19 +209,19 @@
             <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
 
-        <Label text="Ticks" GridPane.vgrow="ALWAYS">
+        <Label text="Rows" GridPane.vgrow="ALWAYS">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Bold" />
             </font>
         </Label>
-        <Label fx:id="labelTerminationTicks" text="Ticks Value" wrapText="true" GridPane.columnIndex="1" />
+        <Label fx:id="labelRows" text="Rows Value" wrapText="true" GridPane.columnIndex="1" />
 
-        <Label text="Seconds" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+        <Label text="Columns" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Bold" />
             </font>
         </Label>
-        <Label fx:id="labelTerminationSeconds" text="Seconds Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label fx:id="labelCols" text="Columns Value" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
     </GridPane>
 

@@ -188,6 +188,8 @@ public class ResultsController {
                 };
             }
         });
+        paneDetails.visibleProperty().bind(listExecution.getSelectionModel().selectedItemProperty().isNotNull());
+        paneResult.visibleProperty().bind(selectedStatus.isNotEqualTo(Status.RUNNING));
 
         // Bind the columns to the EntityInfo properties
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));

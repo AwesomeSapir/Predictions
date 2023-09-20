@@ -7,7 +7,7 @@ public class DTOTermination extends DTOObject{
     private final Map<String, DTOTerminationCondition<?>> conditions = new HashMap<>();
 
     public DTOTermination(Collection<DTOTerminationCondition<?>> conditions) {
-        super("");
+        super("Termination");
         for (DTOTerminationCondition<?> condition : conditions){
             this.conditions.put(condition.getName(), condition);
         }
