@@ -47,7 +47,7 @@ public class ResultsController {
     private Map<Integer, Map<String, XYChart.Series>> seriesMap = new HashMap<>();
     @FXML public LineChart<Integer, Integer> chartPopulationPerTick;
 
-    @FXML public ComboBox<DTOProperty> comboBoxProperty; //TODO Change to PropertyInfo
+    @FXML public ComboBox<DTOProperty> comboBoxProperty;
     @FXML public ComboBox<EntityInfo> comboBoxEntity;
     @FXML public ComboBox<DisplayType> comboBoxDisplayType;
 
@@ -103,6 +103,7 @@ public class ResultsController {
             vboxDisplayType.getChildren().clear(); // Clear any previous content
 
             chartPopulationPerTick.setData(selectedSimulation.get().getEntityPopulationSeriesList());
+
 
             if (oldValue != null) {
                 oldValue.getProgressTicks().valueProperty().removeListener(simulationTicksListener);
@@ -197,7 +198,6 @@ public class ResultsController {
         initialCountColumn.setCellValueFactory(new PropertyValueFactory<>("initialCount"));
     }
 
-    //TODO simulation should hold the properties
     private void updatePropertyComboBox(int simulationId, EntityInfo selectedEntity) {
         // Get entity properties for the selected entity using simulationId
         List<DTOProperty> entityProperties = (List<DTOProperty>) engineManager.getPastEntityProperties(simulationId, selectedEntity.getEntityName());

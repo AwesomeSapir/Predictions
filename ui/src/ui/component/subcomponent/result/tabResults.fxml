@@ -50,9 +50,9 @@
                         </GridPane>
                         <TableView fx:id="entityTable" VBox.vgrow="SOMETIMES">
                             <columns>
-                                <TableColumn fx:id="entityNameColumn" text="Entity Name" />
-                                <TableColumn fx:id="instanceCountColumn" text="Quantity" />
-                                <TableColumn fx:id="initialCountColumn" text="Initial" />
+                                <TableColumn fx:id="entityNameColumn" editable="false" text="Entity Name" />
+                                <TableColumn fx:id="instanceCountColumn" editable="false" text="Quantity" />
+                                <TableColumn fx:id="initialCountColumn" editable="false" text="Initial" />
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -97,7 +97,7 @@
                             </Tab>
                             <Tab fx:id="entityPropertyTab" text="Entity-Property">
                                 <ScrollPane>
-                                    <VBox alignment="TOP_CENTER"  >
+                                    <VBox alignment="TOP_CENTER">
                                         <HBox alignment="TOP_CENTER" fillHeight="false" spacing="8.0">
                                             <ComboBox fx:id="comboBoxEntity" promptText="Select an entity" />
                                             <ComboBox fx:id="comboBoxProperty" promptText="Select a property" />

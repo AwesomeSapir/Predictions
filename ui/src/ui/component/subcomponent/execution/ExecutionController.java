@@ -57,7 +57,6 @@ public class ExecutionController {
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
         engineManager.isSimulationLoadedProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("simulation loaded changed to: " + newValue);
             if (newValue) {
                 DTOSimulationDetails simulationDetails = engineManager.getSimulationDetails();
                 populationMax.setValue(simulationDetails.getGrid().getRows() * simulationDetails.getGrid().getCols());
@@ -122,7 +121,6 @@ public class ExecutionController {
 
         if (isPopulationValid && isEnvVariablesValid) {
             Callback<ButtonType, ButtonType> resultConverter = param -> {
-                System.out.println("ResultConverter called with: " + param);
                 boolean single = param == ButtonType.YES;
 
                 return null;

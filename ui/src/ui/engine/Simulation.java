@@ -72,6 +72,7 @@ public class Simulation {
             XYChart.Series<Integer, Integer> series =  new XYChart.Series<>();
             entityPopulationSeriesMap.put(entity,  series);
             entityPopulationSeriesList.add(series);
+            series.setName(entity.getEntityName());
         }
 
         XYChart.Data<Integer, Integer> data = new XYChart.Data<>(

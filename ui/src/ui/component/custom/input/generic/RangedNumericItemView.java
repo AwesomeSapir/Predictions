@@ -59,7 +59,6 @@ public class RangedNumericItemView extends InputItemView<Double> {
     @Override
     protected void randomize() {
         double randNum;
-        System.out.println("Random " + value.get().getClass());
         if(integer.get()){
             randNum = (int)min.get() + random.nextInt((int) (max.get() - min.get() + 1));
         } else {

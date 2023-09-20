@@ -2,7 +2,6 @@ package ui;
 
 public interface MainUI {
     void run(String[] args);
-    // TODO style dialog header, graph, table
 
     //Optional
     // TODO add buttons for incrementing NumericRangedInput

@@ -98,18 +98,6 @@ public class MainController {
 
         textFieldFilePath.textProperty().bind(engineManager.simulationPathProperty());
 
-        //TODO deltetetetetete before submitting
-        /*File selectedFile = new File("C:\\Users\\melch\\Downloads\\ex2-virus.xml");
-        if(selectedFile.exists()){
-            System.out.println("sapir exists");
-            engineManager.loadSimulation(selectedFile);
-        } else {
-            selectedFile = new File("C:\\Users\\micha\\Downloads\\ex2-virus.xml");
-            if (selectedFile.exists()) {
-                System.out.println("tal exists");
-                engineManager.loadSimulation(selectedFile);
-            }
-        }*/
         initQueueWindow();
     }
 

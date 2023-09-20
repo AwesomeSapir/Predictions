@@ -30,7 +30,7 @@ import java.util.*;
 
 public class EngineManager {
 
-    private final EngineInterface engine; //TODO make private
+    private final EngineInterface engine;
     private final ObservableMap<Integer, Simulation> simulations = FXCollections.observableHashMap();
     private final List<Simulation> simulationsRunning = new ArrayList<>();
     private final ObservableList<Simulation> simulationsList = FXCollections.observableArrayList();

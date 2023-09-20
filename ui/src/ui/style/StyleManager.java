@@ -109,7 +109,6 @@ public class StyleManager {
                     if (file.toString().endsWith(".ttf") || file.toString().endsWith(".otf")) {
                         try {
                             javafx.scene.text.Font.loadFont(Files.newInputStream(file), 12); // 12 is the default font size, you can give your own
-                            System.out.println("font loaded: " + file.getFileName());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

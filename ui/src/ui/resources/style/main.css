@@ -387,6 +387,77 @@ VBox{
     -fx-text-fill: -primary-text;
 }
 
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view:row-selection .column-header-background .filler{
+    -fx-background-color: transparent;
+}
+
+.table-view:row-selection .column-header-background{
+    -fx-background-color: -primary-background;
+    -fx-background-radius: 16px;
+}
+
+.table-view .column-header .label{
+    -fx-font-weight: bold;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary-text;
+}
+
+.table-view .
+
+.chart-content {
+    -fx-padding: 16px;
+}
+
+.chart-title {
+    -fx-wrap-text : true;
+    -fx-alignment : center;
+    -fx-underline: true;
+}
+
+
+.chart-legend {
+    -fx-background-color:  transparent;
+    -fx-padding: 16px;
+}
+
+.chart-legend-item-symbol{
+    -fx-background-radius: 16px;
+}
+
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: -primary-accent-gradient;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: -primary-accent-gradient;
+}
+.chart-alternative-row-fill {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+    -fx-stroke-width: 0;
+}
+
+.axis {
+    -fx-tick-label-fill: -primary-text;
+    -fx-tick-length: 20;
+    -fx-minor-tick-length: 10;
+}
+
 .color-red {
     -color: #FF1744;
     -fx-background-color: -color;
@@ -406,4 +477,8 @@ VBox{
     -color: #00E676;
     -fx-background-color: -color;
     -fx-fill: -color;
+}
+
+.dialog-pane .header-panel{
+    -fx-background-color: -interact-background;
 }
