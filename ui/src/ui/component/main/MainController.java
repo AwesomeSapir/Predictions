@@ -116,6 +116,7 @@ public class MainController {
     @FXML
     public void initialize() {
         tabExecutionController.setMainController(this);
+        tabResultsController.setMainController(this);
         mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.equals(tabExecutionID)) {
                 tabExecutionController.onFocus();
@@ -161,6 +162,11 @@ public class MainController {
         mainTabPane.getSelectionModel().select(tabResultsID); // Switch to tabResultController
         ListView<Simulation> listView = tabResultsController.listExecution;
         listView.selectionModelProperty().get().select(listView.getItems().size() - 1);
+    }
+
+    public void switchToExecutionTab(int simulationId){
+        mainTabPane.getSelectionModel().select(tabExecutionID);
+        tabExecutionController.restoreValues(simulationId);
     }
 
 }

@@ -25,12 +25,10 @@ import ui.component.custom.input.simulation.EntityPopulationView;
 import ui.component.custom.input.simulation.EnvironmentVariableView;
 import ui.component.main.MainController;
 import ui.engine.EngineManager;
+import ui.engine.Simulation;
 import ui.style.Animations;
-import ui.style.StyleManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class ExecutionController {
     @FXML
@@ -122,32 +120,49 @@ public class ExecutionController {
         if (isPopulationValid && isEnvVariablesValid) {
             Notify.getInstance().showAlertDialog("Success", null, "The simulation is loaded.", Alert.AlertType.CONFIRMATION);
 
-            engineManager.setEntityPopulations(getEntityPopulations());
-            engineManager.setEnvironmentValues(getEnvironmentValues());
-
-            engineManager.runSimulation();
+            engineManager.runSimulation(getEntityPopulations(), getEnvironmentValues());
             mainController.switchToResultsTab();
         } else {
             Notify.getInstance().showAlertDialog("Invalid input!", null, errorMessage, Alert.AlertType.ERROR);
         }
     }
 
-    private Collection<Pair<String, Integer>> getEntityPopulations() {
-        List<Pair<String, Integer>> result = new ArrayList<>();
+    public void restoreValues(int id){
+        Notify.getInstance().showAlertBar("Simulation #" + id + " details restored.");
+        Simulation simulation = engineManager.getSimulations().get(id);
+        Map<String, Integer> populations = simulation.getInitialPopulations();
+        Map<String, Object> envValues = simulation.getInitialEnvValues();
+
+        for (Node view : vboxEntityPopulation.getChildren()){
+            if (view instanceof EntityPopulationView) {
+                ((EntityPopulationView) view).setValue((populations.get(((EntityPopulationView) view).getTitle()).doubleValue()));
+            }
+        }
+
+        for (Node view : vboxEnvVariables.getChildren()){
+            if (view instanceof InputItemView<?>) {
+                ((InputItemView<?>) view).setValue(envValues.get(((InputItemView<?>) view).getTitle()));
+            }
+        }
+    }
+
+    private Map<String, Integer> getEntityPopulations() {
+        Map<String, Integer> result = new LinkedHashMap<>();
         for (Node view : vboxEntityPopulation.getChildren()) {
             if (view instanceof InputItemView<?>) {
                 Pair<String, Object> pair = getValue(view);
-                result.add(new Pair<>(pair.getKey(), ((Double) pair.getValue()).intValue()));
+                result.put(pair.getKey(), ((Double) pair.getValue()).intValue());
             }
         }
         return result;
     }
 
-    private Collection<Pair<String, Object>> getEnvironmentValues() {
-        List<Pair<String, Object>> result = new ArrayList<>();
+    private Map<String, Object> getEnvironmentValues() {
+        Map<String, Object> result = new LinkedHashMap<>();
         for (Node view : vboxEnvVariables.getChildren()) {
             if (view instanceof InputItemView<?>) {
-                result.add(getValue(view));
+                Pair<String, Object> pair = getValue(view);
+                result.put(pair.getKey(), pair.getValue());
             }
         }
         return result;

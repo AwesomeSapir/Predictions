@@ -8,7 +8,6 @@ import exception.XMLConfigException;
 import exception.runtime.IllegalActionException;
 import exception.runtime.IllegalUserActionException;
 import exception.runtime.IncompatibleTypesException;
-import javafx.util.Pair;
 
 import java.util.Collection;
 import java.util.Map;
@@ -22,7 +21,7 @@ public interface EngineInterface {
     DTOSimulationHistogram getValuesForPropertyHistogram(int id, String propertyName, String entityName) throws IllegalActionException;
     Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws SimulationMissingException;
     Collection<DTOEnvironmentVariable> getEnvironmentValues() throws SimulationMissingException;
-    void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws SimulationMissingException;
+    void setEnvironmentValues(Map<String, Object> envValues) throws SimulationMissingException;
     DTOSimulation runSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException;
 
     DTOSimulationResult getSimulationResult(int id);
@@ -47,7 +46,7 @@ public interface EngineInterface {
 
     void stopSimulation(int id) throws IllegalUserActionException;
 
-    void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) throws IllegalActionException, SimulationMissingException;
+    void setEntityPopulations(Map<String, Integer> entityPopulations) throws IllegalActionException, SimulationMissingException;
 
     Collection<Double> getTicksOfSameValueOfPropertyInstances(int id, String propertyName, String entityName) throws IllegalActionException;
 

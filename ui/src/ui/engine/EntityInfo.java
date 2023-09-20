@@ -7,11 +7,13 @@ import javafx.beans.property.StringProperty;
 
 public class EntityInfo {
     private final StringProperty entityName;
-    private IntegerProperty instanceCount;
+    private final IntegerProperty instanceCount;
+    private final IntegerProperty initialCount;
 
-    public EntityInfo(String entityName, int instanceCount) {
+    public EntityInfo(String entityName, int initialCount) {
         this.entityName = new SimpleStringProperty(entityName);
-        this.instanceCount = new SimpleIntegerProperty(instanceCount);
+        this.initialCount = new SimpleIntegerProperty(initialCount);
+        this.instanceCount = new SimpleIntegerProperty(initialCount);
     }
 
     public String getEntityName() {
@@ -36,5 +38,18 @@ public class EntityInfo {
 
     public void setInstanceCount(int instanceCount) {
         this.instanceCount.set(instanceCount);
+    }
+
+    public int getInitialCount() {
+        return initialCount.get();
+    }
+
+    public IntegerProperty initialCountProperty() {
+        return initialCount;
+    }
+
+    @Override
+    public String toString() {
+        return entityName.get();
     }
 }

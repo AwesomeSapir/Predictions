@@ -24,6 +24,11 @@ public class BooleanItemView extends InputItemView<Boolean> {
     }
 
     @Override
+    public void setValue(Object value) {
+        toggleSwitch.setSelected((Boolean) value);
+    }
+
+    @Override
     protected void bind() {
         super.bind();
         value.bindBidirectional(toggleSwitch.selectedProperty());

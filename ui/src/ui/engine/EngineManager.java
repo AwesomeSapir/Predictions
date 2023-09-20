@@ -110,7 +110,7 @@ public class EngineManager {
         Notify.getInstance().showAlertBar("File loaded successfully");
     }
 
-    public void setEnvironmentValues(Collection<Pair<String, Object>> values){
+    public void setEnvironmentValues(Map<String, Object> values){
         try {
             engine.setEnvironmentValues(values);
         } catch (SimulationMissingException e) {
@@ -118,18 +118,25 @@ public class EngineManager {
         }
     }
 
-    public void runSimulation(){
+    public void runSimulation(Map<String, Integer> entityPopulations, Map<String, Object> environmentValues){
+        setEntityPopulations(entityPopulations);
+        setEnvironmentValues(environmentValues);
+
         DTOSimulation dtoSimulation = null;
         try {
             dtoSimulation = engine.runSimulation();
         } catch (FatalException | SimulationMissingException | IllegalActionException | IllegalUserActionException |
                  IncompatibleTypesException | XMLConfigException e) {
             alertException(e);
+            return;
         }
         Simulation simulation =  new Simulation(
                 dtoSimulation.getId(),
                 dtoSimulation.getBeginTime(),
-                engine.getSimulationTermination(dtoSimulation.getId()));
+                engine.getSimulationTermination(dtoSimulation.getId()),
+                entityPopulations,
+                environmentValues
+        );
         simulations.put(simulation.getId(), simulation);
         simulationsList.add(simulation);
         simulationsRunning.add(simulation);
@@ -278,7 +285,7 @@ public class EngineManager {
         return null;
     }
 
-    public void setEntityPopulations(Collection<Pair<String, Integer>> values) {
+    public void setEntityPopulations(Map<String, Integer> values) {
         try {
             engine.setEntityPopulations(values);
         } catch (IllegalActionException | SimulationMissingException e) {

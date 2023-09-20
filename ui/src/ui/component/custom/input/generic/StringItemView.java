@@ -28,6 +28,11 @@ public class StringItemView extends TextInputItemView<String>{
     }
 
     @Override
+    public void setValue(Object value) {
+        textField.setText(value.toString());
+    }
+
+    @Override
     protected void bind() {
         super.bind();
         value.bind(textField.textProperty());

@@ -23,11 +23,16 @@ public class Simulation {
     private final Map<EntityInfo, XYChart.Series<Integer, Integer>> entityPopulationSeriesMap = new LinkedHashMap<>();
     private final ObservableList<XYChart.Series<Integer, Integer>> entityPopulationSeriesList = FXCollections.observableArrayList();
 
-    public Simulation(int id, LocalDateTime runDate, DTOTermination termination) {
+    private final Map<String, Integer> initialPopulations;
+    private final Map<String, Object> initialEnvValues;
+
+    public Simulation(int id, LocalDateTime runDate, DTOTermination termination, Map<String, Integer> entityPopulations, Map<String, Object> environmentValues) {
         this.id = id;
         this.runDate = runDate;
         progressSeconds = new Progress(termination.getCondition("SECONDS")!=null ? ((Long) termination.getCondition("SECONDS").getCondition()).intValue() : null);
         progressTicks = new Progress(termination.getCondition("TICKS")!=null ? ((Long) termination.getCondition("TICKS").getCondition()).intValue() : null);
+        this.initialPopulations = new LinkedHashMap<>(entityPopulations);
+        this.initialEnvValues = new LinkedHashMap<>(environmentValues);
     }
 
     public int getId() {
@@ -81,5 +86,13 @@ public class Simulation {
 
     public ObservableList<XYChart.Series<Integer, Integer>> getEntityPopulationSeriesList() {
         return entityPopulationSeriesList;
+    }
+
+    public Map<String, Integer> getInitialPopulations() {
+        return initialPopulations;
+    }
+
+    public Map<String, Object> getInitialEnvValues() {
+        return initialEnvValues;
     }
 }

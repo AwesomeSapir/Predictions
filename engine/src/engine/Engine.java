@@ -175,17 +175,17 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public void setEnvironmentValues(Collection<Pair<String, Object>> envValues) throws SimulationMissingException {
+    public void setEnvironmentValues(Map<String, Object> envValues) throws SimulationMissingException {
         isSimulationLoaded();
-        for (Pair<String, Object> envVar : envValues) {
+        for (Map.Entry<String, Object> envVar : envValues.entrySet()) {
             simulation.setEnvironmentValue(envVar.getKey(), envVar.getValue());
         }
     }
 
     @Override
-    public void setEntityPopulations(Collection<Pair<String, Integer>> entityPopulations) throws IllegalActionException, SimulationMissingException {
+    public void setEntityPopulations(Map<String, Integer> entityPopulations) throws IllegalActionException, SimulationMissingException {
         isSimulationLoaded();
-        for (Pair<String, Integer> entity : entityPopulations) {
+        for (Map.Entry<String, Integer> entity : entityPopulations.entrySet()) {
             simulation.setEntityPopulation(entity.getKey(), entity.getValue());
         }
         simulation.initSpace();

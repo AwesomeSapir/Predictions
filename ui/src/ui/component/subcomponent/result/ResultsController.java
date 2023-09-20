@@ -19,6 +19,7 @@ import ui.component.custom.board.BoardView;
 import ui.component.custom.node.State;
 import ui.component.custom.node.ToggleIconButton;
 import ui.component.custom.progress.SimulationProgressView;
+import ui.component.main.MainController;
 import ui.engine.EngineManager;
 import ui.engine.EntityInfo;
 import ui.engine.Simulation;
@@ -63,8 +64,11 @@ public class ResultsController {
     private TableColumn<EntityInfo, String> entityNameColumn;
     @FXML
     private TableColumn<EntityInfo, Integer> instanceCountColumn;
+    @FXML
+    private TableColumn<EntityInfo, Integer> initialCountColumn;
 
     private EngineManager engineManager;
+    private MainController mainController;
 
     private final ChangeListener<Status> simulationStatusListener = (observable, oldValue, newValue) -> {
         if (newValue != Status.RUNNING) {
@@ -77,6 +81,10 @@ public class ResultsController {
     };
 
     private final ChangeListener<Number> simulationTicksListener = (observable, oldValue, newValue) -> updateDisplayData();
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
 
     public void setEngineManager(EngineManager engineManager) {
         this.engineManager = engineManager;
@@ -184,6 +192,7 @@ public class ResultsController {
         // Bind the columns to the EntityInfo properties
         entityNameColumn.setCellValueFactory(new PropertyValueFactory<>("entityName"));
         instanceCountColumn.setCellValueFactory(new PropertyValueFactory<>("instanceCount"));
+        initialCountColumn.setCellValueFactory(new PropertyValueFactory<>("initialCount"));
     }
 
     //TODO simulation should hold the properties
@@ -326,7 +335,7 @@ public class ResultsController {
     }
 
     private void actionSimulationRerun(ActionEvent actionEvent) {
-
+        mainController.switchToExecutionTab(selectedSimulation.get().getId());
     }
 
     private void actionShowBoard(ActionEvent actionEvent) {

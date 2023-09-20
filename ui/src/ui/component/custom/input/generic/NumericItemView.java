@@ -19,6 +19,11 @@ public class NumericItemView extends TextInputItemView<Double>{
     }
 
     @Override
+    public void setValue(Object value) {
+        textField.setText(value.toString());
+    }
+
+    @Override
     public Double getValue() {
         return Double.parseDouble(textField.textProperty().get());
     }

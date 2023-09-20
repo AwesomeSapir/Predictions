@@ -3,8 +3,6 @@ package ui;
 public interface MainUI {
     void run(String[] args);
 
-    // TODO show results for paused
-    // TODO rerun simulation
     // TODO check error files
 
     // TODO hide second pane in result tab when list is empty

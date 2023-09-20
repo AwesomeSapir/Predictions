@@ -36,6 +36,9 @@ public class BoardView extends VBox {
 
     private EngineManager engineManager;
     private Simulation simulation;
+
+    //TODO change to timer
+    //TODO change to canvas
     private final Timeline updater = new Timeline(new KeyFrame(Duration.millis(50), event -> {
         setTiles(engineManager.getSimulationSpace(simulation).getSpace());
     }));

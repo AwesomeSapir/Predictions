@@ -52,6 +52,11 @@ public class RangedNumericItemView extends InputItemView<Double> {
     }
 
     @Override
+    public void setValue(Object value) {
+        sliderAmount.setValue((Double) value);
+    }
+
+    @Override
     protected void randomize() {
         double randNum;
         System.out.println("Random " + value.get().getClass());
