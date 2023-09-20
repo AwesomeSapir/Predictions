@@ -3,9 +3,6 @@ package ui.component.subcomponent.result;
 import dto.detail.DTOProperty;
 import dto.simulation.DTOSimulationHistogram;
 import dto.simulation.DTOSimulationResult;
-import javafx.beans.binding.Bindings;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -19,9 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import ui.component.custom.board.BoardView;
-import ui.component.custom.node.IconButton;
-import ui.component.custom.node.ToggleIconButton;
 import ui.component.custom.node.State;
+import ui.component.custom.node.ToggleIconButton;
 import ui.component.custom.progress.SimulationProgressView;
 import ui.engine.EngineManager;
 import ui.engine.EntityInfo;
@@ -337,12 +333,12 @@ public class ResultsController {
         Stage stage = new Stage();
         BoardView boardView = new BoardView(engineManager, selectedSimulation.get());
         Scene scene = new Scene(boardView);
-        StyleManager.register(scene);
+        StyleManager.getInstance().register(scene);
         stage.setScene(scene);
         stage.setTitle("Simulation #" + selectedSimulation.get().getId() + " Grid");
         stage.setOnCloseRequest(event -> {
             boardView.stop();
-            StyleManager.unregister(scene);
+            StyleManager.getInstance().unregister(scene);
         });
         stage.show();
     }

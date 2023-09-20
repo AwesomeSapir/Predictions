@@ -1,11 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import ui.component.custom.node.ToggleSwitch?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.settings.SettingsController">
-    <ToggleSwitch fx:id="toggleDark" layoutX="30" layoutY="30"/>
-    <ComboBox fx:id="colorComboBox" layoutX="30" layoutY="70"/>
-    <ComboBox fx:id="fontComboBox" layoutX="30" layoutY="170"/>
-</AnchorPane>
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.component.subcomponent.settings.SettingsController">
+    <GridPane hgap="16.0" styleClass="view-box" vgap="8.0">
+        <Label text="Dark mode:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label text="Accent color:" GridPane.rowIndex="2"/>
+        <Label text="Font:" GridPane.rowIndex="4"/>
+        <Label text="Font size:" GridPane.rowIndex="6"/>
+
+        <ToggleSwitch fx:id="toggleDark" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT"/>
+        <ComboBox fx:id="comboBoxColor" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                  GridPane.hgrow="ALWAYS" GridPane.rowIndex="2"/>
+        <ComboBox fx:id="comboBoxFont" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                  GridPane.hgrow="ALWAYS" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="comboBoxFontSize" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1"
+                  GridPane.hgrow="ALWAYS" GridPane.rowIndex="6"/>
+
+        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets left="-16.0" right="-16.0"/>
+            </GridPane.margin>
+        </Separator>
+        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <GridPane.margin>
+                <Insets left="-16.0" right="-16.0"/>
+            </GridPane.margin>
+        </Separator>
+        <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5">
+            <GridPane.margin>
+                <Insets left="-16.0" right="-16.0"/>
+            </GridPane.margin>
+        </Separator>
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+            <RowConstraints/>
+        </rowConstraints>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        </padding>
+    </GridPane>
+    <padding>
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+    </padding>
+</ScrollPane>

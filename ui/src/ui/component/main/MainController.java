@@ -61,14 +61,14 @@ public class MainController {
             Scene scene = new Scene(root);
             queueStage.setTitle("Queue");
             queueStage.setScene(scene);
-            queueStage.setOnCloseRequest(value -> StyleManager.unregister(scene));
+            queueStage.setOnCloseRequest(value -> StyleManager.getInstance().unregister(scene));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void showQueueWindow(){
-        StyleManager.register(queueStage.getScene());
+        StyleManager.getInstance().register(queueStage.getScene());
         if(!queueStage.isShowing()){
             queueStage.show();
         } else {
@@ -139,16 +139,18 @@ public class MainController {
             Scene scene = new Scene(root);
             settingsStage.setTitle("Settings");
             settingsStage.setScene(scene);
-            settingsStage.setOnCloseRequest(value -> StyleManager.unregister(scene));
+            settingsStage.setOnCloseRequest(value -> StyleManager.getInstance().unregister(scene));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void showSettingsWindow(){
-        StyleManager.register(settingsStage.getScene());
+        StyleManager.getInstance().register(settingsStage.getScene());
         if(!settingsStage.isShowing()){
             settingsStage.show();
+            settingsStage.setMinHeight(settingsStage.getScene().getHeight());
+            settingsStage.setMinWidth(settingsStage.getScene().getWidth());
         } else {
             settingsStage.setIconified(false);
             settingsStage.toFront();

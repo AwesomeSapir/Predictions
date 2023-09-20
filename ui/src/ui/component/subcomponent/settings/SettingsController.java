@@ -12,39 +12,49 @@ import java.util.Map;
 public class SettingsController {
 
     @FXML public ToggleSwitch toggleDark;
-    @FXML public ComboBox<Font> fontComboBox;
-    @FXML private ComboBox<Color> colorComboBox;
-
+    @FXML public ComboBox<Font> comboBoxFont;
+    @FXML public ComboBox<FontSize> comboBoxFontSize;
+    @FXML private ComboBox<Color> comboBoxColor;
     private final Map<ComboBox<?>, Node> comboToListView = new HashMap<>();
+    private StyleManager styleManager;
 
     @FXML
     public void initialize() {
-        colorComboBox.getItems().setAll(Color.values());
-        fontComboBox.getItems().setAll(Font.values());
+        styleManager = StyleManager.getInstance();
+        comboBoxColor.getItems().setAll(Color.values());
+        comboBoxFont.getItems().setAll(Font.values());
+        comboBoxFontSize.getItems().setAll(FontSize.values());
+
         toggleDark.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue){
                 //Animations.nudgeX(toggleDark, 8);
-                StyleManager.changeMode(Mode.DARK);
+                styleManager.changeMode(Mode.DARK);
             } else {
                 //Animations.nudgeX(toggleDark, -8);
-                StyleManager.changeMode(Mode.LIGHT);
+                styleManager.changeMode(Mode.LIGHT);
             }
         });
 
-        colorComboBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
-            StyleManager.changeColor(newValue);
+        comboBoxColor.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            styleManager.changeColor(newValue);
         }));
 
-        fontComboBox.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
-            StyleManager.changeFont(newValue);
+        comboBoxFont.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            styleManager.changeFont(newValue);
         }));
 
-        toggleDark.selectedProperty().set(StyleManager.getCurrentMode() == Mode.DARK);
-        colorComboBox.getSelectionModel().select(StyleManager.getCurrentColor());
-        fontComboBox.getSelectionModel().select(StyleManager.getCurrentFont());
+        comboBoxFontSize.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            styleManager.changeFontSize(newValue);
+        });
 
-        initComboBoxAnimations(colorComboBox);
-        initComboBoxAnimations(fontComboBox);
+        toggleDark.selectedProperty().set(styleManager.getCurrentMode() == Mode.DARK);
+        comboBoxColor.getSelectionModel().select(styleManager.getCurrentColor());
+        comboBoxFont.getSelectionModel().select(styleManager.getCurrentFont());
+        comboBoxFontSize.getSelectionModel().select(styleManager.getCurrentFontSize());
+
+        initComboBoxAnimations(comboBoxColor);
+        initComboBoxAnimations(comboBoxFont);
+        initComboBoxAnimations(comboBoxFontSize);
     }
 
     private void initComboBoxAnimations(ComboBox<?> comboBox){

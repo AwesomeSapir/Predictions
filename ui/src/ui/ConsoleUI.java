@@ -18,7 +18,6 @@ public class ConsoleUI extends Application implements MainUI{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        StyleManager.init();
         primaryStage.setTitle("Predictions");
 
         FXMLLoader loader = new FXMLLoader();
@@ -36,7 +35,7 @@ public class ConsoleUI extends Application implements MainUI{
         AnchorPane parent = new AnchorPane(notificationPane);
 
         Scene scene = new Scene(parent, 1000, 800);
-        StyleManager.register(scene);
+        StyleManager.getInstance().register(scene);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setMinHeight(300);

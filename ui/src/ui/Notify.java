@@ -34,8 +34,8 @@ public class Notify {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-        StyleManager.register(alert.getDialogPane().getScene());
-        alert.setOnCloseRequest(event -> StyleManager.unregister(alert.getDialogPane().getScene()));
+        StyleManager.getInstance().register(alert.getDialogPane().getScene());
+        alert.setOnCloseRequest(event -> StyleManager.getInstance().unregister(alert.getDialogPane().getScene()));
         alert.showAndWait();
     }
 

@@ -7,8 +7,6 @@ public interface MainUI {
     // TODO rerun simulation
     // TODO check error files
 
-    // TODO settings screen
-    // TODO font size change
     // TODO hide second pane in result tab when list is empty
     // TODO work on details tab, add all dtos, show all DTOObjects...
     // TODO add scrollbars on everything!!!!

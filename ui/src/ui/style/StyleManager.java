@@ -13,86 +13,89 @@ import java.util.Objects;
 
 public class StyleManager {
 
-    private static final List<Scene> scenes = new ArrayList<>();
-    private static final String main = "main.css";
-    private static final String PATH = "/ui/resources/style/";
-    private static Mode currentMode = Mode.DARK;
-    private static Color currentColor = Color.BLUE;
-    private static Font currentFont = Font.Poppins;
+    private final List<Scene> scenes = new ArrayList<>();
+    private final String main = "main.css";
+    private final String PATH = "/ui/resources/style/";
+    private Mode currentMode = Mode.DARK;
+    private Color currentColor = Color.BLUE;
+    private Font currentFont = Font.Poppins;
+    private FontSize currentFontSize = FontSize.medium;
 
-    public static void register(Scene scene) {
+    public void register(Scene scene) {
         scenes.add(scene);
+        scene.getStylesheets().clear();
+        scene.getStylesheets().add(Objects.requireNonNull(StyleManager.class.getResource(PATH + main)).toExternalForm());
         updateStyles(scene);
     }
 
-    public static void unregister(Scene scene) {
+    public void unregister(Scene scene) {
         scenes.remove(scene);
     }
 
-    private static void updateStyles(Scene scene) {
-        scene.getStylesheets().clear();
-        modeString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm();
-        colorString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm();
-        fontString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm();
-        scene.getStylesheets().addAll(
-                Objects.requireNonNull(StyleManager.class.getResource(PATH + main)).toExternalForm(),
-                modeString,
-                colorString,
-                fontString
-        );
+    private void updateStyles(Scene scene) {
+        updateMode(scene);
+        updateColor(scene);
+        updateFont(scene);
+        updateFontSize(scene);
     }
 
-    private static String modeString;
-    private static String colorString;
-    private static String fontString;
+    private String modeString;
+    private String colorString;
+    private String fontString;
+    private String fontSizeString;
 
-    private static void updateMode(Scene scene) {
+    private void updateMode(Scene scene) {
         scene.getStylesheets().remove(modeString);
         modeString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm();
         scene.getStylesheets().add(modeString);
     }
 
-    private static void updateColor(Scene scene) {
+    private void updateColor(Scene scene) {
         scene.getStylesheets().remove(colorString);
         colorString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm();
         scene.getStylesheets().add(colorString);
     }
 
-    private static void updateFont(Scene scene) {
+    private void updateFont(Scene scene) {
         scene.getStylesheets().remove(fontString);
         fontString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm();
         scene.getStylesheets().add(fontString);
     }
 
-    public static void changeMode(Mode newMode) {
+    private void updateFontSize(Scene scene){
+        scene.getStylesheets().remove(fontSizeString);
+        fontSizeString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "size/" + currentFontSize.toString().toLowerCase() + ".css")).toExternalForm();
+        scene.getStylesheets().add(fontSizeString);
+    }
+
+    public void changeMode(Mode newMode) {
         currentMode = newMode;
-        updateAll(StyleManager::updateMode);
+        updateAll(this::updateMode);
     }
 
-    public static void changeColor(Color newColor) {
+    public void changeColor(Color newColor) {
         currentColor = newColor;
-        updateAll(StyleManager::updateColor);
+        updateAll(this::updateColor);
     }
 
-    public static void changeFont(Font newFont) {
+    public void changeFont(Font newFont) {
         currentFont = newFont;
-        updateAll(StyleManager::updateFont);
+        updateAll(this::updateFont);
     }
 
-    private static void updateAll(SceneUpdater action) {
+    public void changeFontSize(FontSize newFontSize){
+        currentFontSize = newFontSize;
+        updateAll(this::updateFontSize);
+    }
+
+    private void updateAll(SceneUpdater action) {
         for (Scene scene : scenes) {
-            Animations.fadeTransition(scene, () -> action.update(scene));
+            action.update(scene);
+            //Animations.fadeTransition(scene, () -> );
         }
     }
 
-    private static void updateAll() {
-        for (Scene scene : scenes) {
-            //Animations.fadeTransition(scene, , () -> updateStyles(scene));
-            //updateStyles(scene);
-        }
-    }
-
-    private static void initFonts() {
+    private void initFonts() {
         Path path = null;
         try {
             path = Paths.get(Objects.requireNonNull(StyleManager.class.getResource("/ui/resources/font/")).toURI());
@@ -118,7 +121,6 @@ public class StyleManager {
             throw new RuntimeException(e);
         }
 
-
         /*
         Font[] fonts = Font.values();
         for (Font font : fonts){
@@ -133,24 +135,37 @@ public class StyleManager {
         }*/
     }
 
-    public static void init() {
-        initFonts();
-    }
-
-    public static Mode getCurrentMode() {
+    public Mode getCurrentMode() {
         return currentMode;
     }
 
-    public static Color getCurrentColor() {
+    public Color getCurrentColor() {
         return currentColor;
     }
 
-    public static Font getCurrentFont() {
+    public Font getCurrentFont() {
         return currentFont;
+    }
+
+    public FontSize getCurrentFontSize() {
+        return currentFontSize;
     }
 
     @FunctionalInterface
     private interface SceneUpdater {
         void update(Scene scene);
     }
+
+    private static StyleManager instance;
+    private StyleManager() {
+        initFonts();
+    }
+
+    public static StyleManager getInstance(){
+        if(instance == null){
+            instance = new StyleManager();
+        }
+        return instance;
+    }
+
 }
