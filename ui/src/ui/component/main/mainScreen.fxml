@@ -37,9 +37,9 @@
            <padding>
                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
            </padding>
-           <IconButton fx:id="chooseFileButton" icon="icon-file-open" mnemonicParsing="false" onAction="#chooseXMLFile" text="LOAD FILE" GridPane.columnIndex="0" />
-           <TextField fx:id="filePathTextField" editable="false" prefHeight="26.0" prefWidth="153.0" promptText="Current Loaded File Path" GridPane.columnIndex="1" />
-           <IconButton fx:id="queueManagementButton" icon="icon-queue" mnemonicParsing="false" text="QUEUE" GridPane.columnIndex="2" />
+           <IconButton fx:id="buttonFileChoose" icon="icon-file-open" mnemonicParsing="false" onAction="#chooseXMLFile" text="LOAD FILE" GridPane.columnIndex="0" />
+           <TextField fx:id="textFieldFilePath" editable="false" prefHeight="26.0" prefWidth="153.0" promptText="Current Loaded File Path" GridPane.columnIndex="1" />
+           <IconButton fx:id="buttonQueue" icon="icon-queue" mnemonicParsing="false" text="QUEUE" GridPane.columnIndex="2" />
            <IconButton fx:id="buttonSettings" icon="icon-settings" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="3"/>
        </GridPane>
    </top>

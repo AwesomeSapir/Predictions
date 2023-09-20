@@ -10,25 +10,22 @@ import ui.style.StyleManager;
 public class Notify {
 
     private static Notify instance;
-    private NotificationPane notificationPane;
+    private NotificationPane notificationPane = new NotificationPane();
     private final PauseTransition hideDelay = new PauseTransition(Duration.seconds(3));
 
     private Notify() {
+        notificationPane.setShowFromTop(false);
     }
 
-    public static NotificationPane init(Node root) {
-        if (instance == null) {
-            instance = new Notify();
-        }
-
-        if (instance.notificationPane == null) {
-            instance.notificationPane = new NotificationPane(root);
-            instance.notificationPane.setShowFromTop(false);
-        }
+    public static NotificationPane register(Node root) {
+        instance.notificationPane.setContent(root);
         return instance.notificationPane;
     }
 
     public static Notify getInstance() {
+        if (instance == null) {
+            instance = new Notify();
+        }
         return instance;
     }
 

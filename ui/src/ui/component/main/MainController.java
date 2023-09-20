@@ -17,7 +17,6 @@ import ui.engine.EngineManager;
 import ui.engine.Simulation;
 import ui.style.Animations;
 import ui.style.StyleManager;
-import ui.style.StyleManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +24,15 @@ import java.io.IOException;
 public class MainController {
 
     @FXML public TabPane mainTabPane;
-    @FXML public Button buttonSettings;
+    @FXML public Button buttonSettings, buttonQueue;
     private EngineManager engineManager;
 
     @FXML
     private BorderPane mainBorderPane;
     @FXML
-    private Button chooseFileButton;
+    private Button buttonFileChoose;
     @FXML
-    private TextField filePathTextField;
+    private TextField textFieldFilePath;
     @FXML
     private DetailsController tabDetailsController;
     @FXML
@@ -52,11 +51,6 @@ public class MainController {
     private final Stage settingsStage = new Stage();
 
     private final Stage queueStage = new Stage();
-
-    @FXML
-    void showQueue(ActionEvent event){
-        showQueueWindow();
-    }
 
     public void initQueueWindow(){
         try {
@@ -88,7 +82,7 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
 
-        File selectedFile = fileChooser.showOpenDialog(chooseFileButton.getScene().getWindow());
+        File selectedFile = fileChooser.showOpenDialog(buttonFileChoose.getScene().getWindow());
         if (selectedFile == null) {
             return;
         }
@@ -102,7 +96,7 @@ public class MainController {
         tabExecutionController.setEngineManager(engineManager);
         tabResultsController.setEngineManager(engineManager);
 
-        filePathTextField.textProperty().bind(engineManager.simulationPathProperty());
+        textFieldFilePath.textProperty().bind(engineManager.simulationPathProperty());
 
         //TODO deltetetetetete before submitting
         File selectedFile = new File("C:\\Users\\melch\\Downloads\\ex2-virus.xml");
@@ -135,6 +129,7 @@ public class MainController {
         buttonSettings.setOnMouseEntered(event -> Animations.spin(buttonSettings, 0, 90).play());
         buttonSettings.setOnMouseExited(event -> Animations.spin(buttonSettings, 90, -90).play());
         buttonSettings.setOnAction(event -> showSettingsWindow());
+        buttonQueue.setOnAction(event -> showQueueWindow());
     }
 
     public void initSettingsWindow(){

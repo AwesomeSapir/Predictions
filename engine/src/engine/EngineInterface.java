@@ -53,7 +53,7 @@ public interface EngineInterface {
 
     Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName) throws IllegalActionException;
 
-    Collection<Double> getConsistencyOfProperty(int id, String propertyName, String entityName);
-
     DTOQueueDetails getQueueDetails();
+
+    void shutdown();
 }

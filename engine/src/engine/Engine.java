@@ -422,4 +422,9 @@ public class Engine implements EngineInterface, Serializable {
         }
         return new DTOQueueDetails(total, active, paused, stopped, running);
     }
+
+    @Override
+    public void shutdown() {
+        threadPool.shutdownNow();
+    }
 }

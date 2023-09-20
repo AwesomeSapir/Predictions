@@ -38,29 +38,30 @@ public class EngineManager {
     private BooleanProperty isSimulationLoaded = new SimpleBooleanProperty(false);
     private StringProperty simulationPath = new SimpleStringProperty();
     private final Timer simulationUpdater = new Timer();
+    private final TimerTask updateTask = new TimerTask() {
+        @Override
+        public void run() {
+            List<Simulation> finished = new ArrayList<>();
+            for (Simulation simulation : simulationsRunning){
+                Platform.runLater(() -> {
+                    updateQueue();
+                    updateSimulationProgress(simulation);
+                    updateEntityPopulations(simulation.getId());
+                    //populateEntityTable(selectedSimulation.get().getId());
+                });
+                if(simulation.getStatus() == Status.STOPPED || simulation.getStatus() == Status.ERROR) {
+                    finished.add(simulation);
+                }
+            }
+            simulationsRunning.removeAll(finished);
+            finished.clear();
+        }
+    };
     private final Queue queue = new Queue();
 
     public EngineManager() {
         engine = new Engine();
-        simulationUpdater.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                List<Simulation> finished = new ArrayList<>();
-                for (Simulation simulation : simulationsRunning){
-                    Platform.runLater(() -> {
-                        updateQueue();
-                        updateSimulationProgress(simulation);
-                        updateEntityPopulations(simulation.getId());
-                        //populateEntityTable(selectedSimulation.get().getId());
-                    });
-                    if(simulation.getStatus() == Status.STOPPED || simulation.getStatus() == Status.ERROR) {
-                        finished.add(simulation);
-                    }
-                }
-                simulationsRunning.removeAll(finished);
-                finished.clear();
-            }
-        }, 0, 200);
+        simulationUpdater.scheduleAtFixedRate(updateTask, 0, 200);
     }
 
     private void alertException(Exception e){
@@ -292,5 +293,11 @@ public class EngineManager {
 
     public DTOGrid getGrid(int id){
         return engine.getGrid(id);
+    }
+
+    public void shutdown() {
+        engine.shutdown();
+        updateTask.cancel();
+        simulationUpdater.cancel();
     }
 }

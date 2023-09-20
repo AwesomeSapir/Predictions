@@ -20,7 +20,7 @@ public class StyleManager {
     private static Color currentColor = Color.BLUE;
     private static Font currentFont = Font.Poppins;
 
-    public static void register(Scene scene){
+    public static void register(Scene scene) {
         scenes.add(scene);
         updateStyles(scene);
     }
@@ -31,27 +31,37 @@ public class StyleManager {
 
     private static void updateStyles(Scene scene) {
         scene.getStylesheets().clear();
+        modeString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm();
+        colorString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm();
+        fontString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm();
         scene.getStylesheets().addAll(
                 Objects.requireNonNull(StyleManager.class.getResource(PATH + main)).toExternalForm(),
-                Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm(),
-                Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm(),
-                Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm()
+                modeString,
+                colorString,
+                fontString
         );
     }
 
-    private static void updateMode(Scene scene){
-        scene.getStylesheets().remove(1);
-        scene.getStylesheets().add(1, Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm());
+    private static String modeString;
+    private static String colorString;
+    private static String fontString;
+
+    private static void updateMode(Scene scene) {
+        scene.getStylesheets().remove(modeString);
+        modeString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "mode/" + currentMode.toString().toLowerCase() + ".css")).toExternalForm();
+        scene.getStylesheets().add(modeString);
     }
 
-    private static void updateColor(Scene scene){
-        scene.getStylesheets().remove(2);
-        scene.getStylesheets().add(2, Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm());
+    private static void updateColor(Scene scene) {
+        scene.getStylesheets().remove(colorString);
+        colorString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "color/" + currentColor.toString().toLowerCase() + ".css")).toExternalForm();
+        scene.getStylesheets().add(colorString);
     }
 
-    private static void updateFont(Scene scene){
-        scene.getStylesheets().remove(3);
-        scene.getStylesheets().add(3, Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm());
+    private static void updateFont(Scene scene) {
+        scene.getStylesheets().remove(fontString);
+        fontString = Objects.requireNonNull(StyleManager.class.getResource(PATH + "font/" + currentFont.toString().toLowerCase() + ".css")).toExternalForm();
+        scene.getStylesheets().add(fontString);
     }
 
     public static void changeMode(Mode newMode) {
@@ -64,12 +74,12 @@ public class StyleManager {
         updateAll(StyleManager::updateColor);
     }
 
-    public static void changeFont(Font newFont){
+    public static void changeFont(Font newFont) {
         currentFont = newFont;
         updateAll(StyleManager::updateFont);
     }
 
-    private static void updateAll(SceneUpdater action){
+    private static void updateAll(SceneUpdater action) {
         for (Scene scene : scenes) {
             Animations.fadeTransition(scene, () -> action.update(scene));
         }
@@ -77,12 +87,12 @@ public class StyleManager {
 
     private static void updateAll() {
         for (Scene scene : scenes) {
-            Animations.fadeTransition(scene, () -> updateStyles(scene));
+            //Animations.fadeTransition(scene, , () -> updateStyles(scene));
             //updateStyles(scene);
         }
     }
 
-    private static void initFonts(){
+    private static void initFonts() {
         Path path = null;
         try {
             path = Paths.get(Objects.requireNonNull(StyleManager.class.getResource("/ui/resources/font/")).toURI());
@@ -90,7 +100,7 @@ public class StyleManager {
             throw new RuntimeException(e);
         }
         try {
-            Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, new SimpleFileVisitor<Path>(){
+            Files.walkFileTree(path, EnumSet.noneOf(FileVisitOption.class), Integer.MAX_VALUE, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     if (file.toString().endsWith(".ttf") || file.toString().endsWith(".otf")) {
@@ -123,7 +133,7 @@ public class StyleManager {
         }*/
     }
 
-    public static void init(){
+    public static void init() {
         initFonts();
     }
 

@@ -42,7 +42,7 @@ public class Simulation implements SimulationInterface, Serializable {
     }
 
     private void loop() throws IllegalActionException {
-        while (status == Status.RUNNING) {
+        while (status == Status.RUNNING && !Thread.currentThread().isInterrupted()) {
             tick();
         }
     }
