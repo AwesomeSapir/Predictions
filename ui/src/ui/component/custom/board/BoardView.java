@@ -9,9 +9,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import ui.engine.EngineManager;
 import ui.engine.Simulation;
@@ -20,7 +20,7 @@ import ui.engine.Status;
 import java.io.IOException;
 import java.util.*;
 
-public class BoardView extends VBox {
+public class BoardView extends ScrollPane {
 
     @FXML
     private GridPane gridBoard;

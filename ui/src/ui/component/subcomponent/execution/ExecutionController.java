@@ -14,9 +14,11 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import ui.Notify;
@@ -63,6 +65,7 @@ public class ExecutionController {
                 populateVBox(vboxEnvVariables, engineManager.getEnvironmentDefinitions());
             }
         });
+        buttonStart.disableProperty().bind(engineManager.isSimulationLoadedProperty().not());
     }
 
     public void populateVBox(VBox vBox, Collection<? extends DTOObject> collection) {
@@ -118,10 +121,16 @@ public class ExecutionController {
         }
 
         if (isPopulationValid && isEnvVariablesValid) {
-            Notify.getInstance().showAlertDialog("Success", null, "The simulation is loaded.", Alert.AlertType.CONFIRMATION);
+            Callback<ButtonType, ButtonType> resultConverter = param -> {
+                System.out.println("ResultConverter called with: " + param);
+                boolean single = param == ButtonType.YES;
 
-            engineManager.runSimulation(getEntityPopulations(), getEnvironmentValues());
+                return null;
+            };
+            Optional<ButtonType> result = Notify.getInstance().showAlertDialog("Success", null, "The simulation is loaded, would like to pause it after the first tick?", Alert.AlertType.CONFIRMATION);
+            engineManager.runSimulation(result.isPresent() && result.get() == ButtonType.YES, getEntityPopulations(), getEnvironmentValues());
             mainController.switchToResultsTab();
+
         } else {
             Notify.getInstance().showAlertDialog("Invalid input!", null, errorMessage, Alert.AlertType.ERROR);
         }
@@ -193,15 +202,15 @@ public class ExecutionController {
         return true;
     }
 
-    private Timeline buttonStartAniamtion = new Timeline(new KeyFrame(Duration.millis(10000), event -> {
+    private final Timeline buttonStartAnimation = new Timeline(new KeyFrame(Duration.millis(10000), event -> {
         Animations.highlight(buttonStart, 2);
     }));
 
     public void onFocus() {
-        buttonStartAniamtion.playFromStart();
+        buttonStartAnimation.playFromStart();
     }
 
     public void onUnfocused() {
-        buttonStartAniamtion.stop();
+        buttonStartAnimation.stop();
     }
 }

@@ -22,7 +22,7 @@ public interface EngineInterface {
     Collection<DTOEnvironmentVariable> getEnvironmentDefinitions() throws SimulationMissingException;
     Collection<DTOEnvironmentVariable> getEnvironmentValues() throws SimulationMissingException;
     void setEnvironmentValues(Map<String, Object> envValues) throws SimulationMissingException;
-    DTOSimulation runSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException;
+    DTOSimulation runSimulation(boolean single) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException;
 
     DTOSimulationResult getSimulationResult(int id);
 

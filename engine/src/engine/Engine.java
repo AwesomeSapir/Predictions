@@ -375,14 +375,16 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     @Override
-    public DTOSimulation runSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException {
+    public DTOSimulation runSimulation(boolean single) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalUserActionException, IllegalActionException, SimulationMissingException {
         isSimulationLoaded();
         int id = idCounter;
         archiveSimulation();
         SimulationInterface simulation = pastSimulations.get(id);
         simulation.run(id);
-        simulation.pause();
-        simulation.singleTick();
+        if(single){
+            simulation.pause();
+            simulation.singleTick();
+        }
         threadPool.execute(simulation);
         return new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString());
     }

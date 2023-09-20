@@ -23,7 +23,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.control.Alert;
-import javafx.util.Pair;
 import ui.Notify;
 
 import java.io.File;
@@ -118,13 +117,13 @@ public class EngineManager {
         }
     }
 
-    public void runSimulation(Map<String, Integer> entityPopulations, Map<String, Object> environmentValues){
+    public void runSimulation(boolean single, Map<String, Integer> entityPopulations, Map<String, Object> environmentValues){
         setEntityPopulations(entityPopulations);
         setEnvironmentValues(environmentValues);
 
         DTOSimulation dtoSimulation = null;
         try {
-            dtoSimulation = engine.runSimulation();
+            dtoSimulation = engine.runSimulation(single);
         } catch (FatalException | SimulationMissingException | IllegalActionException | IllegalUserActionException |
                  IncompatibleTypesException | XMLConfigException e) {
             alertException(e);

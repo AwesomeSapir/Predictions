@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root alignment="TOP_CENTER" spacing="16.0" type="VBox" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fitToHeight="true" fitToWidth="true" type="ScrollPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="TOP_CENTER" spacing="16.0">
 
-    <GridPane fx:id="gridBoard" hgap="1.0" vgap="1.0" />
-    <HBox fx:id="hboxLegend" alignment="TOP_CENTER" spacing="8.0" />
-   <padding>
-      <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-   </padding>
+        <GridPane fx:id="gridBoard" alignment="TOP_CENTER" hgap="1.0" vgap="1.0" VBox.vgrow="NEVER" />
+        <HBox fx:id="hboxLegend" alignment="TOP_CENTER" fillHeight="false" spacing="8.0" />
+        <padding>
+          <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+        </padding>
 
+    </VBox>
 </fx:root>
