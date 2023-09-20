@@ -1,8 +1,7 @@
 package ui.component.custom.detail;
 
 import dto.detail.*;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import dto.detail.action.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -10,173 +9,174 @@ import javafx.scene.layout.GridPane;
 public class DetailView {
 
     public Label labelTitle;
-    public GridPane gridName;
-    public Label labelName;
-
-    public GridPane gridEntity;
-    public Label labelEntityProperties;
-
-    public GridPane gridProperty;
-    public Label labelPropertyType;
-
-    public GridPane gridRange;
-    public Label labelRange;
-
-    public GridPane gridRandom;
-    public Label labelRandom;
-
-    public GridPane gridRule;
-    public Label labelRuleTicks;
-    public Label labelRuleProbability;
-    public Label labelRuleActions;
-
-    public GridPane gridTermination;
-    public Label labelTerminationTicks;
-    public Label labelTerminationSeconds;
-    public Label labelTerminationUser;
-
-    public GridPane gridGrid;
-    public Label labelRows;
-    public Label labelCols;
+    public GridPane gridData;
 
     protected DTOObject loadedObject;
 
-    protected final StringProperty name = new SimpleStringProperty();
-    protected final StringProperty properties = new SimpleStringProperty();
-    protected final StringProperty type = new SimpleStringProperty();
-    protected final StringProperty range = new SimpleStringProperty();
-    protected final BooleanProperty random = new SimpleBooleanProperty();
-    protected final StringProperty ticks = new SimpleStringProperty();
-    protected final StringProperty seconds = new SimpleStringProperty();
-    protected final StringProperty user = new SimpleStringProperty();
-    protected final DoubleProperty probability = new SimpleDoubleProperty();
-    protected final StringProperty actions = new SimpleStringProperty();
-    protected final StringProperty rows = new SimpleStringProperty();
-    protected final StringProperty cols = new SimpleStringProperty();
+    private int currentRow = 0;
+
+    public void addRow(String key, Object value){
+        Label labelKey = new Label(key);
+        Label labelValue = new Label(value.toString());
+        gridData.addRow(currentRow, labelKey, labelValue);
+        currentRow++;
+    }
 
     public void setEntity(DTOEntity object) {
-        resetVisibility();
-        updateVisibility(gridName, gridEntity);
+        reset();
 
         this.loadedObject = object;
         labelTitle.setText("Entity");
-        name.set(object.getName());
-        properties.set(object.getProperties().toString());
+
+        addRow("Name", object.getName());
+        addRow("Properties", object.getProperties());
     }
 
     public void setProperty(DTOProperty object) {
-        resetVisibility();
-        updateVisibility(gridName, gridProperty, gridRange, gridRandom);
+        reset();
 
         this.loadedObject = object;
         labelTitle.setText("Property");
-        name.set(object.getName());
-        type.set(object.getType());
-        range.set(object.getRange() == null ? "none" : object.getRange().getFrom() + " " + object.getRange().getTo());
-        random.set(object.isRandomInit());
+
+        addRow("Name", object.getName());
+        addRow("Type", object.getType());
+        addRow("Range", object.getRange() == null ? "none" : object.getRange().getFrom() + " - " + object.getRange().getTo());
+        addRow("Random?", object.isRandomInit());
     }
 
     public void setEnvVariable(DTOEnvironmentVariable object) {
-        resetVisibility();
-        updateVisibility(gridName, gridProperty, gridRange);
+        reset();
 
         this.loadedObject = object;
         labelTitle.setText("Environment Variable");
-        name.set(object.getName());
-        type.set(object.getType());
-        range.set(object.getRange() == null ? "none" : object.getRange().getFrom() + " " + object.getRange().getTo());
+
+        addRow("Name", object.getName());
+        addRow("Type", object.getType());
+        addRow("Range", object.getRange() == null ? "none" : object.getRange().getFrom() + " - " + object.getRange().getTo());
     }
 
     public void setRule(DTORule object) {
-        resetVisibility();
-        updateVisibility(gridName, gridRule);
-
+        reset();
 
         this.loadedObject = object;
         labelTitle.setText("Rule");
-        name.set(object.getName());
-        ticks.set(String.valueOf(object.getTicks()));
-        probability.set(object.getProbability());
-        actions.set(object.getActions().toString());
+
+        addRow("Name", object.getName());
+        addRow("Ticks", object.getTicks());
+        addRow("Probability", object.getProbability());
+        addRow("Actions", object.getActions());
     }
 
     public void setTermination(DTOTermination object) {
-        resetVisibility();
-        updateVisibility(gridTermination);
+        reset();
 
-        //this.loadedObject = object;
-        labelTitle.setText("Property");
+        this.loadedObject = object;
+        labelTitle.setText("Termination");
+
         if (object.getCondition("TICKS") != null) {
-            ticks.set(object.getCondition("TICKS").getCondition().toString());
-        } else {
-            ticks.set("N/A");
+            addRow("Ticks", object.getCondition("TICKS").getCondition());
         }
         if (object.getCondition("SECONDS") != null) {
-            seconds.set(object.getCondition("SECONDS").getCondition().toString());
-        } else {
-            seconds.set("N/A");
+            addRow("Seconds", object.getCondition("SECONDS").getCondition());
         }
         if (object.getCondition("USER") != null) {
-            user.set(object.getCondition("USER").getCondition().toString());
-        } else {
-            user.set("N/A");
+            addRow("User", object.getCondition("USER").getCondition());
         }
     }
 
     public void setGrid(DTOGrid object) {
-        resetVisibility();
-        updateVisibility(gridGrid);
+        reset();
 
         labelTitle.setText("Grid");
-        rows.set(String.valueOf(object.getRows()));
-        cols.set(String.valueOf(object.getCols()));
+
+        addRow("Rows", object.getRows());
+        addRow("Columns", object.getCols());
     }
 
-    private void resetVisibility() {
-        gridName.setVisible(false);
-        gridEntity.setVisible(false);
-        gridProperty.setVisible(false);
-        gridRange.setVisible(false);
-        gridRandom.setVisible(false);
-        gridRule.setVisible(false);
-        gridTermination.setVisible(false);
-        gridGrid.setVisible(false);
+    public void setActionGeneric(DTOAction object){
+        setActionGeneric(object, "Primary Entity");
     }
 
-    private void updateVisibility(GridPane... grids) {
-        for (GridPane grid : grids) {
-            grid.setVisible(true);
+    public void setActionGeneric(DTOAction object, String primaryKey){
+        reset();
+
+        labelTitle.setText("Action " + object.getName());
+
+        addRow(primaryKey, object.getEntityName());
+        if(object.getSecondaryEntity() != null) {
+            addRow("Secondary Entity", object.getSecondaryEntity().getName());
         }
     }
 
-    private void bindVisibility(GridPane... grids) {
-        for (GridPane grid : grids) {
-            Bindings.bindBidirectional(grid.visibleProperty(), grid.managedProperty());
+    public void setAction(DTOActionCalc object){
+        setActionGeneric(object);
+
+        addRow("Result Property", object.getResultPropertyName());
+        addRow("Arg 1", object.getArg1());
+        addRow("Arg 2", object.getArg2());
+    }
+
+    public void setAction(DTOActionCondition object){
+        setActionGeneric(object);
+
+        addRow("Conditions", object.getConditions());
+        addRow("Then", object.getActionsThen());
+        if(!object.getActionsElse().isEmpty()) {
+            addRow("Else", object.getActionsElse());
         }
+    }
+
+    public void setAction(DTOActionProximity object){
+        setActionGeneric(object, "Source");
+
+        addRow("Target", object.getTarget());
+        addRow("Depth", object.getDepth());
+        addRow("Actions", object.getActions());
+    }
+
+    public void setAction(DTOActionReplace object){
+        setActionGeneric(object, "Kill");
+
+        addRow("Create", object.getCreate());
+        addRow("Mode", object.getMode());
+    }
+
+    public void setAction(DTOActionValue object){
+        setActionGeneric(object);
+
+        addRow("Property", object.getPropertyName());
+        addRow("By", object.getValue());
+    }
+
+    public void setAction(DTOAction object){
+        if (object instanceof DTOActionCalc) {
+            setAction((DTOActionCalc) object);
+            return;
+        }
+        if (object instanceof DTOActionCondition) {
+            setAction((DTOActionCondition) object);
+            return;
+        }
+        if (object instanceof DTOActionProximity) {
+            setAction((DTOActionProximity) object);
+            return;
+        }
+        if (object instanceof DTOActionReplace) {
+            setAction((DTOActionReplace) object);
+            return;
+        }
+        if (object instanceof DTOActionValue) {
+            setAction((DTOActionValue) object);
+        }
+    }
+
+    private void reset() {
+        gridData.getChildren().clear();
+        currentRow = 0;
     }
 
     @FXML
     public void initialize() {
-        bindVisibility(gridName, gridEntity, gridProperty, gridRange, gridRandom, gridRule, gridTermination, gridGrid);
-        resetVisibility();
 
-        labelName.textProperty().bind(name);
-
-        labelEntityProperties.textProperty().bind(properties);
-
-        labelPropertyType.textProperty().bind(type);
-        labelRange.textProperty().bind(range);
-        labelRandom.textProperty().bind(random.asString());
-
-        labelRuleTicks.textProperty().bind(ticks);
-        labelRuleProbability.textProperty().bind(probability.asString());
-        labelRuleActions.textProperty().bind(actions);
-
-        labelTerminationTicks.textProperty().bind(ticks);
-        labelTerminationSeconds.textProperty().bind(seconds);
-        labelTerminationUser.textProperty().bind(user);
-
-        labelRows.textProperty().bind(rows);
-        labelCols.textProperty().bind(cols);
     }
 }

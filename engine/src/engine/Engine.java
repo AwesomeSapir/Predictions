@@ -278,7 +278,7 @@ public class Engine implements EngineInterface, Serializable {
                         actionReplace.getType().toString(),
                         actionReplace.getPrimaryEntity().getName(),
                         secondaryEntity,
-                        actionReplace.getCreateEntity().toString(),
+                        actionReplace.getCreateEntity().getName(),
                         actionReplace.getMode().toString()
                 );
             } else if (action instanceof ActionProximity) {
@@ -287,7 +287,7 @@ public class Engine implements EngineInterface, Serializable {
                         actionProximity.getType().toString(),
                         actionProximity.getPrimaryEntity().getName(),
                         secondaryEntity,
-                        actionProximity.getTargetEntity().toString(),
+                        actionProximity.getTargetEntity().getName(),
                         actionProximity.getDepth().toString(),
                         getActions(actionProximity.getActions())
                 );

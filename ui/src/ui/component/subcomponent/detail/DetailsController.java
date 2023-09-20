@@ -3,6 +3,7 @@ package ui.component.subcomponent.detail;
 import dto.detail.*;
 import dto.detail.action.DTOAction;
 import dto.detail.action.DTOActionCondition;
+import dto.detail.action.DTOActionProximity;
 import dto.simulation.DTOSimulationDetails;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -114,11 +115,19 @@ public class DetailsController {
                     for (DTOAction actionThen : ((DTOActionCondition) action).getActionsThen()) {
                         itemThen.getChildren().add(new TreeItem<>(actionThen));
                     }
-                    TreeItem<Object> itemElse = new TreeItem<>("Else");
-                    for (DTOAction actionElse : ((DTOActionCondition) action).getActionsElse()) {
-                        itemElse.getChildren().add(new TreeItem<>(actionElse));
+                    itemAction.getChildren().add(itemThen);
+                    if(!((DTOActionCondition) action).getActionsElse().isEmpty()) {
+                        TreeItem<Object> itemElse = new TreeItem<>("Else");
+                        for (DTOAction actionElse : ((DTOActionCondition) action).getActionsElse()) {
+                            itemElse.getChildren().add(new TreeItem<>(actionElse));
+                        }
+                        itemAction.getChildren().add(itemElse);
                     }
-                    itemAction.getChildren().addAll(itemThen, itemElse);
+
+                } else if(action instanceof DTOActionProximity){
+                    for (DTOAction actionProximity : ((DTOActionProximity) action).getActions()) {
+                        itemAction.getChildren().add(new TreeItem<>(actionProximity));
+                    }
                 }
             }
         }
@@ -146,6 +155,8 @@ public class DetailsController {
             viewDetailController.setTermination((DTOTermination) object);
         } else if(object instanceof DTOGrid){
             viewDetailController.setGrid((DTOGrid) object);
+        } else if(object instanceof DTOAction){
+            viewDetailController.setAction((DTOAction) object);
         }
         Animations.expandingCircle(viewDetail);
     }
