@@ -15,8 +15,8 @@ public class ActionDivide extends ActionCalc {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
-        double val1 = Double.parseDouble(arg1.getValue(entityInstance).toString());
-        double val2 = Double.parseDouble(arg2.getValue(entityInstance).toString());
+        double val1 = Double.parseDouble(arg1.getValue(entityInstance, context).toString());
+        double val2 = Double.parseDouble(arg2.getValue(entityInstance, context).toString());
         if(val2 != 0){
             double result = val1 / val2;
             entityInstance.getPropertyByName(resultPropertyName).setValue(result);
@@ -27,8 +27,8 @@ public class ActionDivide extends ActionCalc {
 
     @Override
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
-        double val1 = Double.parseDouble(arg1.getValue(primaryEntity, secondaryEntity).toString());
-        double val2 = Double.parseDouble(arg2.getValue(primaryEntity, secondaryEntity).toString());
+        double val1 = Double.parseDouble(arg1.getValue(context, primaryEntity, secondaryEntity).toString());
+        double val2 = Double.parseDouble(arg2.getValue(context, primaryEntity, secondaryEntity).toString());
         if(val2 != 0){
             double result = val1 / val2;
             primaryEntity.getPropertyByName(resultPropertyName).setValue(result);

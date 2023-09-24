@@ -3,15 +3,12 @@ package translation.xml;
 import com.sun.istack.internal.NotNull;
 import engine.prd.*;
 import engine.simulation.world.ValueType;
-import engine.simulation.world.World;
+import engine.simulation.world.WorldDefinition;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.*;
 import engine.simulation.world.expression.*;
 import engine.simulation.world.expression.auxiliary.*;
-import engine.simulation.world.instance.entity.EntityManager;
-import engine.simulation.world.instance.environment.ActiveEnvironment;
 import engine.simulation.world.instance.environment.EnvironmentManager;
-import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Activation;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.rule.action.Action;
@@ -28,7 +25,6 @@ import engine.simulation.world.rule.action.type.space.ReplaceMode;
 import engine.simulation.world.rule.action.type.value.ActionDecrease;
 import engine.simulation.world.rule.action.type.value.ActionIncrease;
 import engine.simulation.world.rule.action.type.value.ActionSet;
-import engine.simulation.world.space.SpaceManager;
 import engine.simulation.world.termination.BySecond;
 import engine.simulation.world.termination.ByTicks;
 import engine.simulation.world.termination.ByUser;
@@ -40,6 +36,7 @@ import exception.FatalException;
 import exception.XMLConfigException;
 import exception.runtime.IllegalActionException;
 import exception.runtime.IncompatibleTypesException;
+import javafx.util.Pair;
 import validator.Validator;
 
 import javax.xml.bind.JAXBContext;
@@ -53,10 +50,9 @@ import static engine.simulation.world.expression.ExpressionType.FREE_VALUE;
 public class XmlTranslator implements Translator {
 
     private final PRDWorld prdWorld;
-    private World world;
+    private WorldDefinition world;
     private EnvironmentManager environmentManager;
-    private ActiveEnvironment activeEnvironment;
-    private EntityManager entityManager;
+    private Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
     private Termination termination;
 
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "engine.prd";
@@ -68,18 +64,14 @@ public class XmlTranslator implements Translator {
     }
 
     @Override
-    public World getWorld() throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
-        SpaceManager spaceManager = getSpace(prdWorld.getPRDGrid());
+    public WorldDefinition getWorld() throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
+        Pair<Integer, Integer> size = getSpace(prdWorld.getPRDGrid());
         environmentManager = getEnvironmentManager(prdWorld.getPRDEnvironment());
 
-        activeEnvironment = environmentManager.createActiveEnvironment();
-        activeEnvironment.initProperties(environmentManager.getVariables());
-
-        List<EntityDefinition> entityDefinitions = new ArrayList<>();
         for (PRDEntity prdEntity : prdWorld.getPRDEntities().getPRDEntity()) {
-            entityDefinitions.add(getEntityDefinition(prdEntity));
+            EntityDefinition entityDefinition = getEntityDefinition(prdEntity);
+            entityDefinitions.put(entityDefinition.getName(), entityDefinition);
         }
-        entityManager = new EntityManager(entityDefinitions);
 
         termination = getTermination(prdWorld.getPRDTermination());
 
@@ -88,11 +80,11 @@ public class XmlTranslator implements Translator {
             rules.put(rule.getName(), getRule(rule));
         }
 
-        world = new World(environmentManager, activeEnvironment, entityManager, rules, termination, spaceManager, prdWorld.getPRDThreadCount());
+        world = new WorldDefinition(environmentManager, entityDefinitions.values(), rules, termination, size.getKey(), size.getValue(), prdWorld.getPRDThreadCount());
         return world;
     }
 
-    public SpaceManager getSpace(PRDWorld.PRDGrid prdObject) throws XMLConfigException {
+    public Pair<Integer, Integer> getSpace(PRDWorld.PRDGrid prdObject) throws XMLConfigException {
         int rows = prdObject.getRows();
         int cols = prdObject.getColumns();
         if (!Validator.validate(String.valueOf(rows)).isInRange(10, 100).isValid()) {
@@ -101,7 +93,7 @@ public class XmlTranslator implements Translator {
         if (!Validator.validate(String.valueOf(cols)).isInRange(10, 100).isValid()) {
             throw new XMLConfigException("Columns must be between 10-100.");
         }
-        return new SpaceManager(rows, cols);
+        return new Pair<>(rows, cols);
     }
 
     public Rule getRule(PRDRule prdObject) throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
@@ -167,7 +159,7 @@ public class XmlTranslator implements Translator {
     public SingleCondition getSingleCondition(PRDCondition prdObject) throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
         Operator operator = Operator.fromDRP(prdObject.getOperator());
         String expressionString = prdObject.getProperty();
-        EntityDefinition entity = entityManager.getEntityDefinition(prdObject.getEntity());
+        EntityDefinition entity = entityDefinitions.get(prdObject.getEntity());
 
         Expression expression = getExpression(expressionString, entity, ValueType.STRING, false);
         Expression value = getExpression(prdObject.getValue(), entity, expression.getValueType());
@@ -264,12 +256,15 @@ public class XmlTranslator implements Translator {
                 String[] subwords;
                 switch (functionType) {
                     case ENVIRONMENT:
-                        PropertyInstance envProperty = activeEnvironment.getProperty(arg);
+                        if(!environmentManager.containsProperty(arg)) {
+                            throw new XMLConfigException("Environment variable " + arg + " doesn't exist.");
+                        }
+                        PropertyDefinition envProperty = environmentManager.getProperty(arg);
                         if (compatibilityCheck && !Validator
-                                .validate(envProperty.getPropertyDefinition().getType().toString())
+                                .validate(envProperty.getType().toString())
                                 .isCompatibleWith(valueType, arg)
                                 .isValid()) {
-                            throw new IncompatibleTypesException("Properties not of same type: " + envProperty.getPropertyDefinition().getType() + " - " + valueType);
+                            throw new IncompatibleTypesException("Properties not of same type: " + envProperty.getType() + " - " + valueType);
                         }
                         return new EnvironmentExpression(envProperty);
                     case RANDOM:
@@ -288,9 +283,9 @@ public class XmlTranslator implements Translator {
                         String entityName = subwords[0];
                         String propertyName = subwords[1];
 
-                        if (entityManager.containsEntityDefinition(entityName)) {
-                            if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
-                                return new EvaluateExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                        if (entityDefinitions.containsKey(entityName)) {
+                            if (entityDefinitions.get(entityName).getProperties().containsKey(propertyName)) {
+                                return new EvaluateExpression(entityDefinitions.get(entityName), entityDefinitions.get(entityName).getProperties().get(propertyName));
                             }
                             throw new XMLConfigException("Property " + propertyName + " for " + entityName + " in function Evaluate doesn't exist.");
                         }
@@ -314,9 +309,9 @@ public class XmlTranslator implements Translator {
                         String entityName = subwords[0];
                         String propertyName = subwords[1];
 
-                        if (entityManager.containsEntityDefinition(entityName)) {
-                            if (entityManager.getEntityDefinition(entityName).getProperties().containsKey(propertyName)) {
-                                return new TicksExpression(entityManager.getEntityDefinition(entityName), entityManager.getEntityDefinition(entityName).getProperties().get(propertyName));
+                        if (entityDefinitions.containsKey(entityName)) {
+                            if (entityDefinitions.get(entityName).getProperties().containsKey(propertyName)) {
+                                return new TicksExpression(entityDefinitions.get(entityName), entityDefinitions.get(entityName).getProperties().get(propertyName));
                             }
                             throw new XMLConfigException("Property " + propertyName + " for " + entityName + " in function Tick doesn't exist.");
                         }
@@ -370,7 +365,7 @@ public class XmlTranslator implements Translator {
         if (prdObject == null) {
             return null;
         }
-        EntityDefinition entityDefinition = entityManager.getEntityDefinition(prdObject.getEntity());
+        EntityDefinition entityDefinition = entityDefinitions.get(prdObject.getEntity());
         PRDAction.PRDSecondaryEntity.PRDSelection prdSelection = prdObject.getPRDSelection();
         if (prdSelection.getCount().equals("ALL")) {
             return new SecondaryEntity(entityDefinition);
@@ -390,15 +385,15 @@ public class XmlTranslator implements Translator {
     }
 
     public ActionReplace getActionReplace(PRDAction prdObject) throws IllegalActionException {
-        EntityDefinition killEntity = entityManager.getEntityDefinition(prdObject.getKill());
-        EntityDefinition createEntity = entityManager.getEntityDefinition(prdObject.getCreate());
+        EntityDefinition killEntity = entityDefinitions.get(prdObject.getKill());
+        EntityDefinition createEntity = entityDefinitions.get(prdObject.getCreate());
         ReplaceMode mode = ReplaceMode.valueOf(prdObject.getMode().toUpperCase());
         return new ActionReplace(killEntity, createEntity, mode);
     }
 
     public ActionProximity getActionProximity(PRDAction prdObject) throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
-        EntityDefinition primaryEntity = entityManager.getEntityDefinition(prdObject.getPRDBetween().getSourceEntity());
-        EntityDefinition secondary = entityManager.getEntityDefinition(prdObject.getPRDBetween().getTargetEntity());
+        EntityDefinition primaryEntity = entityDefinitions.get(prdObject.getPRDBetween().getSourceEntity());
+        EntityDefinition secondary = entityDefinitions.get(prdObject.getPRDBetween().getTargetEntity());
         Expression depth =
                 getExpression(prdObject.getPRDEnvDepth().getOf(), primaryEntity, ValueType.FLOAT);
         List<Action> actions = new ArrayList<>();
@@ -414,7 +409,7 @@ public class XmlTranslator implements Translator {
         SecondaryEntity secondaryEntity = getSecondaryEntity(prdObject.getPRDSecondaryEntity());
         EntityDefinition primaryEntity = null;
         if (type != ActionType.proximity && type != ActionType.replace) {
-            primaryEntity = entityManager.getEntityDefinition(primaryEntityName);
+            primaryEntity = entityDefinitions.get(primaryEntityName);
 
             PropertyDefinition propertyDefinition;
             if (!type.toString().equals("condition") && !type.toString().equals("kill")) {

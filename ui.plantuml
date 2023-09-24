@@ -4,39 +4,618 @@
 top to bottom direction
 skinparam linetype ortho
 
+class Animations {
+  + Animations(): 
+  - DEFAULT_BOUNCE_BY: int
+  + MEDIUM: int
+  + SHORT: int
+  + LONG: int
+  + bounceY(Node, int): void
+  + createGrowAndSpin(Node): ParallelTransition
+  + spin(Node, int, int): Transition
+  + highlight(Node, int): void
+  + bounceDown(Node): void
+  + shake(Node): void
+  + bounceX(Node, int): void
+  + fadeTransition(Scene, Runnable): void
+  + createShrinkAndSpin(Node): ParallelTransition
+  + bounceUp(Node): void
+  + bounceLeft(Node): void
+  + bounceRight(Node): void
+  + expandingCircle(Node): void
+}
+class BoardView {
+  + BoardView(EngineManager, Simulation): 
+  - simulation: Simulation
+  - availableColors: List<String>
+  - updater: Timeline
+  - gridBoard: GridPane
+  - board: EntityTile[][]
+  - rows: IntegerProperty
+  - hboxLegend: HBox
+  - cols: IntegerProperty
+  - engineManager: EngineManager
+  - entityColors: Map<String, String>
+  - createBoard(): void
+  + setTiles(String[][]): void
+  + initialize(): void
+  + stop(): void
+  + setSize(int, int): void
+}
+class BooleanItemView {
+  + BooleanItemView(): 
+  # toggleSwitch: ToggleSwitch
+  # labelValue: Label
+  # randomize(): void
+  + clear(): void
+  + setValue(Object): void
+  # getNodeToShake(): Collection<Node>
+  + initialize(): void
+  # bind(): void
+}
+enum Color << enumeration >> {
+  + Color(): 
+  + BLUE: 
+  + TEAL: 
+  + RED: 
+  + GREEN: 
+  + values(): Color[]
+  + valueOf(String): Color
+}
 class ConsoleUI {
-  - menuHelper: MenuHelper
+  + ConsoleUI(): 
+  - engineManager: EngineManager
+  + run(String[]): void
+  + start(Stage): void
+}
+class DetailView {
+  + DetailView(): 
+  # loadedObject: DTOObject
+  + labelTitle: Label
+  + gridData: GridPane
+  - currentRow: int
+  + setEnvVariable(DTOEnvironmentVariable): void
+  + setAction(DTOActionReplace): void
+  + setAction(DTOActionCondition): void
+  + setAction(DTOAction): void
+  + setAction(DTOActionValue): void
+  + setActionGeneric(DTOAction, String): void
+  + setAction(DTOActionProximity): void
+  + addRow(String, Object): void
+  + setGrid(DTOGrid): void
+  + initialize(): void
+  + setEntity(DTOEntity): void
+  + setAction(DTOActionCalc): void
+  + setProperty(DTOProperty): void
+  + setTermination(DTOTermination): void
+  + setActionGeneric(DTOAction): void
+  + setRule(DTORule): void
+  - reset(): void
+}
+class DetailsController {
+  + DetailsController(): 
+  + paneRight: VBox
+  - viewDetail: Node
+  - engineManager: EngineManager
+  - treeViewDetails: TreeView<Object>
+  - viewDetailController: DetailView
+  + setEngineManager(EngineManager): void
+  + initialize(): void
+  - displayObject(DTOObject): void
+  - loadTree(): void
+}
+enum DisplayType << enumeration >> {
+  + DisplayType(): 
+  + Average: 
+  + Histogram: 
+  + Consistency: 
+  + valueOf(String): DisplayType
+  + values(): DisplayType[]
+}
+class EngineManager {
+  + EngineManager(): 
+  - simulations: ObservableMap<Integer, Simulation>
+  - simulationUpdater: Timer
+  - simulationsList: ObservableList<Simulation>
+  - isSimulationLoaded: BooleanProperty
   - engine: EngineInterface
-  - scanner: Scanner
-  + printSimulationResult(DTOSimulationResult): void
-  + printSimulationDetails(DTOSimulationDetails): void
-  + runSimulation(): void
-  + printEntityPopulation(Collection<DTOEntityPopulation>): void
-  + loadFile(): void
-  + load(): void
-  + exit(): void
-  + showSimulationDetails(): void
-  + formatValueByClass(Object): String
-  + showPastSimulation(): void
-  + save(): void
-  + printSimulationHistogram(DTOSimulationHistogram): void
-  + run(): void
+  - simulationPath: StringProperty
+  - updateTask: TimerTask
+  - simulationsRunning: List<Simulation>
+  - queue: Queue
+  + tickSimulation(int): void
+  + getValuesForPropertyHistogram(int, String, String): DTOSimulationHistogram
+  + simulationPathProperty(): StringProperty
+  + getPastEntityProperties(int, String): Collection<DTOProperty>
+  - alertSimulationRuntimeException(SimulationRuntimeException): void
+  + setEnvironmentValues(Map<String, Object>): void
+  + updateQueue(): void
+  + getQueue(): Queue
+  + isSimulationLoadedProperty(): BooleanProperty
+  + updateEntityPopulations(int): void
+  + resumeSimulation(int): void
+  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
+  + getDetailsByEntityCount(int): Map<String, DTOEntityPopulation>
+  - alertException(Exception): void
+  + getGrid(int): DTOGrid
+  + updateSimulationProgress(Simulation): void
+  + setEntityPopulations(Map<String, Integer>): void
+  + getSimulationSpace(Simulation): DTOSpace
+  + pauseSimulation(int): void
+  + loadSimulation(File): void
+  + isSimulationLoaded(): boolean
+  - alertEngineException(EngineException): void
+  - createEntityPopulations(int): void
+  + runSimulation(boolean, Map<String, Integer>, Map<String, Object>): void
+  + stopSimulation(int): void
+  + getSimulations(): ObservableMap<Integer, Simulation>
+  + getSimulationDetails(): DTOSimulationDetails
+  + getSimulationsList(): ObservableList<Simulation>
+  + getSimulationResult(int): DTOSimulationResult
+  + getConsistencyOfProperty(int, String, String): Collection<Double>
+  + getSimulationPath(): String
+  + shutdown(): void
+}
+class EntityInfo {
+  + EntityInfo(String, int): 
+  - entityName: StringProperty
+  - instanceCount: IntegerProperty
+  - initialCount: IntegerProperty
+  + entityNameProperty(): StringProperty
+  + getEntityName(): String
+  + getInitialCount(): int
+  + instanceCountProperty(): IntegerProperty
+  + setEntityName(String): void
+  + toString(): String
+  + getInstanceCount(): int
+  + setInstanceCount(int): void
+  + initialCountProperty(): IntegerProperty
+}
+class EntityPopulationView {
+  + EntityPopulationView(DTOEntity, int): 
+  + initialize(): void
+  + clear(): void
+  # bind(): void
+}
+class EntityTile {
+  + EntityTile(): 
+  + setEmpty(): void
+  + setEntity(String): void
+}
+class EnvironmentVariableView {
+  - EnvironmentVariableView(): 
+  + create(DTOEnvironmentVariable): InputItemView<?>
+}
+class ExecutionController {
+  + ExecutionController(): 
+  - buttonStartAnimation: Timeline
+  - engineManager: EngineManager
+  + buttonClear: Button
+  - mainController: MainController
+  - populationMax: IntegerProperty
+  + vboxEnvVariables: VBox
+  + vboxEntityPopulation: VBox
+  + buttonStart: Button
+  - populationCurrent: IntegerProperty
+  + startClicked(MouseEvent): void
+  + setMainController(MainController): void
+  + initialize(): void
+  + populateVBox(VBox, Collection<DTOObject>): void
+  - checkEntityPopulation(VBox): boolean
+  - getEntityPopulations(): Map<String, Integer>
+  + restoreValues(int): void
+  - getEnvironmentValues(): Map<String, Object>
+  + onUnfocused(): void
+  + setEngineManager(EngineManager): void
+  + onFocus(): void
+  - clearInputItems(VBox): void
+  - getValue(Node): Pair<String, Object>
+  + clearClicked(MouseEvent): void
+  - checkForValidItems(VBox): boolean
+}
+enum Font << enumeration >> {
+  + Font(): 
+  + PlayfairDisplay: 
+  + Roboto: 
+  + DancingScript: 
+  + AmaticSC: 
+  + PermanentMarker: 
+  + Poppins: 
+  + RobotoSlab: 
+  + ChakraPetch: 
+  + values(): Font[]
+  + valueOf(String): Font
+}
+enum FontSize << enumeration >> {
+  + FontSize(): 
+  + small: 
+  + big: 
+  + medium: 
+  + values(): FontSize[]
+  + valueOf(String): FontSize
+}
+class IconButton {
+  + IconButton(): 
+  # icon: StringProperty
+  # iconView: ImageView
+  + getIcon(): String
+  + iconProperty(): StringProperty
+  + setIcon(String): void
+}
+class InputItemView<T> {
+  + InputItemView(): 
+  # random: Random
+  # title: SimpleStringProperty
+  # value: ObjectProperty<T>
+  - labelTitle: Label
+  # buttonRandom: Button
+  # isValid: SimpleBooleanProperty
+  # load(URL): void
+  # randomize(): void
+  + isValidProperty(): SimpleBooleanProperty
+  + clear(): void
+  # getNodeToShake(): Collection<Node>
+  + getValue(): T
+  + initialize(): void
+  + titleProperty(): SimpleStringProperty
+  + setTitle(String): void
+  - clickRandom(MouseEvent): void
+  + getTitle(): String
+  # bind(): void
+  # animateShake(): void
+  + valueProperty(): ObjectProperty<T>
+  + isValid(): boolean
+  + setValue(Object): void
 }
 class Main {
+  + Main(): 
   + main(String[]): void
 }
+class MainController {
+  + MainController(): 
+  - settingsStage: Stage
+  + tabExecutionID: Tab
+  - mainBorderPane: BorderPane
+  + buttonQueue: Button
+  + tabDetailsID: Tab
+  - engineManager: EngineManager
+  + mainTabPane: TabPane
+  - textFieldFilePath: TextField
+  + buttonSettings: Button
+  - tabResultsController: ResultsController
+  - tabResultsID: Tab
+  - tabExecutionController: ExecutionController
+  - buttonFileChoose: Button
+  - tabDetailsController: DetailsController
+  - queueStage: Stage
+  + showSettingsWindow(): void
+  + switchToExecutionTab(int): void
+  + showQueueWindow(): void
+  ~ chooseXMLFile(ActionEvent): void
+  + initialize(): void
+  + setEngineManager(EngineManager): void
+  + switchToResultsTab(): void
+  + initQueueWindow(): void
+  + initSettingsWindow(): void
+}
 interface MainUI << interface >> {
-  + run(): void
+  + run(String[]): void
 }
-class MenuHelper {
-  - scanner: Scanner
-  + printMenu(Collection<?>, String, StringFunction): void
-  + getSelectionForCollection(Collection<?>, String): int
-  + printMenu(Collection<?>, StringFunction): void
+enum Mode << enumeration >> {
+  + Mode(): 
+  + DARK: 
+  + LIGHT: 
+  + values(): Mode[]
+  + valueOf(String): Mode
 }
-interface StringFunction << interface >> {
-  + getText(Object): String
+class Notify {
+  - Notify(): 
+  - instance: Notify
+  - notificationPane: NotificationPane
+  - hideDelay: PauseTransition
+  + register(Node): NotificationPane
+  + getInstance(): Notify
+  + showAlertDialog(String, String, String, AlertType): Optional<ButtonType>
+  + showAlertBar(String): void
+}
+class NumericItemView {
+  + NumericItemView(): 
+  # randomize(): void
+  + clear(): void
+  + setValue(Object): void
+  + getValue(): Double
+}
+class Progress {
+  + Progress(Integer): 
+  - value: DoubleProperty
+  - limited: BooleanProperty
+  - max: IntegerProperty
+  - percentage: DoubleProperty
+  + isLimited(): boolean
+  + setValue(double): void
+  + limitedProperty(): BooleanProperty
+  + getValue(): double
+  + valueProperty(): DoubleProperty
+  + maxProperty(): IntegerProperty
+  + getPercentage(): double
+  + percentageProperty(): DoubleProperty
+  + getMax(): double
+}
+class PropertyInfo {
+  + PropertyInfo(): 
+}
+class Queue {
+  + Queue(): 
+  - stopped: IntegerProperty
+  - active: IntegerProperty
+  - running: IntegerProperty
+  - capacity: IntegerProperty
+  - paused: IntegerProperty
+  + stoppedProperty(): IntegerProperty
+  + setRunning(int): void
+  + activeProperty(): IntegerProperty
+  + capacityProperty(): IntegerProperty
+  + getStopped(): int
+  + setCapacity(int): void
+  + setStopped(int): void
+  + getRunning(): int
+  + setPaused(int): void
+  + runningProperty(): IntegerProperty
+  + setActive(int): void
+  + pausedProperty(): IntegerProperty
+  + getActive(): int
+  + getPaused(): int
+  + getCapacity(): int
+}
+class QueueController {
+  + QueueController(): 
+  + labelFinished: Label
+  + labelPaused: Label
+  + labelQueue: Label
+  + labelActive: Label
+  + labelRunning: Label
+  - queue: Queue
+  + initialize(): void
+  + setQueue(Queue): void
+}
+class RangedNumericItemView {
+  + RangedNumericItemView(Number, Number, boolean): 
+  # sliderAmount: Slider
+  # min: DoubleProperty
+  # labelMin: Label
+  - labelValue: Label
+  # max: DoubleProperty
+  # labelMax: Label
+  # integer: BooleanProperty
+  + setRange(DTORange): void
+  + setValue(Object): void
+  + clear(): void
+  + setMax(Number): void
+  # randomize(): void
+  # getNodeToShake(): Collection<Node>
+  # bind(): void
+  + setMin(Number): void
+  + initialize(): void
+}
+class ResultsController {
+  + ResultsController(): 
+  + comboBoxEntity: ComboBox<EntityInfo>
+  - selectedStatus: ObjectProperty<Status>
+  - seriesMap: Map<Integer, Map<String, Series>>
+  - instanceCountColumn: TableColumn<EntityInfo, Integer>
+  + comboBoxProperty: ComboBox<DTOProperty>
+  + chartLineTab: Tab
+  - engineManager: EngineManager
+  + buttonPlayPause: ToggleIconButton
+  + buttonBoard: Button
+  - mainController: MainController
+  - simulationTicksListener: ChangeListener<Number>
+  - entityNameColumn: TableColumn<EntityInfo, String>
+  + comboBoxDisplayType: ComboBox<DisplayType>
+  - selectedSimulation: ObjectProperty<Simulation>
+  ~ labelStatus: Label
+  + buttonPrev: Button
+  - simulationStatusListener: ChangeListener<Status>
+  + listExecution: ListView<Simulation>
+  + paneResult: ScrollPane
+  ~ labelTermination: Label
+  + gridSeconds: SimulationProgressView
+  + entityPropertyTab: Tab
+  + vboxDisplayType: VBox
+  + buttonNext: Button
+  + gridTicks: SimulationProgressView
+  + paneDetails: ScrollPane
+  + chartPopulationPerTick: LineChart<Integer, Integer>
+  + simulationResultsMainTabPane: TabPane
+  - entityTable: TableView<EntityInfo>
+  - initialCountColumn: TableColumn<EntityInfo, Integer>
+  + buttonRerun: Button
+  + buttonStop: Button
+  - displayConsistency(int, String, String): void
+  - actionSimulationRerun(ActionEvent): void
+  - actionShowBoard(ActionEvent): void
+  + showSimulationResult(DTOSimulationResult): void
+  - updateDisplayData(): void
+  + setEngineManager(EngineManager): void
+  - displayHistogram(int, String, String): void
+  + setMainController(MainController): void
+  - calculateAverage(List<Double>): double
+  - actionSimulationPause(ActionEvent): void
+  - displayAverageValue(int, String, String): void
+  + initialize(): void
+  - actionSimulationResume(ActionEvent): void
+  - actionSimulationNext(ActionEvent): void
+  - updatePropertyComboBox(int, EntityInfo): void
+  - actionSimulationStop(ActionEvent): void
+}
+class SettingsController {
+  + SettingsController(): 
+  - comboBoxColor: ComboBox<Color>
+  + comboBoxFont: ComboBox<Font>
+  + comboBoxFontSize: ComboBox<FontSize>
+  - comboToListView: Map<ComboBox<?>, Node>
+  - styleManager: StyleManager
+  + toggleDark: ToggleSwitch
+  + initialize(): void
+  - initComboBoxAnimations(ComboBox<?>): void
+}
+class Simulation {
+  + Simulation(int, LocalDateTime, DTOTermination, Map<String, Integer>, Map<String, Object>): 
+  - runDate: LocalDateTime
+  - progressTicks: Progress
+  - entities: ObservableList<EntityInfo>
+  - id: int
+  - status: ObjectProperty<Status>
+  - entityPopulationSeriesList: ObservableList<Series<Integer, Integer>>
+  - progressSeconds: Progress
+  - entityPopulationSeriesMap: Map<EntityInfo, Series<Integer, Integer>>
+  - initialEnvValues: Map<String, Object>
+  - initialPopulations: Map<String, Integer>
+  + logPopulation(EntityInfo): void
+  + statusProperty(): ObjectProperty<Status>
+  + getEntities(): ObservableList<EntityInfo>
+  + getProgressTicks(): Progress
+  + getStatus(): Status
+  + getId(): int
+  + getRunDate(): LocalDateTime
+  + getEntityPopulationSeriesList(): ObservableList<Series<Integer, Integer>>
+  + getInitialPopulations(): Map<String, Integer>
+  + setStatus(Status): void
+  + getProgressSeconds(): Progress
+  + getInitialEnvValues(): Map<String, Object>
+  + getEntityPopulationSeriesMap(): Map<EntityInfo, Series<Integer, Integer>>
+}
+class SimulationProgressView {
+  + SimulationProgressView(): 
+  - labelTitle: Label
+  - labelMax: Label
+  - title: StringProperty
+  - progressBar: ProgressBar
+  - labelValue: Label
+  - progress: ObjectProperty<Progress>
+  - limited: BooleanProperty
+  + getTitle(): String
+  + titleProperty(): StringProperty
+  + setProgress(Progress): void
+  + initialize(): void
+  + setTitle(String): void
+}
+enum State << enumeration >> {
+  + State(): 
+  + ON: 
+  + OFF: 
+  + valueOf(String): State
+  + values(): State[]
+}
+enum Status << enumeration >> {
+  + Status(): 
+  + PAUSED: 
+  + ERROR: 
+  + RUNNING: 
+  + STOPPED: 
+  + values(): Status[]
+  + valueOf(String): Status
+}
+class StringItemView {
+  + StringItemView(): 
+  # bind(): void
+  + setValue(Object): void
+  # randomize(): void
+  + clear(): void
+}
+class StyleManager {
+  - StyleManager(): 
+  - colorString: String
+  - instance: StyleManager
+  - scenes: List<Scene>
+  - currentFont: Font
+  - fontString: String
+  - PATH: String
+  - modeString: String
+  - main: String
+  - currentColor: Color
+  - fontSizeString: String
+  - currentFontSize: FontSize
+  - currentMode: Mode
+  - updateFont(Scene): void
+  + changeMode(Mode): void
+  + unregister(Scene): void
+  + getCurrentMode(): Mode
+  - updateAll(SceneUpdater): void
+  - updateStyles(Scene): void
+  + changeFontSize(FontSize): void
+  + getInstance(): StyleManager
+  - updateColor(Scene): void
+  + getCurrentColor(): Color
+  - initFonts(): void
+  + changeColor(Color): void
+  + register(Scene): void
+  + changeFont(Font): void
+  + getCurrentFont(): Font
+  + getCurrentFontSize(): FontSize
+  - updateMode(Scene): void
+  - updateFontSize(Scene): void
+}
+class TextInputItemView<T> {
+  + TextInputItemView(Validator, String): 
+  # textField: TextField
+  # labelError: Label
+  # validator: Validator
+  # bind(): void
+  + initialize(): void
+  + getTextField(): TextField
+  # getNodeToShake(): Collection<Node>
+  + setValidator(Validator): void
+}
+class ToggleIconButton {
+  + ToggleIconButton(): 
+  - state: ObjectProperty<State>
+  - onActionOn: ObjectProperty<EventHandler<ActionEvent>>
+  - iconOff: StringProperty
+  - iconOn: StringProperty
+  - onActionOff: ObjectProperty<EventHandler<ActionEvent>>
+  + setIconOff(String): void
+  + getState(): State
+  + setState(State): void
+  + iconOnProperty(): StringProperty
+  + onActionOffProperty(): ObjectProperty<EventHandler<ActionEvent>>
+  + iconOffProperty(): StringProperty
+  + setOnActionOff(EventHandler<ActionEvent>): void
+  + onActionOnProperty(): ObjectProperty<EventHandler<ActionEvent>>
+  - updateIcon(): void
+  + setOnActionOn(EventHandler<ActionEvent>): void
+  + toggle(): void
+  + setIconOn(String): void
+  + stateProperty(): ObjectProperty<State>
+  + getIconOff(): String
+  + getIconOn(): String
+  + getOnActionOn(): EventHandler<ActionEvent>
+  + getOnActionOff(): EventHandler<ActionEvent>
+}
+class ToggleSwitch {
+  + ToggleSwitch(): 
+}
+interface ValidationRule << interface >> {
+  + isValid(Object): boolean
+}
+class Validator {
+  - Validator(): 
+  ~ rules: List<ValidationRule>
+  + create(): Validator
+  + validate(Object): boolean
+  + isInteger(): Validator
+  + isDouble(): Validator
+  + isValidString(): Validator
+  + isInRange(double, double): Validator
+  + isBoolean(): Validator
 }
 
-ConsoleUI       -[#008200,dashed]-^  MainUI         
+BooleanItemView          -[#000082,plain]-^  InputItemView           
+ConsoleUI                -[#008200,dashed]-^  MainUI                  
+EntityPopulationView     -[#000082,plain]-^  RangedNumericItemView   
+NumericItemView          -[#000082,plain]-^  TextInputItemView       
+RangedNumericItemView    -[#000082,plain]-^  InputItemView           
+StringItemView           -[#000082,plain]-^  TextInputItemView       
+TextInputItemView        -[#000082,plain]-^  InputItemView           
+ToggleIconButton         -[#000082,plain]-^  IconButton              
 @enduml

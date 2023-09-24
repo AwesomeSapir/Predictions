@@ -1,5 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
@@ -17,12 +18,12 @@ public class RandomExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance){
+    public Object getValue(EntityInstance entityInstance, Context context){
         return random.nextInt(arg + 1);
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) {
+    public Object getValue(Context context, EntityInstance... entityInstances) {
         return random.nextInt(arg + 1);
     }
 

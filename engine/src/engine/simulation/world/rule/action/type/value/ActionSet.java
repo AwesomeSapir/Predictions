@@ -18,12 +18,12 @@ public class ActionSet extends ActionValue {
     @Override
     public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
-        propertyInstance.setValue(value.getValue(entityInstance));
+        propertyInstance.setValue(value.getValue(entityInstance, context));
     }
 
     @Override
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
         PropertyInstance propertyInstance = primaryEntity.getPropertyByName(propertyName);
-        propertyInstance.setValue(value.getValue(primaryEntity, secondaryEntity));
+        propertyInstance.setValue(value.getValue(context, primaryEntity, secondaryEntity));
     }
 }

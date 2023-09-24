@@ -1,36 +1,37 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
+import engine.simulation.world.definition.property.PropertyDefinition;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.ExpressionType;
 import engine.simulation.world.instance.entity.EntityInstance;
-import engine.simulation.world.instance.property.PropertyInstance;
 
 public class EnvironmentExpression extends AbstractExpression {
-    private final PropertyInstance envPropertyInstance;
+    private final PropertyDefinition envPropertyDefintion;
 
-    public EnvironmentExpression(PropertyInstance propertyInstance){
+    public EnvironmentExpression(PropertyDefinition propertyDefinition){
         super(ExpressionType.AUXILIARY_FUNCTION);
-        this.envPropertyInstance = propertyInstance;
+        this.envPropertyDefintion = propertyDefinition;
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) {
-        return envPropertyInstance.getValue();
+    public Object getValue(EntityInstance entityInstance, Context context) {
+        return context.getEnvironmentPropertyInstance(envPropertyDefintion.getName()).getValue();
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) {
-        return envPropertyInstance.getValue();
+    public Object getValue(Context context, EntityInstance... entityInstances) {
+        return context.getEnvironmentPropertyInstance(envPropertyDefintion.getName()).getValue();
     }
 
     @Override
     public ValueType getValueType() {
-        return envPropertyInstance.getPropertyDefinition().getType();
+        return envPropertyDefintion.getType();
     }
 
     @Override
     public String toString() {
-        return "environment(" + envPropertyInstance.getPropertyDefinition().getName() + ")";
+        return "environment(" + envPropertyDefintion.getName() + ")";
     }
 }

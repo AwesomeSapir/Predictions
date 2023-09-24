@@ -21,15 +21,15 @@ public class SingleCondition implements Condition, Serializable {
     }
 
     public boolean evaluate(EntityInstance entityInstance, Context context) throws IllegalActionException {
-        Object argValue = arg.getValue(entityInstance);
-        Object expValue = value.getValue(entityInstance);
+        Object argValue = arg.getValue(entityInstance, context);
+        Object expValue = value.getValue(entityInstance, context);
         return compare(argValue, expValue);
     }
 
     @Override
     public boolean evaluate(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
-        Object argValue = arg.getValue(primaryEntity, secondaryEntity);
-        Object expValue = value.getValue(primaryEntity, secondaryEntity);
+        Object argValue = arg.getValue(context, primaryEntity, secondaryEntity);
+        Object expValue = value.getValue(context, primaryEntity, secondaryEntity);
         return compare(argValue, expValue);
     }
 

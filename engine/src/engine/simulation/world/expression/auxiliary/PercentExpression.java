@@ -1,5 +1,6 @@
 package engine.simulation.world.expression.auxiliary;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.expression.AbstractExpression;
 import engine.simulation.world.expression.Expression;
@@ -19,9 +20,9 @@ public class PercentExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) throws IllegalActionException {
-        Object argObj = arg.getValue(entityInstance);
-        Object percentageObj = percentage.getValue(entityInstance);
+    public Object getValue(EntityInstance entityInstance, Context context) throws IllegalActionException {
+        Object argObj = arg.getValue(entityInstance, context);
+        Object percentageObj = percentage.getValue(entityInstance, context);
         if(argObj!= null && percentageObj != null) {
             double argValue = (double) argObj;
             double percentageValue = (double) percentageObj;
@@ -31,9 +32,9 @@ public class PercentExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) throws IllegalActionException {
+    public Object getValue(Context context, EntityInstance... entityInstances) throws IllegalActionException {
         for (EntityInstance entityInstance : entityInstances){
-            Object result = getValue(entityInstance);
+            Object result = getValue(entityInstance, context);
             if(result != null){
                 return result;
             }

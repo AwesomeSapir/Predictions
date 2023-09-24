@@ -22,7 +22,6 @@ public class EntityManager {
     }
 
     public void setPopulation(EntityDefinition entityDefinition, int population){
-        entityDefinition.setPopulation(population);
         for (int i = 0; i < population; i++) {
             EntityInstance entityInstance = new EntityInstance(entityDefinition);
             entityInstance.initProperties();

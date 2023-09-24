@@ -5,419 +5,1105 @@ top to bottom direction
 skinparam linetype ortho
 
 class AbstractExpression {
-  # value: Object
+  + AbstractExpression(ExpressionType): 
   - type: ExpressionType
+  + getValueType(): ValueType
   + getType(): ExpressionType
+  + getValue(EntityInstance[]): Object
   + getValue(EntityInstance): Object
 }
 class AbstractNumericPropertyDefinition<T> {
+  + AbstractNumericPropertyDefinition(String, ValueType, Range, ValueGenerator<T>, boolean): 
   - range: Range
-  + isNumeric(): boolean
   + getRange(): Range
+  + isNumeric(): boolean
 }
 class AbstractPropertyDefinition<T> {
+  + AbstractPropertyDefinition(String, ValueType, ValueGenerator<T>, boolean): 
+  - type: ValueType
   - valueGenerator: ValueGenerator<T>
-  - type: PropertyType
   - isRandomInit: boolean
   - name: String
-  + getType(): PropertyType
-  + isRandomInit(): boolean
-  + generateValue(): T
-  + isNumeric(): boolean
   + getRange(): Range
+  + isNumeric(): boolean
+  + getType(): ValueType
+  + isRandomInit(): boolean
   + getName(): String
+  + generateValue(): T
 }
 class Action {
+  + Action(ActionType, EntityDefinition, SecondaryEntity): 
   # type: ActionType
-  # entityName: String
-  + execute(EntityInstance, Context): void
-  + getEntity(): String
+  # primaryEntity: EntityDefinition
+  # secondaryEntity: SecondaryEntity
   + getType(): ActionType
+  + getPrimaryEntity(): EntityDefinition
+  + execute(EntityInstance, EntityInstance, Context): void
+  + execute(EntityInstance, Context): void
+  + getSecondaryEntity(): SecondaryEntity
 }
 class ActionCalc {
-  # resultPropertyName: String
-  # arg2: Expression
+  + ActionCalc(EntityDefinition, SecondaryEntity, String, Expression, Expression): 
   # arg1: Expression
+  # arg2: Expression
+  # resultPropertyName: String
+  + getArg2(): Expression
+  + getArg1(): Expression
+  + getResultPropertyName(): String
 }
 class ActionCondition {
-  # actionsElse: List<Action>
+  + ActionCondition(EntityDefinition, SecondaryEntity, MultiCondition, Collection<Action>, Collection<Action>): 
   # conditions: MultiCondition
   # actionsThen: List<Action>
+  # actionsElse: List<Action>
+  + execute(EntityInstance, EntityInstance, Context): void
   + execute(EntityInstance, Context): void
+  + getConditions(): MultiCondition
+  + getActionsThen(): List<Action>
+  + getActionsElse(): List<Action>
 }
 class ActionDecrease {
+  + ActionDecrease(EntityDefinition, SecondaryEntity, String, Expression): 
+  + execute(EntityInstance, EntityInstance, Context): void
   + execute(EntityInstance, Context): void
 }
 class ActionDivide {
+  + ActionDivide(EntityDefinition, SecondaryEntity, String, Expression, Expression): 
   + execute(EntityInstance, Context): void
+  + execute(EntityInstance, EntityInstance, Context): void
 }
 class ActionIncrease {
+  + ActionIncrease(EntityDefinition, SecondaryEntity, String, Expression): 
+  + execute(EntityInstance, EntityInstance, Context): void
   + execute(EntityInstance, Context): void
 }
 class ActionKill {
+  + ActionKill(EntityDefinition, SecondaryEntity): 
   + execute(EntityInstance, Context): void
+  + execute(EntityInstance, EntityInstance, Context): void
 }
 class ActionMultiply {
+  + ActionMultiply(EntityDefinition, SecondaryEntity, String, Expression, Expression): 
+  + execute(EntityInstance, EntityInstance, Context): void
   + execute(EntityInstance, Context): void
 }
+class ActionProximity {
+  + ActionProximity(EntityDefinition, EntityDefinition, Expression, Collection<Action>): 
+  # targetEntity: EntityDefinition
+  # actions: List<Action>
+  # depth: Expression
+  + getDepth(): Expression
+  + execute(EntityInstance, Context): void
+  + getTargetEntity(): EntityDefinition
+  + getActions(): List<Action>
+  + execute(EntityInstance, EntityInstance, Context): void
+}
+class ActionReplace {
+  + ActionReplace(EntityDefinition, EntityDefinition, ReplaceMode): 
+  # mode: ReplaceMode
+  # createEntity: EntityDefinition
+  - derived(EntityInstance, EntityInstance): void
+  + execute(EntityInstance, EntityInstance, Context): void
+  + getMode(): ReplaceMode
+  + execute(EntityInstance, Context): void
+  + getCreateEntity(): EntityDefinition
+}
 class ActionSet {
+  + ActionSet(EntityDefinition, SecondaryEntity, String, Expression): 
+  + execute(EntityInstance, EntityInstance, Context): void
   + execute(EntityInstance, Context): void
 }
 enum ActionType << enumeration >> {
-  + kill: 
-  + calculation: 
+  + ActionType(): 
   + increase: 
-  + condition: 
   + set: 
+  + condition: 
   + decrease: 
+  + kill: 
+  + proximity: 
+  + calculation: 
+  + replace: 
   + values(): ActionType[]
   + valueOf(String): ActionType
 }
 class ActionValue {
-  # propertyName: String
+  + ActionValue(ActionType, EntityDefinition, SecondaryEntity, String, Expression): 
   # value: Expression
+  # propertyName: String
   + getValue(): Expression
   + getPropertyName(): String
 }
 class Activation {
-  - random: Random
-  # probability: double
+  + Activation(Integer, Double): 
   # ticks: int
-  + getTicks(): int
-  + canBeActivated(int): boolean
-  + getProbability(): double
+  # probability: double
+  - random: Random
   - sufficientProbability(): boolean
+  + getTicks(): int
+  + getProbability(): double
+  + canBeActivated(int): boolean
 }
 class ActiveEnvironment {
+  + ActiveEnvironment(): 
   - envVariables: Map<String, PropertyInstance>
-  + initProperties(Collection<PropertyDefinition>): void
   + getProperty(String): PropertyInstance
   + addPropertyInstance(PropertyInstance): void
+  + initProperties(Collection<PropertyDefinition>): void
 }
-class BooleanPropertyDefinition
+class BooleanPropertyDefinition {
+  + BooleanPropertyDefinition(String, ValueGenerator<Boolean>, boolean): 
+}
+class ByError {
+  + ByError(): 
+  + getType(): Type
+  + getCondition(): Boolean
+  + isMet(): boolean
+}
+class ByNumberTermination<T> {
+  + ByNumberTermination(T): 
+  # value: T
+  # max: T
+  + getMax(): T
+  + getCondition(): T
+  + setValue(T): void
+  + getValue(): T
+}
 class BySecond {
-  # count: long
-  + isMet(long): boolean
-  + getCount(): long
+  + BySecond(long): 
+  + getType(): Type
+  + isMet(): boolean
 }
 class ByTicks {
-  # count: long
-  + isMet(long): boolean
-  + getCount(): long
+  + ByTicks(int): 
+  + isMet(): boolean
+  + getType(): Type
+}
+class ByUser {
+  + ByUser(): 
+  # stopped: boolean
+  + stop(): void
+  + getType(): Type
+  + isMet(): boolean
+  + getCondition(): Boolean
 }
 interface Condition << interface >> {
   + evaluate(EntityInstance, Context): boolean
+  + evaluate(EntityInstance, EntityInstance, Context): boolean
 }
 interface Context << interface >> {
-  + getPrimaryEntityDefinition(): EntityDefinition
-  + getPrimaryEntityInstances(): Collection<EntityInstance>
-  + getEnvironmentPropertyInstance(String): PropertyInstance
+  + getSpaceManager(): SpaceManager
+  + getEnvironmentManager(): EnvironmentManager
   + removeEntity(EntityInstance): void
+  + getEnvironmentPropertyInstance(String): PropertyInstance
+  + getEntityManager(): EntityManager
+  + getThreadCount(): int
 }
-class DoublePropertyDefinition
+class DoublePropertyDefinition {
+  + DoublePropertyDefinition(String, Range, ValueGenerator<Double>, boolean): 
+}
 class Engine {
-  - simulation: SimulationInterface
+  + Engine(): 
+  - threadPool: ThreadPoolExecutor
   - pastSimulations: Map<Integer, SimulationInterface>
-  - idCounter: int
+  - threadCount: int
+  - simulation: SimulationInterface
   - filepath: String
-  + saveToFile(String): void
-  - getEntity(EntityDefinition): DTOEntity
-  - archiveSimulation(): void
-  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
-  + getSimulationDetails(): DTOSimulationDetails
-  + getPastEntities(int): Collection<DTOEntity>
+  - idCounter: int
   + getWorldFromFile(String): World
-  - getEntities(SimulationInterface): Collection<DTOEntity>
-  + runSimulation(): DTOSimulationResult
-  + setEnvironmentValues(Collection<Pair<String, Object>>): void
-  + getDetailsByEntityCount(int): Collection<DTOEntityPopulation>
-  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
+  + getConsistencyOfProperty(int, String, String): Collection<Double>
   + getPastSimulations(): Collection<DTOSimulation>
+  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
+  + getSimulationDetails(): DTOSimulationDetails
   - isSimulationLoaded(): void
-  + loadFromFile(String): void
-  + loadXml(String): void
-  - getProperties(EntityDefinition): Collection<DTOProperty>
+  + tickSimulation(int): void
+  - getActions(Collection<Action>): Collection<DTOAction>
+  + stopSimulation(int): void
+  + getValuesForPropertyHistogram(int, String, String): DTOSimulationHistogram
+  + resumeSimulation(int): void
+  + getSimulationTermination(int): DTOTermination
+  + pauseSimulation(int): void
+  - getSimulationTermination(SimulationInterface): DTOTermination
   + getPastEntityProperties(int, String): Collection<DTOProperty>
-  + getValuesForPropertyHistogram(int, String): DTOSimulationHistogram
+  + saveToFile(String): void
+  + getQueueDetails(): DTOQueueDetails
+  + getSimulationResult(int): DTOSimulationResult
+  + runSimulation(boolean): DTOSimulation
+  + getSimulationSpace(int): DTOSpace
+  - archiveSimulation(): void
+  + getEntityPopulations(int): Map<String, DTOEntityPopulation>
+  - getEntities(SimulationInterface): Collection<DTOEntity>
+  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
+  + getTicksOfSameValueOfPropertyInstances(int, String, String): Collection<Double>
+  + setEntityPopulations(Map<String, Integer>): void
+  + getNextId(): int
+  + setEnvironmentValues(Map<String, Object>): void
+  - getDTOTerminationCondition(TerminationCondition): DTOTerminationCondition<?>
+  + loadXml(String): void
+  + getEntities(int): Collection<DTOEntity>
+  + getGrid(int): DTOGrid
+  + getSimulationStatus(int): DTOStatus
+  + loadFromFile(String): void
+  - getEntity(EntityDefinition): DTOEntity
+  + shutdown(): void
+  - getProperties(EntityDefinition): Collection<DTOProperty>
+}
+class EngineException {
+  + EngineException(String, String): 
+  - type: String
+  + getType(): String
 }
 interface EngineInterface << interface >> {
-  + runSimulation(): DTOSimulationResult
-  + getValuesForPropertyHistogram(int, String): DTOSimulationHistogram
   + getPastSimulations(): Collection<DTOSimulation>
-  + saveToFile(String): void
-  + setEnvironmentValues(Collection<Pair<String, Object>>): void
-  + loadFromFile(String): void
-  + loadXml(String): void
-  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
-  + getDetailsByEntityCount(int): Collection<DTOEntityPopulation>
-  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
-  + getPastEntityProperties(int, String): Collection<DTOProperty>
+  + getConsistencyOfProperty(int, String, String): Collection<Double>
   + getSimulationDetails(): DTOSimulationDetails
-  + getPastEntities(int): Collection<DTOEntity>
+  + loadXml(String): void
+  + pauseSimulation(int): void
+  + getSimulationSpace(int): DTOSpace
+  + getGrid(int): DTOGrid
+  + loadFromFile(String): void
+  + setEntityPopulations(Map<String, Integer>): void
+  + resumeSimulation(int): void
+  + getSimulationResult(int): DTOSimulationResult
+  + getSimulationTermination(int): DTOTermination
+  + getPastEntityProperties(int, String): Collection<DTOProperty>
+  + getValuesForPropertyHistogram(int, String, String): DTOSimulationHistogram
+  + getSimulationStatus(int): DTOStatus
+  + getEntities(int): Collection<DTOEntity>
+  + getNextId(): int
+  + tickSimulation(int): void
+  + getQueueDetails(): DTOQueueDetails
+  + stopSimulation(int): void
+  + setEnvironmentValues(Map<String, Object>): void
+  + getEnvironmentDefinitions(): Collection<DTOEnvironmentVariable>
+  + getEntityPopulations(int): Map<String, DTOEntityPopulation>
+  + getTicksOfSameValueOfPropertyInstances(int, String, String): Collection<Double>
+  + shutdown(): void
+  + getEnvironmentValues(): Collection<DTOEnvironmentVariable>
+  + saveToFile(String): void
+  + runSimulation(boolean): DTOSimulation
 }
 class EntityDefinition {
-  - name: String
+  + EntityDefinition(String, Map<String, PropertyDefinition>): 
   - properties: Map<String, PropertyDefinition>
+  - name: String
   - population: int
-  + getProperties(): Map<String, PropertyDefinition>
   + getName(): String
   + getPopulation(): int
+  + getProperties(): Map<String, PropertyDefinition>
+  + setPopulation(int): void
 }
 class EntityInstance {
-  - entityDefinition: EntityDefinition
+  + EntityInstance(EntityDefinition): 
   - properties: Map<String, PropertyInstance>
+  - point: Point
+  - entityDefinition: EntityDefinition
+  + getPropertyInstances(): Collection<PropertyInstance>
+  + getEntityDefinition(): EntityDefinition
   + addPropertyInstance(PropertyInstance): void
+  + setPoint(Point): void
+  + getPoint(): Point
+  + getY(): int
+  + getX(): int
   + initProperties(): void
   + getPropertyByName(String): PropertyInstance
+  + getPropertyIfExists(String): PropertyInstance
+}
+class EntityManager {
+  + EntityManager(Collection<EntityDefinition>): 
+  # entityDefinitions: Map<String, EntityDefinition>
+  # entityInstances: Map<EntityDefinition, List<EntityInstance>>
+  # killQueue: List<EntityInstance>
+  # creationQueue: List<EntityInstance>
+  + removeEntity(EntityInstance): void
+  + getEntityDefinition(String): EntityDefinition
+  + getAllEntityInstances(): Collection<EntityInstance>
+  + getEntityInstances(EntityDefinition): Collection<EntityInstance>
+  + getAllEntityDefinitions(): Collection<EntityDefinition>
+  + getEntityInstances(SecondaryEntity, Context): Collection<EntityInstance>
+  + replaceEntity(EntityInstance, EntityInstance): void
+  + containsEntityDefinition(String): boolean
+  + createEntities(): void
+  + killEntities(): void
+  + setPopulation(EntityDefinition, int): void
 }
 class EntityPropertyExpression {
+  + EntityPropertyExpression(PropertyDefinition): 
+  - property: PropertyDefinition
+  + getValue(EntityInstance[]): Object
   + getValue(EntityInstance): Object
+  + toString(): String
+  + getValueType(): ValueType
 }
 class EnvironmentExpression {
+  + EnvironmentExpression(PropertyInstance): 
   - envPropertyInstance: PropertyInstance
   + getValue(EntityInstance): Object
+  + getValue(EntityInstance[]): Object
+  + getValueType(): ValueType
+  + toString(): String
 }
 class EnvironmentManager {
+  + EnvironmentManager(Map<String, PropertyDefinition>): 
   - properties: Map<String, PropertyDefinition>
   + getVariables(): Collection<PropertyDefinition>
-  + createActiveEnvironment(): ActiveEnvironment
   + addEnvironmentVariable(PropertyDefinition): void
+  + createActiveEnvironment(): ActiveEnvironment
+}
+class EvaluateExpression {
+  + EvaluateExpression(EntityDefinition, PropertyDefinition): 
+  # propertyDefinition: PropertyDefinition
+  # entityDefinition: EntityDefinition
+  + getValue(EntityInstance): Object
+  + getValueType(): ValueType
+  + getValue(EntityInstance[]): Object
+  + toString(): String
 }
 interface Expression << interface >> {
+  + getValueType(): ValueType
+  + getValue(EntityInstance[]): Object
   + getType(): ExpressionType
   + getValue(EntityInstance): Object
 }
 enum ExpressionType << enumeration >> {
-  + ENTITY_PROPERTY: 
+  + ExpressionType(): 
   + AUXILIARY_FUNCTION: 
+  + ENTITY_PROPERTY: 
   + FREE_VALUE: 
   + values(): ExpressionType[]
   + valueOf(String): ExpressionType
 }
+class FatalException {
+  + FatalException(String): 
+}
 class FixedValueGenerator<T> {
+  + FixedValueGenerator(T): 
   - fixedValue: T
   + generateValue(): T
 }
 class FreeValueExpression {
+  + FreeValueExpression(Object, ValueType): 
   - value: Object
+  - type: ValueType
+  + getValue(EntityInstance[]): Object
   + getValue(EntityInstance): Object
+  + getValueType(): ValueType
+  + toString(): String
 }
 enum FunctionType << enumeration >> {
-  + RANDOM: 
+  + FunctionType(): 
+  + EVALUATE: 
+  + TICKS: 
   + ENVIRONMENT: 
-  + valueOf(String): FunctionType
+  + RANDOM: 
+  + PERCENT: 
   + values(): FunctionType[]
+  + valueOf(String): FunctionType
 }
-class IntegerPropertyDefinition
+class IllegalActionException {
+  + IllegalActionException(String): 
+}
+class IllegalUserActionException {
+  + IllegalUserActionException(String): 
+}
+class IncompatibleTypesException {
+  + IncompatibleTypesException(String): 
+}
+class IntegerPropertyDefinition {
+  + IntegerPropertyDefinition(String, Range, ValueGenerator<Integer>, boolean): 
+}
 enum Logical << enumeration >> {
+  + Logical(): 
   + and: 
   + or: 
-  + values(): Logical[]
   + valueOf(String): Logical
+  + values(): Logical[]
 }
 class MultiCondition {
-  # logical: Logical
+  + MultiCondition(Logical, Collection<Condition>): 
   # subConditions: List<Condition>
+  # logical: Logical
+  + evaluate(EntityInstance, EntityInstance, Context): boolean
   + evaluate(EntityInstance, Context): boolean
+  + toString(): String
+}
+class ObjectFactory {
+  + ObjectFactory(): 
+  - _PRDName_QNAME: QName
+  - _PRDPopulation_QNAME: QName
+  + createPRDActionPRDSecondaryEntityPRDSelection(): PRDSelection
+  + createPRDProperty(): PRDProperty
+  + createPRDByTicks(): PRDByTicks
+  + createPRDActionPRDBetween(): PRDBetween
+  + createPRDRule(): PRDRule
+  + createPRDProperties(): PRDProperties
+  + createPRDWorldPRDGrid(): PRDGrid
+  + createPRDValue(): PRDValue
+  + createPRDCondition(): PRDCondition
+  + createPRDActions(): PRDActions
+  + createPRDEnvironment(): PRDEnvironment
+  + createPRDRules(): PRDRules
+  + createPRDAction(): PRDAction
+  + createPRDActionPRDSecondaryEntity(): PRDSecondaryEntity
+  + createPRDTermination(): PRDTermination
+  + createPRDMultiply(): PRDMultiply
+  + createPRDDivide(): PRDDivide
+  + createPRDEnvProperty(): PRDEnvProperty
+  + createPRDEntities(): PRDEntities
+  + createPRDElse(): PRDElse
+  + createPRDActionPRDEnvDepth(): PRDEnvDepth
+  + createPRDWorld(): PRDWorld
+  + createPRDRange(): PRDRange
+  + createPRDPopulation(Integer): JAXBElement<Integer>
+  + createPRDBySecond(): PRDBySecond
+  + createPRDThen(): PRDThen
+  + createPRDActivation(): PRDActivation
+  + createPRDName(String): JAXBElement<String>
+  + createPRDEntity(): PRDEntity
 }
 enum Operator << enumeration >> {
+  - Operator(String): 
+  + lt: 
+  - operator: String
   + neq: 
   + eq: 
   + bt: 
-  + lt: 
-  - operator: String
-  + values(): Operator[]
   + valueOf(String): Operator
-  + fromDRP(String): Operator
   + getOperator(): String
+  + fromDRP(String): Operator
+  + values(): Operator[]
+}
+class PRDAction {
+  + PRDAction(): 
+  # prdBetween: PRDBetween
+  # prdEnvDepth: PRDEnvDepth
+  # value: String
+  # resultProp: String
+  # prdSecondaryEntity: PRDSecondaryEntity
+  # kill: String
+  # prdElse: PRDElse
+  # type: String
+  # by: String
+  # prdThen: PRDThen
+  # property: String
+  # create: String
+  # prdActions: PRDActions
+  # prdDivide: PRDDivide
+  # entity: String
+  # prdMultiply: PRDMultiply
+  # prdCondition: PRDCondition
+  # mode: String
+  + getPRDMultiply(): PRDMultiply
+  + getPRDBetween(): PRDBetween
+  + setPRDThen(PRDThen): void
+  + getPRDElse(): PRDElse
+  + setPRDDivide(PRDDivide): void
+  + setMode(String): void
+  + setKill(String): void
+  + getType(): String
+  + getValue(): String
+  + setValue(String): void
+  + setEntity(String): void
+  + getEntity(): String
+  + setCreate(String): void
+  + setPRDSecondaryEntity(PRDSecondaryEntity): void
+  + getPRDEnvDepth(): PRDEnvDepth
+  + setPRDMultiply(PRDMultiply): void
+  + setPRDElse(PRDElse): void
+  + getPRDActions(): PRDActions
+  + setResultProp(String): void
+  + setPRDActions(PRDActions): void
+  + getMode(): String
+  + getProperty(): String
+  + getKill(): String
+  + setPRDBetween(PRDBetween): void
+  + getResultProp(): String
+  + setType(String): void
+  + getPRDThen(): PRDThen
+  + getCreate(): String
+  + setProperty(String): void
+  + setPRDCondition(PRDCondition): void
+  + getPRDDivide(): PRDDivide
+  + getPRDSecondaryEntity(): PRDSecondaryEntity
+  + setBy(String): void
+  + getBy(): String
+  + setPRDEnvDepth(PRDEnvDepth): void
+  + getPRDCondition(): PRDCondition
+}
+class PRDActions {
+  + PRDActions(): 
+  # prdAction: List<PRDAction>
+  + getPRDAction(): List<PRDAction>
+}
+class PRDActivation {
+  + PRDActivation(): 
+  # probability: Double
+  # ticks: Integer
+  + getProbability(): Double
+  + getTicks(): Integer
+  + setTicks(Integer): void
+  + setProbability(Double): void
+}
+class PRDBySecond {
+  + PRDBySecond(): 
+  # count: int
+  + setCount(int): void
+  + getCount(): int
+}
+class PRDByTicks {
+  + PRDByTicks(): 
+  # count: int
+  + getCount(): int
+  + setCount(int): void
+}
+class PRDCondition {
+  + PRDCondition(): 
+  # singularity: String
+  # operator: String
+  # entity: String
+  # logical: String
+  # property: String
+  # prdCondition: List<PRDCondition>
+  # value: String
+  + getEntity(): String
+  + getProperty(): String
+  + getOperator(): String
+  + setEntity(String): void
+  + setOperator(String): void
+  + setValue(String): void
+  + getPRDCondition(): List<PRDCondition>
+  + setProperty(String): void
+  + setSingularity(String): void
+  + getLogical(): String
+  + getValue(): String
+  + getSingularity(): String
+  + setLogical(String): void
+}
+class PRDDivide {
+  + PRDDivide(): 
+  # arg1: String
+  # arg2: String
+  + setArg2(String): void
+  + getArg1(): String
+  + setArg1(String): void
+  + getArg2(): String
+}
+class PRDElse {
+  + PRDElse(): 
+  # prdAction: List<PRDAction>
+  + getPRDAction(): List<PRDAction>
+}
+class PRDEntities {
+  + PRDEntities(): 
+  # prdEntity: List<PRDEntity>
+  + getPRDEntity(): List<PRDEntity>
+}
+class PRDEntity {
+  + PRDEntity(): 
+  # prdProperties: PRDProperties
+  # name: String
+  + setPRDProperties(PRDProperties): void
+  + setName(String): void
+  + getPRDProperties(): PRDProperties
+  + getName(): String
+}
+class PRDEnvProperty {
+  + PRDEnvProperty(): 
+  # prdRange: PRDRange
+  # type: String
+  # prdName: String
+  + setType(String): void
+  + getPRDName(): String
+  + setPRDRange(PRDRange): void
+  + setPRDName(String): void
+  + getType(): String
+  + getPRDRange(): PRDRange
+}
+class PRDEnvironment {
+  + PRDEnvironment(): 
+  # prdEnvProperty: List<PRDEnvProperty>
+  + getPRDEnvProperty(): List<PRDEnvProperty>
+}
+class PRDMultiply {
+  + PRDMultiply(): 
+  # arg2: String
+  # arg1: String
+  + getArg2(): String
+  + setArg2(String): void
+  + setArg1(String): void
+  + getArg1(): String
+}
+class PRDProperties {
+  + PRDProperties(): 
+  # prdProperty: List<PRDProperty>
+  + getPRDProperty(): List<PRDProperty>
+}
+class PRDProperty {
+  + PRDProperty(): 
+  # prdValue: PRDValue
+  # prdRange: PRDRange
+  # prdName: String
+  # type: String
+  + getPRDName(): String
+  + setType(String): void
+  + getPRDRange(): PRDRange
+  + getType(): String
+  + setPRDRange(PRDRange): void
+  + getPRDValue(): PRDValue
+  + setPRDName(String): void
+  + setPRDValue(PRDValue): void
+}
+class PRDRange {
+  + PRDRange(): 
+  # to: double
+  # from: double
+  + getTo(): double
+  + getFrom(): double
+  + setTo(double): void
+  + setFrom(double): void
+}
+class PRDRule {
+  + PRDRule(): 
+  # prdActions: PRDActions
+  # prdActivation: PRDActivation
+  # name: String
+  + getPRDActions(): PRDActions
+  + getPRDActivation(): PRDActivation
+  + setName(String): void
+  + getName(): String
+  + setPRDActions(PRDActions): void
+  + setPRDActivation(PRDActivation): void
+}
+class PRDRules {
+  + PRDRules(): 
+  # prdRule: List<PRDRule>
+  + getPRDRule(): List<PRDRule>
+}
+class PRDTermination {
+  + PRDTermination(): 
+  # prdBySecondOrPRDByTicks: List<Object>
+  # prdByUser: Object
+  + setPRDByUser(Object): void
+  + getPRDByUser(): Object
+  + getPRDBySecondOrPRDByTicks(): List<Object>
+}
+class PRDThen {
+  + PRDThen(): 
+  # prdAction: List<PRDAction>
+  + getPRDAction(): List<PRDAction>
+}
+class PRDValue {
+  + PRDValue(): 
+  # init: String
+  # randomInitialize: boolean
+  + isRandomInitialize(): boolean
+  + setInit(String): void
+  + setRandomInitialize(boolean): void
+  + getInit(): String
+}
+class PRDWorld {
+  + PRDWorld(): 
+  # prdThreadCount: int
+  # prdTermination: PRDTermination
+  # prdEnvironment: PRDEnvironment
+  # prdEntities: PRDEntities
+  # prdGrid: PRDGrid
+  # prdRules: PRDRules
+  + getPRDEntities(): PRDEntities
+  + setPRDThreadCount(int): void
+  + getPRDTermination(): PRDTermination
+  + setPRDGrid(PRDGrid): void
+  + getPRDThreadCount(): int
+  + getPRDRules(): PRDRules
+  + setPRDTermination(PRDTermination): void
+  + setPRDRules(PRDRules): void
+  + setPRDEntities(PRDEntities): void
+  + getPRDEnvironment(): PRDEnvironment
+  + getPRDGrid(): PRDGrid
+  + setPRDEnvironment(PRDEnvironment): void
+}
+class PercentExpression {
+  + PercentExpression(Expression, Expression): 
+  # arg: Expression
+  # percentage: Expression
+  + getValueType(): ValueType
+  + getValue(EntityInstance): Object
+  + getValue(EntityInstance[]): Object
+}
+class Point {
+  + Point(int, int): 
+  - x: int
+  - y: int
+  + y(): int
+  + xy(int, int): Point
+  + x(): int
 }
 interface PropertyDefinition << interface >> {
   + getName(): String
-  + getType(): PropertyType
-  + isRandomInit(): boolean
   + generateValue(): Object
+  + isRandomInit(): boolean
   + isNumeric(): boolean
+  + getType(): ValueType
   + getRange(): Range
 }
 class PropertyInstance {
+  + PropertyInstance(PropertyDefinition): 
   - propertyDefinition: PropertyDefinition
   - value: Object
+  - ticksSinceChange: int
+  - changeCounter: int
+  - tickSum: int
+  + incrementTicksOfSameValue(): void
+  + copy(PropertyInstance): void
+  + getTicksSinceChange(): int
+  + getConsistency(): double
   + getValue(): Object
-  + getPropertyDefinition(): PropertyDefinition
   + setValue(Object): void
-}
-enum PropertyType << enumeration >> {
-  + BOOLEAN: 
-  + DECIMAL: 
-  + FLOAT: 
-  + STRING: 
-  + values(): PropertyType[]
-  + valueOf(String): PropertyType
+  + getPropertyDefinition(): PropertyDefinition
 }
 class RandomBooleanValueGenerator {
+  + RandomBooleanValueGenerator(): 
   + generateValue(): Boolean
 }
 class RandomDoubleValueGenerator {
+  + RandomDoubleValueGenerator(Double, Double): 
   # from: Double
   # to: Double
   + generateValue(): Double
 }
 class RandomExpression {
+  + RandomExpression(int): 
   - arg: int
   - random: Random
   + getValue(EntityInstance): Object
+  + toString(): String
+  + getValue(EntityInstance[]): Object
   + getType(): ExpressionType
+  + getValueType(): ValueType
 }
 class RandomIntegerValueGenerator {
-  # from: Integer
+  + RandomIntegerValueGenerator(Integer, Integer): 
   # to: Integer
+  # from: Integer
   + generateValue(): Integer
 }
 class RandomStringValueGenerator {
+  + RandomStringValueGenerator(): 
   - CHARACTERS: String
   + generateValue(): String
 }
 class RandomValueGenerator<T> {
+  + RandomValueGenerator(): 
   # random: Random
 }
 class Range {
-  # to: double
+  + Range(double, double): 
   # from: double
+  # to: double
   + isInRange(double): boolean
-  + to(): double
   + from(): double
+  + to(): double
+}
+class RawExpression {
+  + RawExpression(String): 
+  - subexpressions: List<String>
+  - value: String
+  + getValue(): String
+  + addExpression(String): void
+  + getSubexpressions(): List<String>
+}
+enum ReplaceMode << enumeration >> {
+  + ReplaceMode(): 
+  + SCRATCH: 
+  + DERIVED: 
+  + values(): ReplaceMode[]
+  + valueOf(String): ReplaceMode
 }
 class Rule {
-  # activation: Activation
+  + Rule(String, Activation, Collection<Action>): 
   # actions: List<Action>
   # name: String
-  + getName(): String
+  # activation: Activation
   + getActivation(): Activation
+  + getName(): String
   + getActions(): List<Action>
 }
+class SecondaryEntity {
+  + SecondaryEntity(EntityDefinition, int, MultiCondition): 
+  + SecondaryEntity(EntityDefinition): 
+  - entityDefinition: EntityDefinition
+  - selectionCount: int
+  - all: boolean
+  - condition: MultiCondition
+  + getCondition(): MultiCondition
+  + getEntityDefinition(): EntityDefinition
+  + getSelectionCount(): int
+  + isAll(): boolean
+}
 class Simulation {
-  - world: World
-  - id: int
+  + Simulation(World): 
   - date: LocalDateTime
-  + getEnvironmentValue(String): Object
-  + getPrimaryEntityDefinition(): EntityDefinition
-  + getTermination(): Termination
-  + getDate(): LocalDateTime
+  - totalDuration: long
+  - status: Status
+  - exception: SimulationRuntimeException
+  - id: int
+  - singleTick: boolean
+  - tick: int
+  - world: World
+  + singleTick(): void
+  - loop(): void
   + run(int): void
-  + getWorld(): World
-  + getId(): int
+  + getEntityDefinition(String): EntityDefinition
+  + getTermination(): Termination
   + setEnvironmentValue(String, Object): void
+  + getWorld(): World
+  + next(): void
+  + getTick(): int
+  + getEnvironmentValue(String): Object
+  + getDuration(): long
+  + resume(): void
+  + getId(): int
+  + getStatus(): Status
+  + pause(): void
+  + setEntityPopulation(String, int): void
+  + run(): void
+  + getDate(): LocalDateTime
+  - runtimeError(SimulationRuntimeException): void
+  + updateTermination(): void
+  + tick(): void
+  + getException(): SimulationRuntimeException
+  + initSpace(): void
+  + getAllEntityDefinitions(): Collection<EntityDefinition>
+  + stop(): void
 }
 interface SimulationInterface << interface >> {
-  + setEnvironmentValue(String, Object): void
-  + getTermination(): Termination
+  + stop(): void
   + getId(): int
-  + run(int): void
-  + getWorld(): World
+  + setEnvironmentValue(String, Object): void
   + getDate(): LocalDateTime
-  + getPrimaryEntityDefinition(): EntityDefinition
+  + getTermination(): Termination
+  + getEntityDefinition(String): EntityDefinition
+  + pause(): void
   + getEnvironmentValue(String): Object
+  + singleTick(): void
+  + initSpace(): void
+  + getException(): SimulationRuntimeException
+  + getDuration(): long
+  + run(int): void
+  + getAllEntityDefinitions(): Collection<EntityDefinition>
+  + setEntityPopulation(String, int): void
+  + getStatus(): Status
+  + next(): void
+  + getWorld(): World
+  + resume(): void
+  + getTick(): int
+}
+class SimulationMissingException {
+  + SimulationMissingException(String): 
+}
+class SimulationRuntimeException {
+  + SimulationRuntimeException(String, String): 
+  - secondaryType: String
+  + getSecondaryType(): String
 }
 class SingleCondition {
-  # operator: Operator
-  # propertyName: String
+  + SingleCondition(Operator, Expression, Expression): 
+  # arg: Expression
   # value: Expression
+  # operator: Operator
+  + evaluate(EntityInstance, EntityInstance, Context): boolean
+  + toString(): String
+  + compare(Object, Object): boolean
   + evaluate(EntityInstance, Context): boolean
 }
 enum Singularity << enumeration >> {
-  + multiple: 
+  + Singularity(): 
   + single: 
+  + multiple: 
   + values(): Singularity[]
   + valueOf(String): Singularity
 }
-class StringPropertyDefinition
+class Space {
+  + Space(int, int): 
+  - rows: int
+  - random: Random
+  - board: Tile[][]
+  - cols: int
+  - availableTiles: Map<Point, Tile>
+  + placeEntityRandom(EntityInstance): void
+  + getAvailableSize(): int
+  - getTile(Point): Tile
+  - addAvailableTile(Point): void
+  + placeEntity(EntityInstance, Point): void
+  + getRows(): int
+  + getTotalSize(): int
+  + moveEntity(EntityInstance, Point): void
+  + getAvailableAdjacentTiles(Point): Collection<Point>
+  + getCols(): int
+  + getEntitiesInProximity(Point, double): Collection<EntityInstance>
+  + getRandomAvailableTile(): Point
+  - removeAvailableTile(Point): void
+  + removeEntity(EntityInstance): void
+}
+class SpaceManager {
+  + SpaceManager(int, int): 
+  - random: Random
+  - space: Space
+  + getAvailableSize(): int
+  + getTotalSize(): int
+  + getEntityInProximity(Point, EntityDefinition, double): EntityInstance
+  + replaceEntity(EntityInstance, EntityInstance): void
+  + getCols(): int
+  - placeEntity(EntityInstance, Point): void
+  + moveEntity(EntityInstance): void
+  + putEntity(EntityInstance): void
+  + getRows(): int
+  + removeEntity(EntityInstance): void
+}
+enum Status << enumeration >> {
+  + Status(): 
+  + PAUSED: 
+  + ERROR: 
+  + STOPPED: 
+  + RUNNING: 
+  + values(): Status[]
+  + valueOf(String): Status
+}
+class StringPropertyDefinition {
+  + StringPropertyDefinition(String, ValueGenerator<String>, boolean): 
+}
 class Termination {
-  - isMetBySeconds: boolean
-  - bySecond: BySecond
-  - isMetByTicks: boolean
-  - byTicks: ByTicks
-  + isMetByTicks(): boolean
-  + getBySecond(): BySecond
-  + isMet(int, long): boolean
-  + isMetBySeconds(): boolean
-  + getByTicks(): ByTicks
+  + Termination(TerminationCondition[]): 
+  - reason: TerminationCondition
+  - terminationConditions: Map<Type, TerminationCondition>
+  + addTerminationCondition(TerminationCondition): void
+  + getTerminationCondition(Type): TerminationCondition
+  + getReason(): TerminationCondition
+  + isMet(): boolean
+  + getTerminationConditions(): Collection<TerminationCondition>
 }
 interface TerminationCondition << interface >> {
-  + getCount(): long
-  + isMet(long): boolean
+  + isMet(): boolean
+  + getType(): Type
+  + getCondition(): Object
+}
+class TicksExpression {
+  + TicksExpression(EntityDefinition, PropertyDefinition): 
+  # propertyDefinition: PropertyDefinition
+  # entityDefinition: EntityDefinition
+  + toString(): String
+  + getValueType(): ValueType
+  + getValue(EntityInstance): Object
+  + getValue(EntityInstance[]): Object
+}
+class Tile {
+  + Tile(Point): 
+  - taken: boolean
+  - entity: EntityInstance
+  - point: Point
+  + removeEntity(): void
+  + getEntity(): EntityInstance
+  + getY(): int
+  + isTaken(): boolean
+  + setEntity(EntityInstance): void
+  + getPoint(): Point
+  + getX(): int
 }
 interface Translator << interface >> {
   + getWorld(): World
 }
 class Validator {
+  - Validator(String): 
   - isValid: boolean
   - input: String
   + isValid(): boolean
   + isInteger(): Validator
-  + isValidString(): Validator
-  + isInRange(Range): Validator
-  + validate(String): Validator
-  + isCompatibleWith(PropertyType, String): Validator
+  + isPositive(): Validator
   + isOnlyLetters(): Validator
-  + isBoolean(): Validator
+  + isCompatibleWith(ValueType, String): Validator
+  + isValidString(): Validator
   + isInRange(double, double): Validator
+  + validate(String): Validator
   + isDouble(): Validator
+  + isInRange(Range): Validator
+  + isBoolean(): Validator
 }
 interface ValueGenerator<T> << interface >> {
   + generateValue(): T
 }
 interface ValueGeneratorFactory << interface >> {
-  + createRandomInteger(Range): ValueGenerator<Integer>
-  + createFixed(T): ValueGenerator<T>
-  + createRandomString(): ValueGenerator<String>
   + createRandomBoolean(): ValueGenerator<Boolean>
+  + createRandomInteger(Range): ValueGenerator<Integer>
+  + createRandomString(): ValueGenerator<String>
+  + createFixed(T): ValueGenerator<T>
   + createRandomDouble(Range): ValueGenerator<Double>
 }
+enum ValueType << enumeration >> {
+  + ValueType(): 
+  + DECIMAL: 
+  + STRING: 
+  + FLOAT: 
+  + BOOLEAN: 
+  + valueOf(String): ValueType
+  + values(): ValueType[]
+}
 class World {
-  # environmentManager: EnvironmentManager
-  # primaryEntityDefinition: EntityDefinition
-  # termination: Termination
-  # rules: Map<String, Rule>
+  + World(EnvironmentManager, ActiveEnvironment, EntityManager, Map<String, Rule>, Termination, SpaceManager, int): 
   # activeEnvironment: ActiveEnvironment
-  # entityInstances: List<EntityInstance>
+  # rules: Map<String, Rule>
+  # environmentManager: EnvironmentManager
+  # threadCount: int
+  # spaceManager: SpaceManager
+  # entityManager: EntityManager
+  # termination: Termination
+  + getThreadCount(): int
+  + getTermination(): Termination
+  + getEntityManager(): EntityManager
+  + getSpaceManager(): SpaceManager
+  + getEnvironmentPropertyInstance(String): PropertyInstance
   + removeEntity(EntityInstance): void
   + getEnvironmentManager(): EnvironmentManager
   + getRules(): Map<String, Rule>
-  + getPrimaryEntityDefinition(): EntityDefinition
-  + getPrimaryEntityInstances(): Collection<EntityInstance>
-  + getEnvironmentPropertyInstance(String): PropertyInstance
-  + getTermination(): Termination
+}
+class XMLConfigException {
+  + XMLConfigException(String): 
 }
 class XmlTranslator {
-  - activeEnvironment: ActiveEnvironment
-  - entityInstances: List<EntityInstance>
-  - world: World
+  + XmlTranslator(InputStream): 
   - prdWorld: PRDWorld
-  - primaryEntityDefinition: EntityDefinition
   - termination: Termination
-  - environmentManager: EnvironmentManager
   - JAXB_XML_GAME_PACKAGE_NAME: String
-  + getEntityDefinition(PRDEntity): EntityDefinition
-  + getActionIncrease(PRDAction): ActionIncrease
-  + getActionDecrease(PRDAction): ActionDecrease
+  - environmentManager: EnvironmentManager
+  - activeEnvironment: ActiveEnvironment
+  - world: World
+  - entityManager: EntityManager
+  + getPropertyDefinitionByType(String, ValueType, String, Range, boolean): PropertyDefinition
+  + getActionDecrease(PRDAction, EntityDefinition, SecondaryEntity): ActionDecrease
+  + getActionIncrease(PRDAction, EntityDefinition, SecondaryEntity): ActionIncrease
   + getByTicks(PRDByTicks): ByTicks
-  + getRule(PRDRule): Rule
-  + getSingleCondition(PRDCondition): SingleCondition
-  + getActionCondition(PRDAction): ActionCondition
   + getWorld(): World
   + getPropertyDefinition(PRDProperty): PropertyDefinition
-  + getExpression(String, PropertyDefinition): Expression
-  + getBySecond(PRDBySecond): BySecond
-  + getActionSet(PRDAction): ActionSet
-  + getMultiCondition(PRDCondition): MultiCondition
-  + getRange(PRDRange): Range
-  + getTermination(PRDTermination): Termination
-  + getActivation(PRDActivation): Activation
-  + getActionCalc(PRDAction): ActionCalc
-  + getEnvironmentManager(PRDEvironment): EnvironmentManager
-  + getActionKill(PRDAction): ActionKill
-  + getPropertyDefinitionByType(String, PropertyType, String, Range, boolean): PropertyDefinition
+  + getActionCondition(PRDAction, EntityDefinition, SecondaryEntity): ActionCondition
+  + getSingleCondition(PRDCondition): SingleCondition
   + getAction(PRDAction): Action
+  + getSpace(PRDGrid): SpaceManager
+  + getRule(PRDRule): Rule
+  + getExpression(String, EntityDefinition, ValueType, boolean): Expression
+  + getRange(PRDRange): Range
+  + getActionCalc(PRDAction, EntityDefinition, SecondaryEntity): ActionCalc
+  + getActionProximity(PRDAction): ActionProximity
+  + getActionSet(PRDAction, EntityDefinition, SecondaryEntity): ActionSet
+  + getExpression(String, EntityDefinition, ValueType): Expression
+  + getBySecond(PRDBySecond): BySecond
+  + getEnvironmentManager(PRDEnvironment): EnvironmentManager
+  + getTermination(PRDTermination): Termination
+  + getActionReplace(PRDAction): ActionReplace
+  + convertToRawExpression(String): RawExpression
+  + getEntityDefinition(PRDEntity): EntityDefinition
+  + getActivation(PRDActivation): Activation
+  + getMultiCondition(PRDCondition): MultiCondition
+  + getExpressionType(String, EntityDefinition): ExpressionType
+  + getSecondaryEntity(PRDSecondaryEntity): SecondaryEntity
+  + getActionKill(EntityDefinition, SecondaryEntity): ActionKill
 }
 
 AbstractExpression                 -[#008200,dashed]-^  Expression                        
@@ -430,19 +1116,30 @@ ActionDivide                       -[#000082,plain]-^  ActionCalc
 ActionIncrease                     -[#000082,plain]-^  ActionValue                       
 ActionKill                         -[#000082,plain]-^  Action                            
 ActionMultiply                     -[#000082,plain]-^  ActionCalc                        
+ActionProximity                    -[#000082,plain]-^  Action                            
+ActionReplace                      -[#000082,plain]-^  Action                            
 ActionSet                          -[#000082,plain]-^  ActionValue                       
 ActionValue                        -[#000082,plain]-^  Action                            
 BooleanPropertyDefinition          -[#000082,plain]-^  AbstractPropertyDefinition        
-BySecond                           -[#008200,dashed]-^  TerminationCondition              
-ByTicks                            -[#008200,dashed]-^  TerminationCondition              
+ByError                            -[#008200,dashed]-^  TerminationCondition              
+ByNumberTermination                -[#008200,dashed]-^  TerminationCondition              
+BySecond                           -[#000082,plain]-^  ByNumberTermination               
+ByTicks                            -[#000082,plain]-^  ByNumberTermination               
+ByUser                             -[#008200,dashed]-^  TerminationCondition              
 DoublePropertyDefinition           -[#000082,plain]-^  AbstractNumericPropertyDefinition 
 Engine                             -[#008200,dashed]-^  EngineInterface                   
 EntityPropertyExpression           -[#000082,plain]-^  AbstractExpression                
 EnvironmentExpression              -[#000082,plain]-^  AbstractExpression                
+EvaluateExpression                 -[#000082,plain]-^  AbstractExpression                
+FatalException                     -[#000082,plain]-^  EngineException                   
 FixedValueGenerator                -[#008200,dashed]-^  ValueGenerator                    
 FreeValueExpression                -[#000082,plain]-^  AbstractExpression                
+IllegalActionException             -[#000082,plain]-^  SimulationRuntimeException        
+IllegalUserActionException         -[#000082,plain]-^  SimulationRuntimeException        
+IncompatibleTypesException         -[#000082,plain]-^  SimulationRuntimeException        
 IntegerPropertyDefinition          -[#000082,plain]-^  AbstractNumericPropertyDefinition 
 MultiCondition                     -[#008200,dashed]-^  Condition                         
+PercentExpression                  -[#000082,plain]-^  AbstractExpression                
 RandomBooleanValueGenerator        -[#000082,plain]-^  RandomValueGenerator              
 RandomDoubleValueGenerator         -[#000082,plain]-^  RandomValueGenerator              
 RandomExpression                   -[#000082,plain]-^  AbstractExpression                
@@ -450,8 +1147,12 @@ RandomIntegerValueGenerator        -[#000082,plain]-^  RandomValueGenerator
 RandomStringValueGenerator         -[#000082,plain]-^  RandomValueGenerator              
 RandomValueGenerator               -[#008200,dashed]-^  ValueGenerator                    
 Simulation                         -[#008200,dashed]-^  SimulationInterface               
+SimulationMissingException         -[#000082,plain]-^  EngineException                   
+SimulationRuntimeException         -[#000082,plain]-^  EngineException                   
 SingleCondition                    -[#008200,dashed]-^  Condition                         
 StringPropertyDefinition           -[#000082,plain]-^  AbstractPropertyDefinition        
+TicksExpression                    -[#000082,plain]-^  AbstractExpression                
 World                              -[#008200,dashed]-^  Context                           
+XMLConfigException                 -[#000082,plain]-^  EngineException                   
 XmlTranslator                      -[#008200,dashed]-^  Translator                        
 @enduml

@@ -18,6 +18,14 @@ public class EnvironmentManager implements Serializable {
         properties.put(propertyDefinition.getName(), propertyDefinition);
     }
 
+    public PropertyDefinition getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public boolean containsProperty(String name){
+        return properties.containsKey(name);
+    }
+
     public Collection<PropertyDefinition> getVariables() {
         return properties.values();
     }

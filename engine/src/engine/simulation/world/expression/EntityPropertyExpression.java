@@ -1,5 +1,6 @@
 package engine.simulation.world.expression;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.definition.property.PropertyDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -15,15 +16,15 @@ public class EntityPropertyExpression extends AbstractExpression{
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) {
+    public Object getValue(EntityInstance entityInstance, Context context) {
         return entityInstance.getPropertyIfExists(property.getName()).getValue();
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) throws IllegalActionException {
+    public Object getValue(Context context, EntityInstance... entityInstances) throws IllegalActionException {
         for (EntityInstance entityInstance : entityInstances){
             try {
-                return getValue(entityInstance);
+                return getValue(entityInstance, context);
             } catch (NullPointerException ignored){}
         }
         throw new IllegalActionException("Entity instances don't match defined definition");

@@ -1,6 +1,6 @@
 package engine.simulation.world;
 
-import engine.simulation.world.termination.Termination;
+import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
 import engine.simulation.world.instance.entity.EntityManager;
 import engine.simulation.world.instance.environment.ActiveEnvironment;
@@ -8,36 +8,39 @@ import engine.simulation.world.instance.environment.EnvironmentManager;
 import engine.simulation.world.instance.property.PropertyInstance;
 import engine.simulation.world.rule.Rule;
 import engine.simulation.world.space.SpaceManager;
+import exception.runtime.IllegalActionException;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class World implements Context, Serializable {
 
-    protected final EnvironmentManager environmentManager;
+    protected final WorldDefinition worldDefinition;
     protected final ActiveEnvironment activeEnvironment;
     protected final EntityManager entityManager;
-    protected final Map<String, Rule> rules;
-    protected final Termination termination;
     protected final SpaceManager spaceManager;
-    protected final int threadCount;
 
-    public World(EnvironmentManager environmentManager, ActiveEnvironment activeEnvironment, EntityManager entityManager, Map<String, Rule> rules, Termination termination, SpaceManager spaceManager, int threadCount) {
-        this.environmentManager = environmentManager;
-        this.activeEnvironment = activeEnvironment;
-        this.entityManager = entityManager;
-        this.rules = rules;
-        this.termination = termination;
-        this.spaceManager = spaceManager;
-        this.threadCount = threadCount;
+    protected final Map<String, Integer> entityPopulations = new LinkedHashMap<>();
+
+    public World(WorldDefinition worldDefinition) {
+        this.worldDefinition = worldDefinition;
+        //TODO init here or get in constructor
+
+        activeEnvironment = worldDefinition.environmentManager.createActiveEnvironment();
+        activeEnvironment.initProperties(worldDefinition.environmentManager.getVariables());
+
+        entityManager = new EntityManager(worldDefinition.entityDefinitions);
+
+        spaceManager = new SpaceManager(worldDefinition.rows, worldDefinition.cols);
+    }
+
+    public WorldDefinition getWorldDefinition() {
+        return worldDefinition;
     }
 
     public Map<String, Rule> getRules() {
-        return rules;
-    }
-
-    public Termination getTermination() {
-        return termination;
+        return worldDefinition.rules;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class World implements Context, Serializable {
 
     @Override
     public EnvironmentManager getEnvironmentManager() {
-        return environmentManager;
+        return worldDefinition.environmentManager;
     }
 
     @Override
@@ -68,6 +71,15 @@ public class World implements Context, Serializable {
 
     @Override
     public int getThreadCount() {
-        return threadCount;
+        return worldDefinition.threadCount;
+    }
+
+    public void setEntityPopulation(String name, int population) throws IllegalActionException {
+        EntityDefinition entityDefinition = getEntityManager().getEntityDefinition(name);
+        entityPopulations.put(entityDefinition.getName(), population);
+    }
+
+    public Map<String, Integer> getEntityPopulations() {
+        return entityPopulations;
     }
 }

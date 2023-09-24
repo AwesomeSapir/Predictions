@@ -17,7 +17,7 @@ public class ActionDecrease extends ActionValue {
 
     @Override
     public void execute(EntityInstance entityInstance, Context context) throws IllegalActionException {
-        double by = Double.parseDouble(value.getValue(entityInstance).toString());
+        double by = Double.parseDouble(value.getValue(entityInstance, context).toString());
         PropertyInstance propertyInstance = entityInstance.getPropertyByName(propertyName);
         double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
         double result = propertyValue - by;
@@ -27,7 +27,7 @@ public class ActionDecrease extends ActionValue {
 
     @Override
     public void execute(EntityInstance primaryEntity, EntityInstance secondaryEntity, Context context) throws IllegalActionException {
-        double by = Double.parseDouble(value.getValue(primaryEntity, secondaryEntity).toString());
+        double by = Double.parseDouble(value.getValue(context, primaryEntity, secondaryEntity).toString());
         PropertyInstance propertyInstance = primaryEntity.getPropertyByName(propertyName);
         double propertyValue = Double.parseDouble(propertyInstance.getValue().toString());
         double result = propertyValue - by;

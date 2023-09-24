@@ -1,5 +1,6 @@
 package engine.simulation.world.expression;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.instance.entity.EntityInstance;
 
@@ -14,12 +15,12 @@ public class FreeValueExpression extends AbstractExpression {
     }
 
     @Override
-    public Object getValue(EntityInstance entityInstance) {
+    public Object getValue(EntityInstance entityInstance, Context context) {
         return value;
     }
 
     @Override
-    public Object getValue(EntityInstance... entityInstances) {
+    public Object getValue(Context context, EntityInstance... entityInstances) {
         return value;
     }
 

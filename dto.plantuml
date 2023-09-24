@@ -1,0 +1,154 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class DTOAction {
+  + DTOAction(String, String, DTOSecondaryEntity): 
+  # entityName: String
+  # secondaryEntity: DTOSecondaryEntity
+}
+class DTOActionCalc {
+  + DTOActionCalc(String, String, DTOSecondaryEntity, String, String, String): 
+  - resultPropertyName: String
+  - arg2: String
+  - arg1: String
+}
+class DTOActionCondition {
+  + DTOActionCondition(String, String, DTOSecondaryEntity, String, Collection<DTOAction>, Collection<DTOAction>): 
+  # actionsThen: List<DTOAction>
+  # conditions: String
+  # actionsElse: List<DTOAction>
+}
+class DTOActionProximity {
+  + DTOActionProximity(String, String, DTOSecondaryEntity, String, String, Collection<DTOAction>): 
+  # actions: List<DTOAction>
+  - target: String
+  - depth: String
+}
+class DTOActionReplace {
+  + DTOActionReplace(String, String, DTOSecondaryEntity, String, String): 
+  - mode: String
+  - create: String
+}
+class DTOActionValue {
+  + DTOActionValue(String, String, DTOSecondaryEntity, String, String): 
+  # value: String
+  # propertyName: String
+}
+class DTOEntity {
+  + DTOEntity(String, int, Collection<DTOProperty>): 
+  - population: int
+  - properties: Collection<DTOProperty>
+}
+class DTOEntityPopulation {
+  + DTOEntityPopulation(int, int, DTOEntity): 
+  - initialPopulation: int
+  - entity: DTOEntity
+  - finalPopulation: int
+}
+class DTOEnvironmentVariable {
+  + DTOEnvironmentVariable(String, String, DTORange): 
+  + DTOEnvironmentVariable(String, Object): 
+  - type: String
+  - range: DTORange
+  - value: Object
+}
+class DTOGrid {
+  + DTOGrid(int, int): 
+  - cols: int
+  - rows: int
+}
+class DTOObject {
+  + DTOObject(String): 
+  # name: String
+}
+class DTOProperty {
+  + DTOProperty(String, String, DTORange, boolean): 
+  - type: String
+  - range: DTORange
+  - isRandomInit: boolean
+}
+class DTOQueueDetails {
+  + DTOQueueDetails(int, int, int, int, int): 
+  - capacity: int
+  - paused: int
+  - running: int
+  - active: int
+  - stopped: int
+}
+class DTORange {
+  + DTORange(double, double): 
+  - from: double
+  - to: double
+}
+class DTORule {
+  + DTORule(String, int, double, Collection<DTOAction>): 
+  - ticks: int
+  - probability: double
+  - actions: Collection<DTOAction>
+}
+class DTOSecondaryEntity {
+  + DTOSecondaryEntity(String, String, String): 
+  # conditions: String
+  # count: String
+}
+class DTOSimulation {
+  + DTOSimulation(LocalDateTime, int, String): 
+  - beginTime: LocalDateTime
+  - status: String
+  - id: int
+}
+class DTOSimulationDetails {
+  + DTOSimulationDetails(Collection<DTOEntity>, Collection<DTORule>, DTOTermination, DTOGrid): 
+  - grid: DTOGrid
+  - termination: DTOTermination
+  - rules: Collection<DTORule>
+  - entities: Collection<DTOEntity>
+}
+class DTOSimulationHistogram {
+  + DTOSimulationHistogram(Collection<Object>, String): 
+  - valueToCount: Map<Object, Integer>
+  - propertyName: String
+}
+class DTOSimulationResult {
+  + DTOSimulationResult(int, DTOTerminationCondition<?>): 
+  - terminationReason: DTOTerminationCondition<?>
+  - id: int
+}
+class DTOSpace {
+  + DTOSpace(int, int): 
+  - space: String[][]
+}
+class DTOStatus {
+  + DTOStatus(int, long, String, Exception): 
+  - ticks: int
+  - status: String
+  - millis: long
+  - error: Exception
+}
+class DTOTermination {
+  + DTOTermination(Collection<DTOTerminationCondition<?>>): 
+  - conditions: Map<String, DTOTerminationCondition<?>>
+}
+class DTOTerminationCondition<T> {
+  + DTOTerminationCondition(String, T): 
+  - condition: T
+}
+
+DTOAction                -[#000082,plain]-^  DTOObject               
+DTOActionCalc            -[#000082,plain]-^  DTOAction               
+DTOActionCondition       -[#000082,plain]-^  DTOAction               
+DTOActionProximity       -[#000082,plain]-^  DTOAction               
+DTOActionReplace         -[#000082,plain]-^  DTOAction               
+DTOActionValue           -[#000082,plain]-^  DTOAction               
+DTOEntity                -[#000082,plain]-^  DTOObject               
+DTOEnvironmentVariable   -[#000082,plain]-^  DTOObject               
+DTOGrid                  -[#000082,plain]-^  DTOObject               
+DTOProperty              -[#000082,plain]-^  DTOObject               
+DTORule                  -[#000082,plain]-^  DTOObject               
+DTOSecondaryEntity       -[#000082,plain]-^  DTOObject               
+DTOTermination           -[#000082,plain]-^  DTOObject               
+DTOTerminationCondition  -[#000082,plain]-^  DTOObject               
+@enduml

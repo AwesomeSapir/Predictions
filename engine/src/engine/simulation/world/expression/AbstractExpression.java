@@ -1,5 +1,6 @@
 package engine.simulation.world.expression;
 
+import engine.simulation.world.Context;
 import engine.simulation.world.ValueType;
 import engine.simulation.world.instance.entity.EntityInstance;
 import exception.runtime.IllegalActionException;
@@ -18,9 +19,9 @@ public abstract class AbstractExpression implements Expression, Serializable {
         return type;
     }
     @Override
-    public abstract Object getValue(EntityInstance entityInstance) throws IllegalActionException;
+    public abstract Object getValue(EntityInstance entityInstance, Context context) throws IllegalActionException;
     @Override
-    public abstract Object getValue(EntityInstance... entityInstances) throws IllegalActionException;
+    public abstract Object getValue(Context context, EntityInstance... entityInstances) throws IllegalActionException;
 
     @Override
     public abstract ValueType getValueType();

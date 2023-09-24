@@ -4,9 +4,10 @@ import dto.detail.*;
 import dto.detail.action.*;
 import dto.simulation.*;
 import engine.simulation.Simulation;
-import engine.simulation.SimulationInterface;
+import engine.simulation.SimulationDefinition;
 import engine.simulation.Status;
 import engine.simulation.world.World;
+import engine.simulation.world.WorldDefinition;
 import engine.simulation.world.definition.entity.EntityDefinition;
 import engine.simulation.world.definition.property.PropertyDefinition;
 import engine.simulation.world.instance.entity.EntityInstance;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -41,19 +43,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class Engine implements EngineInterface, Serializable {
 
-    private final Map<Integer, SimulationInterface> pastSimulations = new LinkedHashMap<>();
-    private SimulationInterface simulation = null;
-    private String filepath;
+    private final Map<Integer, Simulation> pastSimulations = new LinkedHashMap<>();
+    private Simulation simulation = null;
     private int idCounter = 1;
     private ThreadPoolExecutor threadPool;
     private int threadCount;
+    private SimulationDefinition simulationDefinition;
 
     @Override
     public void loadXml(String filepath) throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException {
         try {
-            simulation = new Simulation(getWorldFromFile(filepath));
+            Path path = Paths.get(filepath);
+            this.simulationDefinition = new SimulationDefinition(path.getFileName().toString(), getWorldFromFile(filepath), 0);
+            simulation = new Simulation(simulationDefinition);
             threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(simulation.getWorld().getThreadCount());
-            this.filepath = filepath;
         } catch (IOException e) {
             throw new FatalException("Could not find a suitable XML file at path '" + filepath + "'");
         } catch (JAXBException e) {
@@ -61,7 +64,7 @@ public class Engine implements EngineInterface, Serializable {
         }
     }
 
-    public World getWorldFromFile(String filepath) throws JAXBException, IOException, XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
+    public WorldDefinition getWorldFromFile(String filepath) throws JAXBException, IOException, XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException {
         InputStream inputStream = Files.newInputStream(Paths.get(filepath));
         Translator translator = new XmlTranslator(inputStream);
         return translator.getWorld();
@@ -76,7 +79,7 @@ public class Engine implements EngineInterface, Serializable {
             entityPopulations.put(
                     entityDefinition.getName(),
                     new DTOEntityPopulation(
-                            entityDefinition.getPopulation(),
+                            world.getEntityPopulations().get(entityDefinition.getName()),
                             world.getEntityManager().getEntityInstances(entityDefinition).size(),
                             getEntity(entityDefinition)
                     )
@@ -87,10 +90,10 @@ public class Engine implements EngineInterface, Serializable {
     }
 
     private DTOEntity getEntity(EntityDefinition entityDefinition) {
-        return new DTOEntity(entityDefinition.getName(), entityDefinition.getPopulation(), getProperties(entityDefinition));
+        return new DTOEntity(entityDefinition.getName(), getProperties(entityDefinition));
     }
 
-    private Collection<DTOEntity> getEntities(SimulationInterface simulation) {
+    private Collection<DTOEntity> getEntities(Simulation simulation) {
         List<DTOEntity> result = new ArrayList<>();
         List<EntityDefinition> entityDefinitions = new ArrayList<>(simulation.getAllEntityDefinitions());
         for (EntityDefinition entityDefinition : entityDefinitions) {
@@ -188,8 +191,9 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public void setEntityPopulations(Map<String, Integer> entityPopulations) throws IllegalActionException, SimulationMissingException {
         isSimulationLoaded();
-        for (Map.Entry<String, Integer> entity : entityPopulations.entrySet()) {
-            simulation.setEntityPopulation(entity.getKey(), entity.getValue());
+        simulation.getWorld().getEntityPopulations().putAll(entityPopulations);
+        for (EntityDefinition entityDefinition : simulation.getAllEntityDefinitions()){
+            simulation.getWorld().getEntityManager().setPopulation(entityDefinition, entityPopulations.get(entityDefinition.getName()));
         }
         simulation.initSpace();
     }
@@ -206,7 +210,7 @@ public class Engine implements EngineInterface, Serializable {
     @Override
     public Collection<DTOSimulation> getPastSimulations() {
         List<DTOSimulation> simulations = new ArrayList<>();
-        for (SimulationInterface simulation : pastSimulations.values()) {
+        for (Simulation simulation : pastSimulations.values()) {
             simulations.add(new DTOSimulation(simulation.getDate(), simulation.getId(), simulation.getStatus().toString()));
         }
         return simulations;
@@ -214,7 +218,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOGrid getGrid(int id) {
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         return new DTOGrid(simulation.getWorld().getSpaceManager().getRows(), simulation.getWorld().getSpaceManager().getCols());
     }
 
@@ -302,15 +306,9 @@ public class Engine implements EngineInterface, Serializable {
         return result;
     }
 
-    private void archiveSimulation() throws FatalException, XMLConfigException, IncompatibleTypesException, IllegalActionException {
+    private void archiveSimulation() {
         pastSimulations.put(idCounter++, simulation);
-        try {
-            simulation = new Simulation(getWorldFromFile(filepath));
-        } catch (IOException e) {
-            throw new FatalException(e.getMessage());
-        } catch (JAXBException e) {
-            throw new XMLConfigException(e.getMessage());
-        }
+        simulation = new Simulation(simulationDefinition);
     }
 
     private void isSimulationLoaded() throws SimulationMissingException {
@@ -348,7 +346,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOStatus getSimulationStatus(int id) {
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         return new DTOStatus(simulation.getTick(), simulation.getDuration(), simulation.getStatus().toString(), simulation.getException());
     }
 
@@ -360,7 +358,7 @@ public class Engine implements EngineInterface, Serializable {
         }
     }
 
-    private DTOTermination getSimulationTermination(SimulationInterface simulation) {
+    private DTOTermination getSimulationTermination(Simulation simulation) {
         Termination termination = simulation.getTermination();
         List<DTOTerminationCondition<?>> conditions = new ArrayList<>();
         for (TerminationCondition condition : termination.getTerminationConditions()) {
@@ -379,7 +377,7 @@ public class Engine implements EngineInterface, Serializable {
         isSimulationLoaded();
         int id = idCounter;
         archiveSimulation();
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         simulation.run(id);
         if(single){
             simulation.pause();
@@ -391,14 +389,14 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public void tickSimulation(int id) {
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         simulation.singleTick();
         threadPool.execute(simulation);
     }
 
     @Override
     public void resumeSimulation(int id) throws IllegalUserActionException {
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         simulation.resume();
         threadPool.execute(simulation);
     }
@@ -410,7 +408,7 @@ public class Engine implements EngineInterface, Serializable {
 
     @Override
     public DTOSpace getSimulationSpace(int id) {
-        SimulationInterface simulation = pastSimulations.get(id);
+        Simulation simulation = pastSimulations.get(id);
         SpaceManager spaceManager = simulation.getWorld().getSpaceManager();
         DTOSpace result = new DTOSpace(spaceManager.getRows(), spaceManager.getCols());
         for (EntityInstance entityInstance : simulation.getWorld().getEntityManager().getAllEntityInstances()) {
@@ -434,7 +432,7 @@ public class Engine implements EngineInterface, Serializable {
         int paused = 0;
         int stopped = 0;
         int running = 0;
-        for (SimulationInterface simulation : pastSimulations.values()) {
+        for (Simulation simulation : pastSimulations.values()) {
             if (simulation.getStatus() == Status.PAUSED) {
                 paused++;
             } else if (simulation.getStatus() == Status.STOPPED) {

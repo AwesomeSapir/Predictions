@@ -1,11 +1,11 @@
 package translation.xml;
 
-import engine.simulation.world.World;
+import engine.simulation.world.WorldDefinition;
 import exception.FatalException;
 import exception.XMLConfigException;
 import exception.runtime.IllegalActionException;
 import exception.runtime.IncompatibleTypesException;
 
 public interface Translator {
-    World getWorld() throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException;
+    WorldDefinition getWorld() throws XMLConfigException, FatalException, IncompatibleTypesException, IllegalActionException;
 }
