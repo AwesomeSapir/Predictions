@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import ui.component.custom.node.*?>
+
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="300" prefWidth="400" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.main.MainController">
+   <center>
+       <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
+           <opaqueInsets>
+               <Insets />
+           </opaqueInsets>
+           <Tab fx:id="tabDetailsID" text="Management">
+               <fx:include fx:id="tabDetails" source="/ui/component/subcomponent/management/tabManagement.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+           <Tab fx:id="tabExecutionID" text="Allocations">
+               <fx:include fx:id="tabExecution" source="/ui/component/subcomponent/allocation/tabAllocations.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+           <Tab fx:id="tabResultsID" text="Executions History">
+               <fx:include fx:id="tabResults" source="/ui/component/subcomponent/result/tabResults.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+           </Tab>
+       </TabPane>
+   </center>
+   <top>
+       <GridPane hgap="8.0" BorderPane.alignment="CENTER">
+           <columnConstraints>
+               <ColumnConstraints hgrow="ALWAYS" />
+               <ColumnConstraints hgrow="NEVER" />
+               <ColumnConstraints hgrow="NEVER" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <padding>
+               <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+           </padding>
+         <Label text="Hello, Admin." />
+           <IconButton fx:id="buttonQueue" icon="icon-queue" mnemonicParsing="false" text="QUEUE" GridPane.columnIndex="1" />
+           <IconButton fx:id="buttonSettings" icon="icon-settings" mnemonicParsing="false" styleClass="button-circle" GridPane.columnIndex="2" />
+       </GridPane>
+   </top>
+</BorderPane>

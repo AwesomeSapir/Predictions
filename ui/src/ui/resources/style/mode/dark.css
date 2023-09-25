@@ -54,3 +54,6 @@
 .icon-map {
     -fx-image: url("/ui/resources/icon/white/person_pin/baseline.png");
 }
+.icon-plus {
+    -fx-image: url("/ui/resources/icon/white/plus/baseline.png");
+}
