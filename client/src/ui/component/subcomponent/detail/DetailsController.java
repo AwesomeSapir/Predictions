@@ -1,75 +1,35 @@
-package ui.component.subcomponent.management;
+package ui.component.subcomponent.detail;
 
 import dto.detail.*;
 import dto.detail.action.DTOAction;
 import dto.detail.action.DTOActionCondition;
 import dto.detail.action.DTOActionProximity;
 import dto.simulation.DTOSimulationDetails;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.util.Callback;
 import ui.component.custom.detail.DetailView;
-import ui.component.custom.node.IconButton;
 import ui.engine.EngineManager;
-import ui.engine.Queue;
 import ui.style.Animations;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ManagementController {
+public class DetailsController {
     @FXML public VBox paneRight;
-    @FXML public IconButton buttonFileChooser;
-    @FXML public ComboBox<String> comboBoxSimulation;
     @FXML private TreeView<Object> treeViewDetails;
 
     private EngineManager engineManager;
 
     private DetailView viewDetailController;
     private Node viewDetail;
-
-    private Queue queue;
-    @FXML public Label labelActive;
-    @FXML public Label labelQueue;
-    @FXML public Label labelPaused;
-    @FXML public Label labelFinished;
-    @FXML public Label labelRunning;
-
-    public void setQueue(Queue queue) {
-        this.queue = queue;
-        labelActive.textProperty().bind(queue.activeProperty().asString());
-        labelQueue.textProperty().bind(queue.runningProperty().subtract(queue.activeProperty()).asString());
-        labelPaused.textProperty().bind(queue.pausedProperty().asString());
-        labelFinished.textProperty().bind(queue.stoppedProperty().asString());
-        labelRunning.textProperty().bind(queue.runningProperty().asString());
-    }
-
-    private final ObservableList<String> simulations = FXCollections.observableArrayList();
-
-    private void chooseXMLFile(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-
-        File selectedFile = fileChooser.showOpenDialog(buttonFileChooser.getScene().getWindow());
-        if (selectedFile == null) {
-            return;
-        }
-
-        if(!simulations.contains(selectedFile.getName())) {
-            simulations.add(selectedFile.getName());
-        }
-        //engineManager.loadSimulation(selectedFile); //TODO http manager - send file to server
-    }
 
     @FXML
     public void initialize() {
@@ -82,9 +42,6 @@ public class ManagementController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        buttonFileChooser.setOnAction(this::chooseXMLFile);
-        comboBoxSimulation.setItems(simulations);
 
         treeViewDetails.setCellFactory(new Callback<TreeView<Object>, TreeCell<Object>>() {
             @Override
@@ -211,6 +168,5 @@ public class ManagementController {
                 loadTree();
             }
         });
-        setQueue(engineManager.getQueue());
     }
 }

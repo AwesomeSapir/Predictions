@@ -6,51 +6,77 @@
 <?import ui.component.custom.input.generic.*?>
 <?import ui.component.custom.node.*?>
 
-<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.management.ManagementController">
-   <items>
-      <GridPane hgap="8.0" vgap="8.0">
+<SplitPane dividerPositions="0.5" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.component.subcomponent.management.ManagementController">
+    <GridPane hgap="8.0" vgap="8.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="ALWAYS" />
-          <ColumnConstraints hgrow="NEVER" />
+            <ColumnConstraints hgrow="ALWAYS"/>
+            <ColumnConstraints hgrow="NEVER"/>
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints vgrow="NEVER" />
-          <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="ALWAYS"/>
         </rowConstraints>
-         <children>
-            <IconButton alignment="CENTER_RIGHT" icon="icon-plus" mnemonicParsing="false" text="FILE" GridPane.columnIndex="1" />
-            <ComboBox maxWidth="1.7976931348623157E308" GridPane.hgrow="ALWAYS" />
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" GridPane.columnSpan="2" GridPane.rowIndex="1">
-                <AnchorPane>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        </padding>
+        <IconButton fx:id="buttonFileChooser" alignment="CENTER_RIGHT" icon="icon-plus" mnemonicParsing="false" text="FILE"
+                    GridPane.columnIndex="1"/>
+        <ComboBox fx:id="comboBoxSimulation" maxWidth="1.7976931348623157E308" GridPane.hgrow="ALWAYS"/>
+        <SplitPane dividerPositions="0.5" orientation="VERTICAL" GridPane.columnSpan="2" GridPane.rowIndex="1">
+            <AnchorPane>
+                <padding>
+                    <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+                </padding>
+                <TreeView fx:id="treeViewDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            </AnchorPane>
+            <ScrollPane fitToWidth="true">
+                <VBox fx:id="paneRight">
                     <padding>
-                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
                     </padding>
-                    <TreeView fx:id="treeViewDetails" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                </AnchorPane>
-                <ScrollPane fitToWidth="true">
-                    <VBox fx:id="paneRight">
-                        <padding>
-                            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-                        </padding>
-                    </VBox>
-                </ScrollPane>
-            </SplitPane>
-         </children>
-         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-         </padding>
-      </GridPane>
-       <ScrollPane fitToHeight="true" fitToWidth="true">
-           <VBox spacing="8.0" styleClass="view-box">
-               <NumericItemView title="Thread count" />
-            <IconButton icon="icon-file-open" mnemonicParsing="false" text="APPLY" />
+                </VBox>
+            </ScrollPane>
+        </SplitPane>
+    </GridPane>
+    <ScrollPane fitToHeight="true" fitToWidth="true">
+        <VBox spacing="8.0" styleClass="view-box">
+            <NumericItemView title="Thread count" value="1"/>
+            <IconButton icon="icon-file-open" mnemonicParsing="false" text="APPLY"/>
+            <GridPane hgap="8.0" vgap="8.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+                <padding>
+                    <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                </padding>
+                <Label text="Active:" GridPane.halignment="LEFT" GridPane.rowIndex="0" />
+                <Label text="In queue:" GridPane.halignment="LEFT" GridPane.rowIndex="1" />
+                <Label text="Paused:" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+                <Label text="Finished:" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
+                <Label text="Running:" GridPane.halignment="LEFT" GridPane.rowIndex="4" />
+
+                <Label fx:id="labelActive" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" />
+                <Label fx:id="labelQueue" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                <Label fx:id="labelPaused" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                <Label fx:id="labelFinished" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                <Label fx:id="labelRunning" text="0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+            </GridPane>
             <padding>
-               <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
             </padding>
-           </VBox>
-         <padding>
-            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
-         </padding>
-       </ScrollPane>
-   </items>
+        </VBox>
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+        </padding>
+    </ScrollPane>
 </SplitPane>

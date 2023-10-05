@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import ui.component.custom.input.generic.*?>
+<?import ui.component.custom.node.*?>
+
+<SplitPane dividerPositions="0.5" orientation="VERTICAL" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.component.subcomponent.request.RequestsController">
+    <VBox alignment="CENTER" spacing="8.0">
+        <ComboBox maxWidth="1.7976931348623157E308" />
+        <NumericItemView title="Runs Amount" randomizable="false"/>
+        <Label maxWidth="1.7976931348623157E308" text="Termination Conditions" VBox.vgrow="ALWAYS" />
+        <GridPane hgap="8.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="8.0">
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+                <ColumnConstraints />
+            </columnConstraints>
+
+
+            <NumericItemView title="Ticks" GridPane.rowIndex="0" randomizable="false"/>
+            <NumericItemView title="Seconds" GridPane.rowIndex="1" randomizable="false"/>
+            <Label text="User" GridPane.rowIndex="2" />
+
+            <ToggleSwitch GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <ToggleSwitch GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <ToggleSwitch GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        </GridPane>
+        <IconButton styleClass="button-full" text="SUBMIT" />
+        <padding>
+            <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+        </padding>
+    </VBox>
+    <TableView>
+        <columns>
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="ID" />
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Simulation Name" />
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Amount" />
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Status" />
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Running" />
+            <TableColumn maxWidth="-1.0" minWidth="-1.0" prefWidth="-1.0" text="Ended" />
+        </columns>
+    </TableView>
+</SplitPane>

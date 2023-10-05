@@ -1,9 +1,6 @@
 package ui.component.custom.input.generic;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -28,12 +25,14 @@ public abstract class InputItemView<T> extends GridPane {
     protected SimpleStringProperty title;
     protected SimpleBooleanProperty isValid;
     protected ObjectProperty<T> value;
+    protected BooleanProperty randomizable;
 
     public InputItemView() {
         super();
         title = new SimpleStringProperty();
         isValid = new SimpleBooleanProperty(true);
         value = new SimpleObjectProperty<>();
+        randomizable = new SimpleBooleanProperty(true);
     }
 
     protected abstract Collection<Node> getNodeToShake();
@@ -86,11 +85,25 @@ public abstract class InputItemView<T> extends GridPane {
         return title;
     }
 
+    public boolean isRandomizable() {
+        return randomizable.get();
+    }
+
+    public BooleanProperty randomizableProperty() {
+        return randomizable;
+    }
+
+    public void setRandomizable(boolean randomizable) {
+        this.randomizable.set(randomizable);
+    }
+
     public abstract void clear();
 
     protected void bind() {
         labelTitle.textProperty().bind(title);
         buttonRandom.setOnMouseClicked(this::clickRandom);
+        buttonRandom.visibleProperty().bind(randomizable);
+        buttonRandom.managedProperty().bind(randomizable);
     }
 
     private void clickRandom(MouseEvent event){
